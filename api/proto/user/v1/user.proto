@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package api.proto.user.v1;
+
+option go_package = "rest-on-grpc-gateway/api/proto/user/v1;pb";
+
+import "google/api/annotations.proto";
+
+// The greeting service definition
+service UserAPI {
+  // Create User.
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {post: "/user/api/v1/user", body: "*"};
+  };
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string    email = 2;
+  string password = 3;
+}
+message CreateUserResponse {
+  string id = 1;
+}

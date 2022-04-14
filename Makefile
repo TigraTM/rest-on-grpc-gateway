@@ -1,14 +1,18 @@
 .PHONY:
 
+# Unit test
 test:
 	go test -coverpkg=./... -coverprofile=coverage.out ./...
 	go tool cover -func coverage.out
 
+# Lint
 lint:
 	golangci-lint run
 
-lint.fix: ## Lint
+# Lint with flag fix
+lint.fix:
 	golangci-lint run --fix
 
-generate: ## Generate
+# Generate
+generate:
 	go generate ./...

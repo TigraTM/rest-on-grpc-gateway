@@ -5,7 +5,6 @@ package api.proto.user.v1;
 option go_package = "rest-on-grpc-gateway/api/proto/user/v1;pb";
 
 import "google/api/annotations.proto";
-import "google/api/field_behavior.proto";
 
 // The greeting service definition
 service UserAPI {

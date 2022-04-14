@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -18,13 +17,12 @@ type server struct {
 	userpb.UnimplementedUserAPIServer
 }
 
-func (s *server) CreateUser(ctx context.Context, in *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
+func (*server) CreateUser(_ context.Context, _ *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
 	return &userpb.CreateUserResponse{Id: "hello Andrey"}, nil
 }
 
 func main() {
-	fmt.Println("Hello world")
-
+	// nolint:gosec // copy in tutorial.
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln("net.Listen")

@@ -2,57 +2,33 @@ package main
 
 import (
 	"context"
-	"log"
-	"net"
-	"net/http"
+	logStd "log"
+	"os/signal"
+	"syscall"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"go.uber.org/zap"
 
-	userpb "rest-on-grpc-gateway/api/proto/user/v1"
+	"rest-on-grpc-gateway/modules/user"
 )
 
-type server struct {
-	userpb.UnimplementedUserAPIServer
-}
-
-func (*server) CreateUser(_ context.Context, _ *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
-	return &userpb.CreateUserResponse{Id: "hello Andrey"}, nil
-}
-
 func main() {
-	// nolint:gosec // copy in tutorial.
-	lis, err := net.Listen("tcp", ":8080")
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	zap, err := zap.NewDevelopment()
 	if err != nil {
-		log.Fatalln("net.Listen")
+		logStd.Fatalf("couldn't init logger: %+v \n", err)
 	}
 
-	s := grpc.NewServer()
+	defer zap.Sync()
+	log := zap.Sugar()
 
-	userpb.RegisterUserAPIServer(s, &server{})
+	userModule := user.Service{
+		Log: log,
+	}
 
-	go func() {
-		log.Fatal(s.Serve(lis))
-	}()
-
-	conn, err := grpc.DialContext(context.Background(), "0.0.0.0:8080", grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	err = userModule.RunServe(ctx)
 	if err != nil {
-		log.Fatal("failed connect to dial server: ", err)
+		log.Fatalf("userModule.RunServe: %v", err)
 	}
-
-	gwmx := runtime.NewServeMux()
-
-	err = userpb.RegisterUserAPIHandler(context.Background(), gwmx, conn)
-	if err != nil {
-		log.Fatal("failed register user api handler: ", err)
-	}
-
-	gwServer := &http.Server{
-		Addr:    ":8090",
-		Handler: gwmx,
-	}
-
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
-	log.Fatalln(gwServer.ListenAndServe())
 }

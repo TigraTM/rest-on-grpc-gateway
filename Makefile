@@ -20,3 +20,6 @@ buf_lint:
 # Generate
 generate:
 	go generate ./...
+
+migrations.create:
+	migrate create -ext sql -dir modules/$(module)/internal/migrations -format 2006010215 $(issue)

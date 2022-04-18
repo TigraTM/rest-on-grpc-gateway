@@ -5,20 +5,160 @@ package api.proto.user.v1;
 option go_package = "rest-on-grpc-gateway/api/proto/user/v1;pb";
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "validate/validate.proto";
 
-// The greeting service definition
+// UserAPI service to work with user.
 service UserAPI {
   // Create User.
+  //
+  // ```
+  // Example request:
+  //    name: 'Artem'
+  //    email: 'email@mail.com'
+  //    password: 'password'
+  // ```
+  //
+  // ```
+  // Example response:
+  //    id: 1
+  //    name: 'Artem'
+  //    email: 'email@mail.com'
+  //    password: 'password'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.AlreadyExists
   rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {post: "/user/api/v1/user", body: "*"};
+  };
+  // Get User by ID.
+  //
+  // ```
+  // Example request:
+  //    id: 1
+  // ```
+  //
+  // ```
+  // Example response:
+  //    id: 1
+  //    username: 'Artem'
+  //    email: 'email@mail.com'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc GetUserByID (GetUserByIDRequest) returns (GetUserByIDResponse) {
+    option (google.api.http) = {get: "/user/api/v1/user/{id}"};
+  };
+  // Update User by ID.
+  //
+  // ```
+  // Example request:
+  //    name: 'Artem'
+  //    email: 'email@mail.com'
+  // ```
+  //
+  // ```
+  // Example response:
+  //    id: 1
+  //    name: 'Artem'
+  //    email: 'email@mail.com'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc UpdateUserByID (UpdateUserByIDRequest) returns (UpdateUserByIDResponse) {
+    option (google.api.http) = {put: "/user/api/v1/user/{id}", body: "*"};
+  };
+  // Update User Password by ID.
+  //
+  // ```
+  // Example request:
+  //    id: 1
+  //    oldPassword: 'qwert123'
+  //    newPassword: '321trewq'
+  // ```
+  //
+  // ```
+  // Example response:
+  //    success: ok
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc UpdateUserPasswordByID (UpdateUserPasswordByIDRequest) returns (UpdateUserPasswordByIDResponse) {
+    option (google.api.http) = {put: "/user/api/v1/user/{id}/password", body: "*"};
+  };
+  // Delete User by ID.
+  //
+  // ```
+  // Example request:
+  //    id: 1
+  // ```
+  //
+  // ```
+  // Example response:
+  //    id: 1
+  //    success: ok
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc DeleteUserByID (DeleteUserByIDRequest) returns (DeleteUserByIDResponse) {
+    option (google.api.http) = {delete: "/user/api/v1/user/{id}"};
   };
 }
 
 message CreateUserRequest {
-  string username = 1;
-  string    email = 2;
-  string password = 3;
+  string     name = 1 [(validate.rules).string = {min_len: 2, max_len: 40}];
+  string    email = 2 [(validate.rules).string = {email: true, max_len: 50}];
+  string password = 3 [(validate.rules).string = {min_len: 8, max_len: 100}];
 }
+
 message CreateUserResponse {
-  string id = 1;
+  int64        id = 1;
+  string     name = 2;
+  string    email = 3;
+  string password = 4;
 }
+
+message GetUserByIDRequest {
+  int64 id = 1;
+}
+
+message GetUserByIDResponse {
+  int64        id = 1;
+  string     name = 2;
+  string    email = 3;
+}
+
+message DeleteUserByIDRequest {
+  int64 id = 1;
+}
+
+message DeleteUserByIDResponse {}
+
+message UpdateUserByIDRequest {
+  int64        id = 1;
+  string     name = 2 [(validate.rules).string = {min_len: 2, max_len: 40}];
+  string    email = 3 [(validate.rules).string = {email: true, max_len: 50}];
+}
+
+message UpdateUserByIDResponse {
+  int64        id = 1;
+  string     name = 2;
+  string    email = 3;
+}
+
+message UpdateUserPasswordByIDRequest {
+  int64              id = 1;
+  string    old_password = 2 [(validate.rules).string = {min_len: 8, max_len: 100}];
+  string    new_password = 3 [(validate.rules).string = {min_len: 8, max_len: 100}];
+}
+message UpdateUserPasswordByIDResponse {}

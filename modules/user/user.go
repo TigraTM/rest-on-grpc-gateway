@@ -5,19 +5,21 @@ import (
 	"fmt"
 	logStd "log"
 
+	"rest-on-grpc-gateway/modules/user/internal/api"
+	"rest-on-grpc-gateway/modules/user/internal/app"
+	"rest-on-grpc-gateway/modules/user/internal/config"
+	"rest-on-grpc-gateway/pkg/serve"
+
 	"go.uber.org/zap"
 
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
-	"rest-on-grpc-gateway/modules/user/internal/api"
-	"rest-on-grpc-gateway/modules/user/internal/config"
-	"rest-on-grpc-gateway/pkg/serve"
 )
 
 type Service struct {
 	Log *zap.SugaredLogger
 }
 
-func (s *Service) Init() error {
+func (*Service) Init() error {
 	// add auto migration
 
 	return nil
@@ -32,7 +34,8 @@ func (s *Service) RunServe(parentCtx context.Context) error {
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 
-	grpcAPI := api.New(ctx, nil)
+	appl := app.New(nil)
+	grpcAPI := api.New(s.Log, appl)
 
 	gwCfg := serve.GateWayConfig{
 		FS:             userpb.OpenAPI,

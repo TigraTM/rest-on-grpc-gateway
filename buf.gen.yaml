@@ -18,3 +18,9 @@ plugins:
     opt:
       - simple_operation_ids=false
       - generate_unbound_methods=false
+  - name: validate
+    out: .
+    opt:
+      - lang=go
+      - validate_out=generated
+      - paths=source_relative

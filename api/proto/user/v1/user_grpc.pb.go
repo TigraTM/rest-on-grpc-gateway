@@ -23,7 +23,98 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserAPIClient interface {
 	// Create User.
+	//
+	// ```
+	// Example request:
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	//    password: 'password'
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	//    password: 'password'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.AlreadyExists
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	// Get User by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    username: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error)
+	// Update User by ID.
+	//
+	// ```
+	// Example request:
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	UpdateUserByID(ctx context.Context, in *UpdateUserByIDRequest, opts ...grpc.CallOption) (*UpdateUserByIDResponse, error)
+	// Update User Password by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	//    oldPassword: 'qwert123'
+	//    newPassword: '321trewq'
+	// ```
+	//
+	// ```
+	// Example response:
+	//    success: ok
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	UpdateUserPasswordByID(ctx context.Context, in *UpdateUserPasswordByIDRequest, opts ...grpc.CallOption) (*UpdateUserPasswordByIDResponse, error)
+	// Delete User by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    success: ok
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error)
 }
 
 type userAPIClient struct {
@@ -43,12 +134,139 @@ func (c *userAPIClient) CreateUser(ctx context.Context, in *CreateUserRequest, o
 	return out, nil
 }
 
+func (c *userAPIClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error) {
+	out := new(GetUserByIDResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/GetUserByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAPIClient) UpdateUserByID(ctx context.Context, in *UpdateUserByIDRequest, opts ...grpc.CallOption) (*UpdateUserByIDResponse, error) {
+	out := new(UpdateUserByIDResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/UpdateUserByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAPIClient) UpdateUserPasswordByID(ctx context.Context, in *UpdateUserPasswordByIDRequest, opts ...grpc.CallOption) (*UpdateUserPasswordByIDResponse, error) {
+	out := new(UpdateUserPasswordByIDResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/UpdateUserPasswordByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAPIClient) DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error) {
+	out := new(DeleteUserByIDResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/DeleteUserByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAPIServer is the server API for UserAPI service.
 // All implementations should embed UnimplementedUserAPIServer
 // for forward compatibility
 type UserAPIServer interface {
 	// Create User.
+	//
+	// ```
+	// Example request:
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	//    password: 'password'
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	//    password: 'password'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.AlreadyExists
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	// Get User by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    username: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error)
+	// Update User by ID.
+	//
+	// ```
+	// Example request:
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    name: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	UpdateUserByID(context.Context, *UpdateUserByIDRequest) (*UpdateUserByIDResponse, error)
+	// Update User Password by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	//    oldPassword: 'qwert123'
+	//    newPassword: '321trewq'
+	// ```
+	//
+	// ```
+	// Example response:
+	//    success: ok
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	UpdateUserPasswordByID(context.Context, *UpdateUserPasswordByIDRequest) (*UpdateUserPasswordByIDResponse, error)
+	// Delete User by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    success: ok
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error)
 }
 
 // UnimplementedUserAPIServer should be embedded to have forward compatible implementations.
@@ -57,6 +275,18 @@ type UnimplementedUserAPIServer struct {
 
 func (UnimplementedUserAPIServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedUserAPIServer) GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
+}
+func (UnimplementedUserAPIServer) UpdateUserByID(context.Context, *UpdateUserByIDRequest) (*UpdateUserByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserByID not implemented")
+}
+func (UnimplementedUserAPIServer) UpdateUserPasswordByID(context.Context, *UpdateUserPasswordByIDRequest) (*UpdateUserPasswordByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPasswordByID not implemented")
+}
+func (UnimplementedUserAPIServer) DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserByID not implemented")
 }
 
 // UnsafeUserAPIServer may be embedded to opt out of forward compatibility for this service.
@@ -88,6 +318,78 @@ func _UserAPI_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAPI_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAPIServer).GetUserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.proto.user.v1.UserAPI/GetUserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAPIServer).GetUserByID(ctx, req.(*GetUserByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAPI_UpdateUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAPIServer).UpdateUserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.proto.user.v1.UserAPI/UpdateUserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAPIServer).UpdateUserByID(ctx, req.(*UpdateUserByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAPI_UpdateUserPasswordByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserPasswordByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAPIServer).UpdateUserPasswordByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.proto.user.v1.UserAPI/UpdateUserPasswordByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAPIServer).UpdateUserPasswordByID(ctx, req.(*UpdateUserPasswordByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAPI_DeleteUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAPIServer).DeleteUserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.proto.user.v1.UserAPI/DeleteUserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAPIServer).DeleteUserByID(ctx, req.(*DeleteUserByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAPI_ServiceDesc is the grpc.ServiceDesc for UserAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +400,22 @@ var UserAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _UserAPI_CreateUser_Handler,
+		},
+		{
+			MethodName: "GetUserByID",
+			Handler:    _UserAPI_GetUserByID_Handler,
+		},
+		{
+			MethodName: "UpdateUserByID",
+			Handler:    _UserAPI_UpdateUserByID_Handler,
+		},
+		{
+			MethodName: "UpdateUserPasswordByID",
+			Handler:    _UserAPI_UpdateUserPasswordByID_Handler,
+		},
+		{
+			MethodName: "DeleteUserByID",
+			Handler:    _UserAPI_DeleteUserByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"go.uber.org/zap"
-
 	"rest-on-grpc-gateway/modules/user"
+
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -19,8 +19,13 @@ func main() {
 	if err != nil {
 		logStd.Fatalf("couldn't init logger: %+v \n", err)
 	}
+	defer func() {
+		err := zap.Sync()
+		if err != nil {
+			logStd.Fatalf("err: %v", err)
+		}
+	}()
 
-	defer zap.Sync()
 	log := zap.Sugar()
 
 	userModule := user.Service{

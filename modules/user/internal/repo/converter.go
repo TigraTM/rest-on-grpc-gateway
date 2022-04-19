@@ -9,6 +9,7 @@ import (
 )
 
 func convertErr(err error) error {
+	// TODO: add constraint
 	//var pqErr *pq.Error
 
 	switch {

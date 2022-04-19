@@ -55,7 +55,6 @@ func (r *Repo) GetUserByID(ctx context.Context, id int) (*domain.User, error) {
 
 	var user = &User{}
 	if err := r.DB.GetContext(ctx, user, query, id); err != nil {
-		// TODO: add wrapper for error
 		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
 	}
 
@@ -80,7 +79,6 @@ func (r *Repo) UpdateUserByID(ctx context.Context, id int, name, email string) (
 
 	var user = &User{}
 	if err := row.StructScan(user); err != nil {
-		// TODO: add wrapper for error
 		return nil, fmt.Errorf("row.StructScan: %w", err)
 	}
 
@@ -102,7 +100,6 @@ func (r *Repo) UpdateUserPasswordByID(ctx context.Context, id int, password stri
 
 	_, err := r.DB.ExecContext(ctx, query, password, id)
 	if err != nil {
-		// TODO: add wrapper for error
 		return fmt.Errorf("r.DB.ExecContext: %w", err)
 	}
 
@@ -119,7 +116,6 @@ func (r *Repo) DeleteUserByID(ctx context.Context, id int) error {
 
 	_, err := r.DB.ExecContext(ctx, query, id)
 	if err != nil {
-		// TODO: add wrapper for error
 		return fmt.Errorf("r.DB.ExecContext: %w", err)
 	}
 

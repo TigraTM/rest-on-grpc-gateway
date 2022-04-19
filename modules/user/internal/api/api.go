@@ -23,6 +23,8 @@ var (
 	errInvalidPassword = errors.New("invalid password")
 )
 
+//go:generate mockgen -source=api.go -destination mock.api.contracts_test.go -package api_test
+
 // application interface business logic.
 type application interface {
 	CreateUser(ctx context.Context, user *domain.User) (*domain.User, error)

@@ -7,44 +7,39 @@ import (
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
-var (
-	count int
-	users = make(map[int]*domain.User)
-)
-
 // CreateUser create user.
-func (a *App) CreateUser(_ context.Context, user *domain.User) (*domain.User, error) {
-	count++
-	user.ID = count
+func (a *App) CreateUser(ctx context.Context, user *domain.User) (*domain.User, error) {
+	u, err := a.repo.CreateUser(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("a.repo.CreateUser: %w", err)
+	}
 
-	users[count] = user
-
-	return user, nil
+	return u, nil
 }
 
 // GetUserByID get user by id.
-func (a *App) GetUserByID(_ context.Context, id int) (*domain.User, error) {
-	user, ok := users[id]
-	if !ok {
-		return nil, ErrNotFound
+func (a *App) GetUserByID(ctx context.Context, id int) (*domain.User, error) {
+	u, err := a.repo.GetUserByID(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("a.repo.GetUserByID: %w", err)
 	}
 
-	return user, nil
+	return u, nil
 }
 
 // UpdateUserByID check exist user and update data about him by user id.
-func (a *App) UpdateUserByID(ctx context.Context, userID int, name, email string) (*domain.User, error) {
-	user, err := a.GetUserByID(ctx, userID)
+func (a *App) UpdateUserByID(ctx context.Context, userID int, name, email string) (u *domain.User, err error) {
+	_, err = a.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("a.GetUserByID: %w", err)
 	}
 
-	user.ID = userID
-	user.Name = name
-	user.Email = email
-	users[userID] = user
+	u, err = a.repo.UpdateUserByID(ctx, userID, name, email)
+	if err != nil {
+		return nil, fmt.Errorf("a.repo.UpdateUserByID: %w", err)
+	}
 
-	return user, nil
+	return u, nil
 }
 
 // UpdateUserPasswordByID update user password if:
@@ -57,11 +52,15 @@ func (a *App) UpdateUserPasswordByID(ctx context.Context, userID int, oldPass, n
 	}
 
 	if user.Password != oldPass {
+		fmt.Println(user)
+		fmt.Println(fmt.Sprintf("pass: %s, oldPass: %s", user.Password, oldPass))
 		return ErrInvalidPassword
 	}
 
-	user.Password = newPass
-	users[userID] = user
+	err = a.repo.UpdateUserPasswordByID(ctx, userID, newPass)
+	if err != nil {
+		return fmt.Errorf("a.repo.UpdateUserPasswordByID: %w", err)
+	}
 
 	return nil
 }
@@ -73,7 +72,10 @@ func (a *App) DeleteUserByID(ctx context.Context, userID int) error {
 		return fmt.Errorf("a.GetUserByID: %w", err)
 	}
 
-	delete(users, userID)
+	err = a.repo.DeleteUserByID(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("a.repo.DeleteUserByID: %w", err)
+	}
 
 	return nil
 }

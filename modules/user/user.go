@@ -1,13 +1,14 @@
+// Package user contains all logic for work with user's.
 package user
 
 import (
 	"context"
 	"fmt"
-	logStd "log"
 
 	"rest-on-grpc-gateway/modules/user/internal/api"
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/config"
+	"rest-on-grpc-gateway/modules/user/internal/repo"
 	"rest-on-grpc-gateway/pkg/serve"
 
 	"go.uber.org/zap"
@@ -15,26 +16,34 @@ import (
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
 )
 
+// Service ...
 type Service struct {
 	Log *zap.SugaredLogger
 }
 
+// Init service initialization.
 func (*Service) Init() error {
 	// add auto migration
 
 	return nil
 }
 
+// RunServe start service.
 func (s *Service) RunServe(parentCtx context.Context) error {
 	cfg, err := config.LoadDevConfig()
 	if err != nil {
-		logStd.Printf("couldn't get envConfig: %+v \n", err)
+		s.Log.Fatalf("couldn't get envConfig: %+v \n", err)
 	}
 
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 
-	appl := app.New(nil)
+	db, err := repo.New(ctx, cfg.Database.DSN())
+	if err != nil {
+		s.Log.Fatalf("failed repo.New: %+v \n", err)
+	}
+
+	appl := app.New(db)
 	grpcAPI := api.New(s.Log, appl)
 
 	gwCfg := serve.GateWayConfig{

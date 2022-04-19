@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // Error names.
@@ -22,7 +23,6 @@ func NewPostgres(ctx context.Context, dsn string) (_ *Repo, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("sql.Open: %w", err)
 	}
-	defer db.Close()
 
 	// TODO: add auto migration.
 

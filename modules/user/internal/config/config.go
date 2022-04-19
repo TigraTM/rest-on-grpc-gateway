@@ -18,6 +18,7 @@ const (
 type Config struct {
 	Env
 	Transport
+	Database
 }
 
 // IsDev check dev mode.

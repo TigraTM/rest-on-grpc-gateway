@@ -1,3 +1,10 @@
 USER_HOST: "0.0.0.0"
 USER_GRPC_PORT: "8080"
 USER_GRPC_GW_PORT: "8081"
+
+DB_HOST: "localhost"
+DB_PORT: "5432"
+DB_NAME: "postgres"
+DB_USER: "postgres"
+DB_PASSWORD: "postgres"
+DB_SSL_MODE: "disable"

@@ -80,6 +80,15 @@ func TestApp_GetUserByID(t *testing.T) {
 			},
 		},
 		{
+			name:    "err not found",
+			req:     userID,
+			want:    nil,
+			wantErr: app.ErrNotFound,
+			prepare: func(m *mocks) {
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(nil, app.ErrNotFound).Times(1)
+			},
+		},
+		{
 			name:    "err any",
 			req:     userID,
 			want:    nil,
@@ -144,6 +153,17 @@ func TestApp_UpdateUserByID(t *testing.T) {
 				updateUser.Name = userName
 				updateUser.Email = email
 				m.repo.EXPECT().UpdateUserByID(ctx, userID, userName, email).Return(updateUser, nil).Times(1)
+			},
+		},
+		{
+			name:     "err not found",
+			userID:   userID,
+			userName: userName,
+			email:    email,
+			want:     nil,
+			wantErr:  app.ErrNotFound,
+			prepare: func(m *mocks) {
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(nil, app.ErrNotFound).Times(1)
 			},
 		},
 		{
@@ -218,6 +238,16 @@ func TestApp_UpdateUserPasswordByID(t *testing.T) {
 			},
 		},
 		{
+			name:    "err not found",
+			userID:  userID,
+			oldPass: oldPass,
+			newPass: newPass,
+			wantErr: app.ErrNotFound,
+			prepare: func(m *mocks) {
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(nil, app.ErrNotFound).Times(1)
+			},
+		},
+		{
 			name:    "err invalid password",
 			userID:  userID,
 			oldPass: "12344321",
@@ -283,6 +313,14 @@ func TestApp_DeleteUserByID(t *testing.T) {
 			prepare: func(m *mocks) {
 				m.repo.EXPECT().GetUserByID(ctx, userID).Return(user, nil).Times(1)
 				m.repo.EXPECT().DeleteUserByID(ctx, userID).Return(nil).Times(1)
+			},
+		},
+		{
+			name:    "err not found",
+			req:     userID,
+			wantErr: app.ErrNotFound,
+			prepare: func(m *mocks) {
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(nil, app.ErrNotFound).Times(1)
 			},
 		},
 		{

@@ -27,8 +27,7 @@ func (r *Repo) CreateUser(ctx context.Context, newUser *domain.User) (*domain.Us
 
 	row, err := r.DB.NamedQueryContext(ctx, query, toRepo(newUser))
 	if err != nil {
-		// TODO: add wrapper for error
-		return nil, fmt.Errorf("r.DB.NamedQueryContext: %w", err)
+		return nil, fmt.Errorf("r.DB.NamedQueryContext: %w", convertErr(err))
 	}
 	defer row.Close()
 
@@ -57,7 +56,7 @@ func (r *Repo) GetUserByID(ctx context.Context, id int) (*domain.User, error) {
 	var user = &User{}
 	if err := r.DB.GetContext(ctx, user, query, id); err != nil {
 		// TODO: add wrapper for error
-		return nil, fmt.Errorf("r.DB.GetContext: %w", err)
+		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
 	}
 
 	return toDomain(user), nil

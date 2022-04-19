@@ -8,7 +8,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 
@@ -16,6 +15,12 @@ import (
 	"google.golang.org/grpc"
 
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
+)
+
+// Errors.
+var (
+	errUserNotFound    = errors.New("user not found")
+	errInvalidPassword = errors.New("invalid password")
 )
 
 // application interface business logic.
@@ -48,9 +53,9 @@ func apiError(err error) *status.Status {
 
 	code := codes.Internal
 	switch {
-	case errors.Is(err, app.ErrNotFound):
+	case errors.Is(err, errUserNotFound):
 		code = codes.NotFound
-	case errors.Is(err, app.ErrInvalidPassword):
+	case errors.Is(err, errInvalidPassword):
 		code = codes.InvalidArgument
 	case errors.Is(err, context.DeadlineExceeded):
 		code = codes.DeadlineExceeded

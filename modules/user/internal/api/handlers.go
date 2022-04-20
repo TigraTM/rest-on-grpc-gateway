@@ -82,6 +82,6 @@ func (a *api) DeleteUserByID(ctx context.Context, in *userpb.DeleteUserByIDReque
 	case errors.Is(err, app.ErrNotFound):
 		return nil, errUserNotFound
 	default:
-		return nil, fmt.Errorf("a.app.DeleteUserByIDL: %w", err)
+		return nil, fmt.Errorf("a.app.DeleteUserByID: %w", err)
 	}
 }

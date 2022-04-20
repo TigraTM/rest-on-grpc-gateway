@@ -23,11 +23,10 @@ import (
 const maxTimeout = time.Second * 60
 
 var (
-	ctx        = context.Background()
-	cancelFunc = func() {}
-	errAny     = errors.New("err any")
-	userID     = 1
-	user       = &domain.User{
+	ctx    = context.Background()
+	errAny = errors.New("err any")
+	userID = 1
+	user   = &domain.User{
 		ID:       userID,
 		Name:     "user",
 		Email:    "user@mail.com",
@@ -40,7 +39,6 @@ func setup(t *testing.T) (userpb.UserAPIClient, *Mockapplication, *require.Asser
 	assert := require.New(t)
 
 	ctrl := gomock.NewController(t)
-	setupCtx(t)
 
 	mockApp := NewMockapplication(ctrl)
 
@@ -50,6 +48,10 @@ func setup(t *testing.T) (userpb.UserAPIClient, *Mockapplication, *require.Asser
 		zap.WithClock(zapcore.DefaultClock),
 		zap.AddCaller(),
 	)
+
+	// TODO: fix work with ctx in api tests.
+	ctx, cancelFunc := context.WithTimeout(context.Background(), maxTimeout)
+	t.Cleanup(cancelFunc)
 
 	server := api.New(log.Sugar(), mockApp)
 
@@ -74,9 +76,4 @@ func setup(t *testing.T) (userpb.UserAPIClient, *Mockapplication, *require.Asser
 	})
 
 	return userpb.NewUserAPIClient(conn), mockApp, assert
-}
-
-func setupCtx(t *testing.T) {
-	ctx, cancelFunc = context.WithTimeout(context.Background(), maxTimeout)
-	t.Cleanup(cancelFunc)
 }

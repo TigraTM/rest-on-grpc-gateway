@@ -11,11 +11,12 @@ const (
 
 // Database config for connect to databse.
 type Database struct {
-	Host     string `envconfig:"DB_HOST" default:"localhost"`
-	Port     int    `envconfig:"DB_PORT" default:"5432"`
-	DBName   string `envconfig:"DB_NAME" default:"postgres"`
-	User     string `envconfig:"DB_USER" default:"postgres"`
-	Password string `envconfig:"DB_PASSWORD" default:"postgres"`
+	Host          string `envconfig:"DB_HOST" default:"localhost"`
+	Port          int    `envconfig:"DB_PORT" default:"5432"`
+	DBName        string `envconfig:"DB_NAME" default:"postgres"`
+	User          string `envconfig:"DB_USER" default:"postgres"`
+	Password      string `envconfig:"DB_PASSWORD" default:"postgres"`
+	MigrationsDir string `envconfig:"USER_MIGRATIONS_DIR"`
 
 	Parameters *DBParameters
 }

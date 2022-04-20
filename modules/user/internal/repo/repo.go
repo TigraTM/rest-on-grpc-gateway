@@ -4,6 +4,8 @@ package repo
 import (
 	"context"
 	"fmt"
+
+	"rest-on-grpc-gateway/modules/user/internal/config"
 	"rest-on-grpc-gateway/pkg/repo"
 )
 
@@ -18,9 +20,9 @@ type Repo struct {
 }
 
 // New build and return new Repo.
-func New(ctx context.Context, dsn string) (_ *Repo, err error) {
+func New(ctx context.Context, dbCfg *config.Database) (_ *Repo, err error) {
 	r := &Repo{}
-	r.Repo, err = repo.NewPostgres(ctx, dsn)
+	r.Repo, err = repo.NewPostgres(ctx, dbCfg.DSN(), dbCfg.MigrationsDir)
 	if err != nil {
 		return nil, fmt.Errorf("repo.NewPostgres: %w", err)
 	}

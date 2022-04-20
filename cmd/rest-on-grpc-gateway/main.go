@@ -4,16 +4,26 @@ import (
 	"context"
 	logStd "log"
 	"os/signal"
-	"rest-on-grpc-gateway/modules/user"
 	"syscall"
+	"time"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
+
+	"rest-on-grpc-gateway/modules/user"
 
 	"go.uber.org/zap"
 )
 
-func main() {
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+type embeddedService interface {
+	Init(parentCtx context.Context, log *zap.SugaredLogger) (err error)
+	RunServe() error
+}
 
+var embeddedServices = []embeddedService{
+	&user.Service{},
+}
+
+func main() {
 	zap, err := zap.NewDevelopment()
 	if err != nil {
 		logStd.Fatalf("couldn't init logger: %+v \n", err)
@@ -24,16 +34,31 @@ func main() {
 			logStd.Fatalf("err: %v", err)
 		}
 	}()
-
 	log := zap.Sugar()
 
-	userModule := user.Service{
-		Log: log,
-	}
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+	go forceShutdown(ctx)
 
-	err = userModule.RunServe(ctx)
-	if err != nil {
-		// nolint:gocritic // If the service fails to start, you need to call fatal
-		log.Fatalf("userModule.RunServe: %v", err)
+	for _, service := range embeddedServices {
+		err = service.Init(ctx, log)
+		if err != nil {
+			log.Fatalf("failed to init service: %s", err)
+		}
+
+		err = service.RunServe()
+		if err != nil {
+			log.Fatalf("failed to run service: %s", err)
+		}
 	}
+}
+
+func forceShutdown(ctx context.Context) {
+	log := ctxzap.Extract(ctx)
+	const shutdownDelay = 15 * time.Second
+
+	<-ctx.Done()
+	time.Sleep(shutdownDelay)
+
+	log.Fatal("failed to graceful shutdown") //nolint:revive // By design.
 }

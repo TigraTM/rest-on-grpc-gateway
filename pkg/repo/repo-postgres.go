@@ -6,6 +6,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/golang-migrate/migrate/v4"
+	// Driver.
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/jmoiron/sqlx"
 	// Driver.
 	_ "github.com/lib/pq"
@@ -19,13 +22,11 @@ const (
 
 const postgresDriverName = "postgres"
 
-func NewPostgres(ctx context.Context, dsn string) (_ *Repo, err error) {
+func NewPostgres(ctx context.Context, dsn, migrationDir string) (_ *Repo, err error) {
 	db, err := sql.Open(postgresDriverName, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sql.Open: %w", err)
 	}
-
-	// TODO: add auto migration.
 
 	err = db.PingContext(ctx)
 	for err != nil {
@@ -36,7 +37,28 @@ func NewPostgres(ctx context.Context, dsn string) (_ *Repo, err error) {
 		err = nextErr
 	}
 
+	if err = migrateUp(fmt.Sprintf("file://%s", migrationDir), dsn); err != nil {
+		return nil, fmt.Errorf("migrateUp: %w", err)
+	}
+
 	return &Repo{
 		DB: sqlx.NewDb(db, postgresDriverName),
 	}, nil
+}
+
+func migrateUp(fileRoot, dsn string) error {
+	mig, err := migrate.New(fileRoot, dsn)
+	if err != nil {
+		return fmt.Errorf("migrate.New: %w", err)
+	}
+
+	err = mig.Up()
+	switch {
+	case err == nil:
+		return nil
+	case errors.Is(err, migrate.ErrNoChange):
+		return nil
+	default:
+		return fmt.Errorf("mig.Up: %w", err)
+	}
 }

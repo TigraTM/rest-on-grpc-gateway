@@ -4,9 +4,8 @@ import (
 	"context"
 	logStd "log"
 	"os/signal"
-	"syscall"
-
 	"rest-on-grpc-gateway/modules/user"
+	"syscall"
 
 	"go.uber.org/zap"
 )
@@ -34,6 +33,7 @@ func main() {
 
 	err = userModule.RunServe(ctx)
 	if err != nil {
+		// nolint:gocritic // If the service fails to start, you need to call fatal
 		log.Fatalf("userModule.RunServe: %v", err)
 	}
 }

@@ -4,7 +4,6 @@ package repo
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/pkg/repo"
 )
 
@@ -13,7 +12,7 @@ const (
 	dbMaxIdleConns = 5
 )
 
-// Repo wrapper on repo.Repo
+// Repo wrapper on repo.Repo.
 type Repo struct {
 	*repo.Repo
 }

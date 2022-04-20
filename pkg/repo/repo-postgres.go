@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
+	// Driver.
 	_ "github.com/lib/pq"
 )
 

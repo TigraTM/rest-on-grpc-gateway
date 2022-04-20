@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
@@ -52,8 +51,6 @@ func (a *App) UpdateUserPasswordByID(ctx context.Context, userID int, oldPass, n
 	}
 
 	if user.Password != oldPass {
-		fmt.Println(user)
-		fmt.Println(fmt.Sprintf("pass: %s, oldPass: %s", user.Password, oldPass))
 		return ErrInvalidPassword
 	}
 

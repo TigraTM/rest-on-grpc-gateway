@@ -3,7 +3,6 @@ package repo
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
@@ -31,7 +30,7 @@ func (r *Repo) CreateUser(ctx context.Context, newUser *domain.User) (*domain.Us
 	}
 	defer row.Close()
 
-	var user = &User{}
+	user := &User{}
 	for row.Next() {
 		if err := row.StructScan(user); err != nil {
 			return nil, fmt.Errorf("row.StructScan: %w", err)
@@ -53,7 +52,7 @@ func (r *Repo) GetUserByID(ctx context.Context, id int) (*domain.User, error) {
 					WHERE
 						id = $1`
 
-	var user = &User{}
+	user := &User{}
 	if err := r.DB.GetContext(ctx, user, query, id); err != nil {
 		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
 	}
@@ -77,7 +76,7 @@ func (r *Repo) UpdateUserByID(ctx context.Context, id int, name, email string) (
 
 	row := r.DB.QueryRowxContext(ctx, query, name, email, id)
 
-	var user = &User{}
+	user := &User{}
 	if err := row.StructScan(user); err != nil {
 		return nil, fmt.Errorf("row.StructScan: %w", err)
 	}

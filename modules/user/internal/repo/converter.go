@@ -3,19 +3,16 @@ package repo
 import (
 	"database/sql"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
 func convertErr(err error) error {
 	// TODO: add constraint
-	//var pqErr *pq.Error
-
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		return app.ErrNotFound
-	//case errors.As(err, &pqErr):
+
 	//	return constraint(pqErr)
 	default:
 		return err

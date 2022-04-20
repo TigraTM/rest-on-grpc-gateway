@@ -4,7 +4,6 @@ package app
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 

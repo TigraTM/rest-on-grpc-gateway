@@ -1,3 +1,5 @@
+// Package grpc_helper contains auxiliary functions for gRPC.
+// nolint:stylecheck // name is more readable
 package grpc_helper
 
 import (
@@ -9,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewServer(log *zap.SugaredLogger, converter GRPCCodesConverterHandler) *grpc.Server {
+func NewServer(log *zap.SugaredLogger, converter GRPCCodesConverterHandler, addUnary []grpc.UnaryServerInterceptor) *grpc.Server {
 	grpc_zap.ReplaceGrpcLoggerV2(log.Desugar())
 
 	unaryInterceptor := append([]grpc.UnaryServerInterceptor{
@@ -17,7 +19,7 @@ func NewServer(log *zap.SugaredLogger, converter GRPCCodesConverterHandler) *grp
 		grpc_recovery.UnaryServerInterceptor(),
 		grpc_validator.UnaryServerInterceptor(),
 		UnaryConvertCodesServerInterceptor(converter),
-	})
+	}, addUnary...)
 
 	srv := grpc.NewServer(
 		grpc.UnaryInterceptor(

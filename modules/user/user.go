@@ -4,7 +4,6 @@ package user
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/user/internal/api"
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/config"

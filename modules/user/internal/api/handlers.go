@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"rest-on-grpc-gateway/modules/user/internal/app"
 
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
-	"rest-on-grpc-gateway/modules/user/internal/app"
 )
 
 // CreateUser implements userpb.UserAPIServer.

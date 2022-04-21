@@ -2,57 +2,65 @@ package main
 
 import (
 	"context"
-	"log"
-	"net"
-	"net/http"
+	logStd "log"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 
-	userpb "rest-on-grpc-gateway/api/proto/user/v1"
+	"rest-on-grpc-gateway/modules/user"
+
+	"go.uber.org/zap"
 )
 
-type server struct {
-	userpb.UnimplementedUserAPIServer
+type embeddedService interface {
+	Init(parentCtx context.Context, log *zap.SugaredLogger) (err error)
+	RunServe() error
 }
 
-func (*server) CreateUser(_ context.Context, _ *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
-	return &userpb.CreateUserResponse{Id: "hello Andrey"}, nil
+var embeddedServices = []embeddedService{
+	&user.Service{},
 }
 
 func main() {
-	// nolint:gosec // copy in tutorial.
-	lis, err := net.Listen("tcp", ":8080")
+	zap, err := zap.NewDevelopment()
 	if err != nil {
-		log.Fatalln("net.Listen")
+		logStd.Fatalf("couldn't init logger: %+v \n", err)
 	}
-
-	s := grpc.NewServer()
-
-	userpb.RegisterUserAPIServer(s, &server{})
-
-	go func() {
-		log.Fatal(s.Serve(lis))
+	defer func() {
+		err := zap.Sync()
+		if err != nil {
+			logStd.Fatalf("err: %v", err)
+		}
 	}()
+	log := zap.Sugar()
 
-	conn, err := grpc.DialContext(context.Background(), "0.0.0.0:8080", grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatal("failed connect to dial server: ", err)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	ctxWithLog := ctxzap.ToContext(ctx, log.Desugar())
+	go forceShutdown(ctxWithLog)
+
+	for _, service := range embeddedServices {
+		err = service.Init(ctxWithLog, log)
+		if err != nil {
+			log.Fatalf("failed to init service: %s", err)
+		}
+
+		err = service.RunServe()
+		if err != nil {
+			log.Fatalf("failed to run service: %s", err)
+		}
 	}
+}
 
-	gwmx := runtime.NewServeMux()
+func forceShutdown(ctx context.Context) {
+	log := ctxzap.Extract(ctx)
+	const shutdownDelay = 15 * time.Second
 
-	err = userpb.RegisterUserAPIHandler(context.Background(), gwmx, conn)
-	if err != nil {
-		log.Fatal("failed register user api handler: ", err)
-	}
+	<-ctx.Done()
+	time.Sleep(shutdownDelay)
 
-	gwServer := &http.Server{
-		Addr:    ":8090",
-		Handler: gwmx,
-	}
-
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
-	log.Fatalln(gwServer.ListenAndServe())
+	log.Fatal("failed to graceful shutdown") //nolint:revive // By design.
 }

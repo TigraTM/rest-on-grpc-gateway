@@ -145,4 +145,5 @@ linters:
     - wsl # strange behavior
     - godox # strange behavior
     - gci # strange behavior
+    - varnamelen
   fast: false

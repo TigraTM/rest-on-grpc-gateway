@@ -22,4 +22,4 @@ generate:
 	go generate ./...
 
 migrations.create:
-	migrate create -ext sql -dir modules/$(module)/internal/migrations -format 2006010215 $(issue)
+	migrate create -ext sql -dir modules/$(module)/migrations -format 2006010215 $(issue)

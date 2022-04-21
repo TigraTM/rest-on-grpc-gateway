@@ -12,7 +12,9 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
 	"rest-on-grpc-gateway/modules/user/internal/api"
@@ -21,6 +23,14 @@ import (
 
 // maxTimeout for tests.
 const maxTimeout = time.Second * 60
+
+// api errors.
+var (
+	errUserNotFound    = status.Error(codes.NotFound, "user not found")
+	errInvalidPassword = status.Error(codes.InvalidArgument, "invalid password")
+	errEmailExist      = status.Error(codes.InvalidArgument, "user with this email already exists")
+	errMustDifferent   = status.Error(codes.InvalidArgument, "value of the existing password and the new password must be different")
+)
 
 var (
 	ctx    = context.Background()

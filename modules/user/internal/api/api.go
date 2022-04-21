@@ -4,6 +4,7 @@ package api
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 
@@ -20,6 +21,8 @@ import (
 var (
 	errUserNotFound    = errors.New("user not found")
 	errInvalidPassword = errors.New("invalid password")
+	errMustDifferent   = errors.New("value of the existing password and the new password must be different")
+	errEmailExist      = errors.New("user with this email already exists")
 )
 
 //go:generate mockgen -source=api.go -destination mock.api.contracts_test.go -package api_test
@@ -57,6 +60,10 @@ func apiError(err error) *status.Status {
 	case errors.Is(err, errUserNotFound):
 		code = codes.NotFound
 	case errors.Is(err, errInvalidPassword):
+		code = codes.InvalidArgument
+	case errors.Is(err, errMustDifferent):
+		code = codes.InvalidArgument
+	case errors.Is(err, errEmailExist):
 		code = codes.InvalidArgument
 	case errors.Is(err, context.DeadlineExceeded):
 		code = codes.DeadlineExceeded

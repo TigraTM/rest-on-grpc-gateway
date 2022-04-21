@@ -95,7 +95,7 @@ func (mr *MockRepoMockRecorder) UpdateUserByID(ctx, id, name, email interface{})
 }
 
 // UpdateUserPasswordByID mocks base method.
-func (m *MockRepo) UpdateUserPasswordByID(ctx context.Context, id int, password string) error {
+func (m *MockRepo) UpdateUserPasswordByID(ctx context.Context, id int, password []byte) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateUserPasswordByID", ctx, id, password)
 	ret0, _ := ret[0].(error)
@@ -106,4 +106,56 @@ func (m *MockRepo) UpdateUserPasswordByID(ctx context.Context, id int, password 
 func (mr *MockRepoMockRecorder) UpdateUserPasswordByID(ctx, id, password interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPasswordByID", reflect.TypeOf((*MockRepo)(nil).UpdateUserPasswordByID), ctx, id, password)
+}
+
+// MockPasswordHash is a mock of PasswordHash interface.
+type MockPasswordHash struct {
+	ctrl     *gomock.Controller
+	recorder *MockPasswordHashMockRecorder
+}
+
+// MockPasswordHashMockRecorder is the mock recorder for MockPasswordHash.
+type MockPasswordHashMockRecorder struct {
+	mock *MockPasswordHash
+}
+
+// NewMockPasswordHash creates a new mock instance.
+func NewMockPasswordHash(ctrl *gomock.Controller) *MockPasswordHash {
+	mock := &MockPasswordHash{ctrl: ctrl}
+	mock.recorder = &MockPasswordHashMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockPasswordHash) EXPECT() *MockPasswordHashMockRecorder {
+	return m.recorder
+}
+
+// Compare mocks base method.
+func (m *MockPasswordHash) Compare(hashedPassword, password []byte) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Compare", hashedPassword, password)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Compare indicates an expected call of Compare.
+func (mr *MockPasswordHashMockRecorder) Compare(hashedPassword, password interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Compare", reflect.TypeOf((*MockPasswordHash)(nil).Compare), hashedPassword, password)
+}
+
+// Hashing mocks base method.
+func (m *MockPasswordHash) Hashing(password string) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Hashing", password)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Hashing indicates an expected call of Hashing.
+func (mr *MockPasswordHashMockRecorder) Hashing(password interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hashing", reflect.TypeOf((*MockPasswordHash)(nil).Hashing), password)
 }

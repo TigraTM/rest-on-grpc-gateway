@@ -135,6 +135,15 @@ func TestAPI_CreateUser(t *testing.T) {
 			prepare: func(m *Mockapplication) {},
 		},
 		{
+			name:    "err email exist",
+			req:     req,
+			resp:    nil,
+			wantErr: errEmailExist,
+			prepare: func(m *Mockapplication) {
+				m.EXPECT().CreateUser(gomock.Any(), newUser).Return(nil, app.ErrEmailExist).Times(1)
+			},
+		},
+		{
 			name:    "err any",
 			req:     req,
 			resp:    nil,
@@ -163,10 +172,7 @@ func TestAPI_CreateUser(t *testing.T) {
 }
 
 func TestApi_GetUserByID(t *testing.T) {
-	var (
-		errUserNotFound = status.Error(codes.NotFound, "user not found")
-		errInternal     = status.Error(codes.Internal, fmt.Sprintf("a.app.GetUserByID: %s", errAny))
-	)
+	var errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.GetUserByID: %s", errAny))
 
 	req := &userpb.GetUserByIDRequest{
 		Id: int64(userID),
@@ -231,10 +237,7 @@ func TestApi_GetUserByID(t *testing.T) {
 }
 
 func TestApi_UpdateUserByID(t *testing.T) {
-	var (
-		errUserNotFound = status.Error(codes.NotFound, "user not found")
-		errInternal     = status.Error(codes.Internal, fmt.Sprintf("a.app.UpdateUserByID: %s", errAny))
-	)
+	var errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.UpdateUserByID: %s", errAny))
 
 	req := &userpb.UpdateUserByIDRequest{
 		Name:  "user",
@@ -305,11 +308,7 @@ func TestApi_UpdateUserByID(t *testing.T) {
 }
 
 func TestApi_UpdateUserPasswordByID(t *testing.T) {
-	var (
-		errUserNotFound    = status.Error(codes.NotFound, "user not found")
-		errInvalidPassword = status.Error(codes.InvalidArgument, "invalid password")
-		errInternal        = status.Error(codes.Internal, fmt.Sprintf("a.app.UpdateUserPasswordByID: %s", errAny))
-	)
+	var errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.UpdateUserPasswordByID: %s", errAny))
 
 	req := &userpb.UpdateUserPasswordByIDRequest{
 		Id:          int64(userID),
@@ -352,6 +351,15 @@ func TestApi_UpdateUserPasswordByID(t *testing.T) {
 			},
 		},
 		{
+			name:    "err value must different",
+			req:     req,
+			resp:    nil,
+			wantErr: errMustDifferent,
+			prepare: func(m *Mockapplication) {
+				m.EXPECT().UpdateUserPasswordByID(gomock.Any(), int(req.Id), req.OldPassword, req.NewPassword).Return(app.ErrMustDifferent).Times(1)
+			},
+		},
+		{
 			name:    "err any",
 			req:     req,
 			resp:    nil,
@@ -380,10 +388,7 @@ func TestApi_UpdateUserPasswordByID(t *testing.T) {
 }
 
 func TestApi_DeleteUserByID(t *testing.T) {
-	var (
-		errUserNotFound = status.Error(codes.NotFound, "user not found")
-		errInternal     = status.Error(codes.Internal, fmt.Sprintf("a.app.DeleteUserByID: %s", errAny))
-	)
+	var errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.DeleteUserByID: %s", errAny))
 
 	req := &userpb.DeleteUserByIDRequest{
 		Id: int64(userID),

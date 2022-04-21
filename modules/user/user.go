@@ -9,6 +9,7 @@ import (
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/config"
 	"rest-on-grpc-gateway/modules/user/internal/repo"
+	"rest-on-grpc-gateway/pkg/password"
 	"rest-on-grpc-gateway/pkg/serve"
 
 	"go.uber.org/zap"
@@ -47,7 +48,9 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 
 // RunServe start service.
 func (s *Service) RunServe() error {
-	appl := app.New(s.db)
+	hashSvc := password.New()
+
+	appl := app.New(s.db, hashSvc)
 	grpcAPI := api.New(s.log, appl)
 
 	gwCfg := serve.GateWayConfig{

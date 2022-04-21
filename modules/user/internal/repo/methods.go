@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
@@ -12,16 +13,15 @@ func (r *Repo) CreateUser(ctx context.Context, newUser *domain.User) (*domain.Us
 						"user".users
 							(name,
 							email,
-							password)
+							password_hash)
 					VALUES
 							(:name,
 							:email,
-							:password)
+							:password_hash)
 					RETURNING
 							id,
 							name,
-							email,
-							password
+							email
 					`
 
 	row, err := r.DB.NamedQueryContext(ctx, query, toRepo(newUser))
@@ -46,7 +46,7 @@ func (r *Repo) GetUserByID(ctx context.Context, id int) (*domain.User, error) {
 						id,
 						name,
 						email,
-						password
+						password_hash
 					FROM
 						"user".users
 					WHERE
@@ -85,17 +85,13 @@ func (r *Repo) UpdateUserByID(ctx context.Context, id int, name, email string) (
 }
 
 // UpdateUserPasswordByID update user password in db by id.
-func (r *Repo) UpdateUserPasswordByID(ctx context.Context, id int, password string) error {
+func (r *Repo) UpdateUserPasswordByID(ctx context.Context, id int, password []byte) error {
 	const query = `UPDATE 
 						"user".users
 					SET
-						password = $1 
+						password_hash = $1 
 					WHERE
-						id = $2
-					RETURNING 
-    					id, 
-						name, 
-						email`
+						id = $2 `
 
 	_, err := r.DB.ExecContext(ctx, query, password, id)
 	if err != nil {

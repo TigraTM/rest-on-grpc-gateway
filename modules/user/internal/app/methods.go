@@ -3,27 +3,27 @@ package app
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
 // CreateUser create user.
 func (a *App) CreateUser(ctx context.Context, user *domain.User) (*domain.User, error) {
-	u, err := a.repo.CreateUser(ctx, user)
+	passHash, err := a.hash.Hashing(user.Password)
 	if err != nil {
-		return nil, fmt.Errorf("a.repo.CreateUser: %w", err)
+		return nil, fmt.Errorf("a.hash.Hashing: %w", err)
 	}
 
-	return u, nil
+	user.PasswordHash = passHash
+	user.Email = strings.ToLower(user.Email)
+
+	return a.repo.CreateUser(ctx, user)
 }
 
 // GetUserByID get user by id.
 func (a *App) GetUserByID(ctx context.Context, id int) (*domain.User, error) {
-	u, err := a.repo.GetUserByID(ctx, id)
-	if err != nil {
-		return nil, fmt.Errorf("a.repo.GetUserByID: %w", err)
-	}
-
-	return u, nil
+	return a.repo.GetUserByID(ctx, id)
 }
 
 // UpdateUserByID check exist user and update data about him by user id.
@@ -33,33 +33,33 @@ func (a *App) UpdateUserByID(ctx context.Context, userID int, name, email string
 		return nil, fmt.Errorf("a.GetUserByID: %w", err)
 	}
 
-	u, err = a.repo.UpdateUserByID(ctx, userID, name, email)
-	if err != nil {
-		return nil, fmt.Errorf("a.repo.UpdateUserByID: %w", err)
-	}
-
-	return u, nil
+	return a.repo.UpdateUserByID(ctx, userID, name, email)
 }
 
 // UpdateUserPasswordByID update user password if:
 // - user exist
-// - old password compares with the current password.
+// - old password compares with the current password
+// - old password does not equal the new password.
 func (a *App) UpdateUserPasswordByID(ctx context.Context, userID int, oldPass, newPass string) error {
 	user, err := a.GetUserByID(ctx, userID)
 	if err != nil {
 		return fmt.Errorf("a.GetUserByID: %w", err)
 	}
 
-	if user.Password != oldPass {
+	if !a.hash.Compare(user.PasswordHash, []byte(oldPass)) {
 		return ErrInvalidPassword
 	}
 
-	err = a.repo.UpdateUserPasswordByID(ctx, userID, newPass)
-	if err != nil {
-		return fmt.Errorf("a.repo.UpdateUserPasswordByID: %w", err)
+	if a.hash.Compare(user.PasswordHash, []byte(newPass)) {
+		return ErrMustDifferent
 	}
 
-	return nil
+	newPassHash, err := a.hash.Hashing(newPass)
+	if err != nil {
+		return fmt.Errorf("a.hash.Hashing: %w", err)
+	}
+
+	return a.repo.UpdateUserPasswordByID(ctx, userID, newPassHash)
 }
 
 // DeleteUserByID delete user by id if user exist.
@@ -69,10 +69,5 @@ func (a *App) DeleteUserByID(ctx context.Context, userID int) error {
 		return fmt.Errorf("a.GetUserByID: %w", err)
 	}
 
-	err = a.repo.DeleteUserByID(ctx, userID)
-	if err != nil {
-		return fmt.Errorf("a.repo.DeleteUserByID: %w", err)
-	}
-
-	return nil
+	return a.repo.DeleteUserByID(ctx, userID)
 }

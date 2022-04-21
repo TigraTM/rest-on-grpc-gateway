@@ -38,10 +38,12 @@ func main() {
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
-	go forceShutdown(ctx)
+
+	ctxWithLog := ctxzap.ToContext(ctx, log.Desugar())
+	go forceShutdown(ctxWithLog)
 
 	for _, service := range embeddedServices {
-		err = service.Init(ctx, log)
+		err = service.Init(ctxWithLog, log)
 		if err != nil {
 			log.Fatalf("failed to init service: %s", err)
 		}

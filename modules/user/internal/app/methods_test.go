@@ -29,7 +29,27 @@ func TestApp_CreateUser(t *testing.T) {
 			want:    user,
 			wantErr: nil,
 			prepare: func(m *mocks) {
+				m.hash.EXPECT().Hashing(req.Password).Return([]byte(req.Password), nil).Times(1)
 				m.repo.EXPECT().CreateUser(ctx, req).Return(user, nil).Times(1)
+			},
+		},
+		{
+			name:    "err any hashing password",
+			req:     req,
+			want:    nil,
+			wantErr: errAny,
+			prepare: func(m *mocks) {
+				m.hash.EXPECT().Hashing(req.Password).Return(nil, errAny).Times(1)
+			},
+		},
+		{
+			name:    "err email exist",
+			req:     req,
+			want:    nil,
+			wantErr: app.ErrEmailExist,
+			prepare: func(m *mocks) {
+				m.hash.EXPECT().Hashing(req.Password).Return([]byte(req.Password), nil).Times(1)
+				m.repo.EXPECT().CreateUser(ctx, req).Return(nil, app.ErrEmailExist).Times(1)
 			},
 		},
 		{
@@ -38,6 +58,7 @@ func TestApp_CreateUser(t *testing.T) {
 			want:    nil,
 			wantErr: errAny,
 			prepare: func(m *mocks) {
+				m.hash.EXPECT().Hashing(req.Password).Return([]byte(req.Password), nil).Times(1)
 				m.repo.EXPECT().CreateUser(ctx, req).Return(nil, errAny).Times(1)
 			},
 		},
@@ -211,12 +232,16 @@ func TestApp_UpdateUserByID(t *testing.T) {
 func TestApp_UpdateUserPasswordByID(t *testing.T) {
 	ctx := setupCtx(t)
 
-	oldPass, newPass := "12345678", "87654321"
+	var (
+		oldPass    = "12345678"
+		newPass    = "87654321"
+		errOldPass = "12344321"
+	)
 	updateUser := &domain.User{
-		ID:       userID,
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "12345678",
+		ID:           userID,
+		Name:         "user",
+		Email:        "user@mail.com",
+		PasswordHash: []byte("12345678"),
 	}
 
 	tests := []struct {
@@ -234,7 +259,10 @@ func TestApp_UpdateUserPasswordByID(t *testing.T) {
 			wantErr: nil,
 			prepare: func(m *mocks) {
 				m.repo.EXPECT().GetUserByID(ctx, userID).Return(updateUser, nil).Times(1)
-				m.repo.EXPECT().UpdateUserPasswordByID(ctx, userID, newPass).Return(nil).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(oldPass)).Return(true).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(newPass)).Return(false).Times(1)
+				m.hash.EXPECT().Hashing(newPass).Return([]byte(newPass), nil).Times(1)
+				m.repo.EXPECT().UpdateUserPasswordByID(ctx, userID, []byte(newPass)).Return(nil).Times(1)
 			},
 		},
 		{
@@ -250,11 +278,37 @@ func TestApp_UpdateUserPasswordByID(t *testing.T) {
 		{
 			name:    "err invalid password",
 			userID:  userID,
-			oldPass: "12344321",
+			oldPass: errOldPass,
 			newPass: newPass,
 			wantErr: app.ErrInvalidPassword,
 			prepare: func(m *mocks) {
-				m.repo.EXPECT().GetUserByID(ctx, userID).Return(user, nil).Times(1)
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(updateUser, nil).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(errOldPass)).Return(false).Times(1)
+			},
+		},
+		{
+			name:    "err values must be different",
+			userID:  userID,
+			oldPass: oldPass,
+			newPass: oldPass,
+			wantErr: app.ErrMustDifferent,
+			prepare: func(m *mocks) {
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(updateUser, nil).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(oldPass)).Return(true).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(oldPass)).Return(true).Times(1)
+			},
+		},
+		{
+			name:    "err any hashing new pass",
+			userID:  userID,
+			oldPass: oldPass,
+			newPass: newPass,
+			wantErr: errAny,
+			prepare: func(m *mocks) {
+				m.repo.EXPECT().GetUserByID(ctx, userID).Return(updateUser, nil).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(oldPass)).Return(true).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(newPass)).Return(false).Times(1)
+				m.hash.EXPECT().Hashing(newPass).Return(nil, errAny).Times(1)
 			},
 		},
 		{
@@ -275,8 +329,10 @@ func TestApp_UpdateUserPasswordByID(t *testing.T) {
 			wantErr: errAny,
 			prepare: func(m *mocks) {
 				m.repo.EXPECT().GetUserByID(ctx, userID).Return(updateUser, nil).Times(1)
-				updateUser.Password = oldPass
-				m.repo.EXPECT().UpdateUserPasswordByID(ctx, userID, newPass).Return(errAny).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(oldPass)).Return(true).Times(1)
+				m.hash.EXPECT().Compare(updateUser.PasswordHash, []byte(newPass)).Return(false).Times(1)
+				m.hash.EXPECT().Hashing(newPass).Return([]byte(newPass), nil).Times(1)
+				m.repo.EXPECT().UpdateUserPasswordByID(ctx, userID, []byte(newPass)).Return(errAny).Times(1)
 			},
 		},
 	}

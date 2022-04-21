@@ -1,7 +1,0 @@
-BEGIN;
-
-DROP TABLE IF EXISTS "user".users;
-
-DROP SCHEMA "user";
-
-END;

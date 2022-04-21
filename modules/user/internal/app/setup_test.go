@@ -20,15 +20,17 @@ var (
 	errAny = errors.New("err any")
 	userID = 1
 	user   = &domain.User{
-		ID:       userID,
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "12345678",
+		ID:           userID,
+		Name:         "user",
+		Email:        "user@mail.com",
+		Password:     "12345678",
+		PasswordHash: []byte("12345678"),
 	}
 )
 
 type mocks struct {
 	repo *MockRepo
+	hash *MockPasswordHash
 }
 
 func setup(t *testing.T) (*app.App, *mocks, *require.Assertions) {
@@ -37,11 +39,13 @@ func setup(t *testing.T) (*app.App, *mocks, *require.Assertions) {
 	ctrl := gomock.NewController(t)
 
 	mockRepo := NewMockRepo(ctrl)
+	mockHash := NewMockPasswordHash(ctrl)
 
-	appl := app.New(mockRepo)
+	appl := app.New(mockRepo, mockHash)
 
 	mocks := &mocks{
 		repo: mockRepo,
+		hash: mockHash,
 	}
 
 	return appl, mocks, require.New(t)

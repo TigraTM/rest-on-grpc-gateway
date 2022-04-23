@@ -31,7 +31,7 @@ func TestApp_CreateUser(t *testing.T) {
 			wantErr:  nil,
 			prepare: func(m *mocks) {
 				m.hash.EXPECT().Hashing(password).Return([]byte(password), nil).Times(1)
-				m.repo.EXPECT().CreateUser(ctx, newUser).Return(user, nil).Times(1)
+				m.repo.EXPECT().CreateUser(ctx, &newUser).Return(user, nil).Times(1)
 			},
 		},
 		{

@@ -5,12 +5,12 @@ on:
     paths:
       - 'rest-on-grpc-gateway/*'
     branches:
-      - main
+      - '*'
   pull_request:
     paths:
       - 'rest-on-grpc-gateway/*'
     branches:
-      - main
+      - '*'
 
 jobs:
   lint:

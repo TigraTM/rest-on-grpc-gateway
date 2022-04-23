@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/user/internal/app"
 
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
@@ -12,14 +11,13 @@ import (
 
 // CreateUser implements userpb.UserAPIServer.
 func (a *api) CreateUser(ctx context.Context, in *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
-	user, err := a.app.CreateUser(ctx, toDomain(in))
+	user, err := a.app.CreateUser(ctx, in.Name, in.Email, in.Password)
 	switch {
 	case err == nil:
 		return &userpb.CreateUserResponse{
-			Id:       int64(user.ID),
-			Name:     user.Name,
-			Email:    user.Email,
-			Password: user.Password,
+			Id:    int64(user.ID),
+			Name:  user.Name,
+			Email: user.Email,
 		}, nil
 	case errors.Is(err, app.ErrEmailExist):
 		return nil, errEmailExist

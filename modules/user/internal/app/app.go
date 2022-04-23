@@ -4,7 +4,6 @@ package app
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
@@ -21,7 +20,7 @@ var (
 type (
 	// Repo interface for user database.
 	Repo interface {
-		CreateUser(ctx context.Context, newUser *domain.User) (*domain.User, error)
+		CreateUser(ctx context.Context, newUser domain.User) (*domain.User, error)
 		GetUserByID(ctx context.Context, id int) (*domain.User, error)
 		UpdateUserByID(ctx context.Context, id int, name, email string) (*domain.User, error)
 		UpdateUserPasswordByID(ctx context.Context, id int, password []byte) error

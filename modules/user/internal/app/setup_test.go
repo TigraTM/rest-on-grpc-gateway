@@ -17,14 +17,15 @@ import (
 const maxTimeout = time.Second * 60
 
 var (
-	errAny = errors.New("err any")
-	userID = 1
-	user   = &domain.User{
-		ID:           userID,
-		Name:         "user",
-		Email:        "user@mail.com",
-		Password:     "12345678",
-		PasswordHash: []byte("12345678"),
+	errAny   = errors.New("err any")
+	userID   = 1
+	userName = "user"
+	password = "12345678"
+	email    = "user@mail.com"
+	user     = &domain.User{
+		ID:    userID,
+		Name:  userName,
+		Email: email,
 	}
 )
 

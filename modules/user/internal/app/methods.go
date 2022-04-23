@@ -3,20 +3,22 @@ package app
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
+	"strings"
 )
 
 // CreateUser create user.
-func (a *App) CreateUser(ctx context.Context, user *domain.User) (*domain.User, error) {
-	passHash, err := a.hash.Hashing(user.Password)
+func (a *App) CreateUser(ctx context.Context, name, email, password string) (*domain.User, error) {
+	passHash, err := a.hash.Hashing(password)
 	if err != nil {
 		return nil, fmt.Errorf("a.hash.Hashing: %w", err)
 	}
 
-	user.PasswordHash = passHash
-	user.Email = strings.ToLower(user.Email)
+	user := domain.User{
+		Name:         name,
+		Email:        strings.ToLower(email),
+		PasswordHash: passHash,
+	}
 
 	return a.repo.CreateUser(ctx, user)
 }

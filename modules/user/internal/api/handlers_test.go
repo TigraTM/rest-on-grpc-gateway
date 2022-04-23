@@ -25,20 +25,14 @@ func TestAPI_CreateUser(t *testing.T) {
 	)
 
 	req := &userpb.CreateUserRequest{
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "12345678",
+		Name:     userName,
+		Email:    email,
+		Password: password,
 	}
 	resp := &userpb.CreateUserResponse{
-		Id:       int64(userID),
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "12345678",
-	}
-	newUser := &domain.User{
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "12345678",
+		Id:    int64(userID),
+		Name:  userName,
+		Email: email,
 	}
 
 	tests := []struct {
@@ -54,7 +48,7 @@ func TestAPI_CreateUser(t *testing.T) {
 			resp:    resp,
 			wantErr: nil,
 			prepare: func(m *Mockapplication) {
-				m.EXPECT().CreateUser(gomock.Any(), newUser).Return(user, nil).Times(1)
+				m.EXPECT().CreateUser(gomock.Any(), req.Name, req.Email, req.Password).Return(user, nil).Times(1)
 			},
 		},
 		{
@@ -140,7 +134,7 @@ func TestAPI_CreateUser(t *testing.T) {
 			resp:    nil,
 			wantErr: errEmailExist,
 			prepare: func(m *Mockapplication) {
-				m.EXPECT().CreateUser(gomock.Any(), newUser).Return(nil, app.ErrEmailExist).Times(1)
+				m.EXPECT().CreateUser(gomock.Any(), req.Name, req.Email, req.Password).Return(nil, app.ErrEmailExist).Times(1)
 			},
 		},
 		{
@@ -149,7 +143,7 @@ func TestAPI_CreateUser(t *testing.T) {
 			resp:    nil,
 			wantErr: errInternal,
 			prepare: func(m *Mockapplication) {
-				m.EXPECT().CreateUser(gomock.Any(), newUser).Return(nil, errAny).Times(1)
+				m.EXPECT().CreateUser(gomock.Any(), req.Name, req.Email, req.Password).Return(nil, errAny).Times(1)
 			},
 		},
 	}

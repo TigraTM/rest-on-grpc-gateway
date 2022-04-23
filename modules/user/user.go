@@ -4,7 +4,6 @@ package user
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/user/internal/api"
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/config"
@@ -22,7 +21,6 @@ import (
 
 // Service ...
 type Service struct {
-	ctx context.Context
 	cfg *config.Config
 	log *zap.SugaredLogger
 	db  *repo.Repo
@@ -31,14 +29,13 @@ type Service struct {
 // Init service initialization.
 func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) {
 	s.log = log
-	s.ctx = ctx
 
 	s.cfg, err = config.LoadDevConfig()
 	if err != nil {
 		s.log.Fatalf("couldn't get envConfig: %+v \n", err)
 	}
 
-	s.db, err = repo.New(s.ctx, &s.cfg.Database)
+	s.db, err = repo.New(ctx, &s.cfg.Database)
 	if err != nil {
 		s.log.Fatalf("failed repo.New: %+v \n", err)
 	}
@@ -47,7 +44,7 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 }
 
 // RunServe start service.
-func (s *Service) RunServe() error {
+func (s *Service) RunServe(ctx context.Context) error {
 	hashSvc := password.New()
 
 	appl := app.New(s.db, hashSvc)
@@ -63,7 +60,7 @@ func (s *Service) RunServe() error {
 	}
 
 	err := serve.Start(
-		s.ctx,
+		ctx,
 		serve.GRPC(s.log.With("serve", "gRPC"), s.cfg.Transport.Host, s.cfg.Transport.GRPCPort, grpcAPI),
 		serve.GRPCGateWay(s.log.With("serve", "gRPC-Gateway"), s.cfg.Transport.Host, s.cfg.Transport.GRPCGWPort, gwCfg),
 	)

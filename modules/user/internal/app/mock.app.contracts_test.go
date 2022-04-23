@@ -36,7 +36,7 @@ func (m *MockRepo) EXPECT() *MockRepoMockRecorder {
 }
 
 // CreateUser mocks base method.
-func (m *MockRepo) CreateUser(ctx context.Context, newUser *domain.User) (*domain.User, error) {
+func (m *MockRepo) CreateUser(ctx context.Context, newUser domain.User) (*domain.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", ctx, newUser)
 	ret0, _ := ret[0].(*domain.User)

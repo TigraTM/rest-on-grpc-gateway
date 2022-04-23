@@ -9,57 +9,64 @@ import (
 
 func TestApp_CreateUser(t *testing.T) {
 	ctx := setupCtx(t)
-
-	req := &domain.User{
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "12345678",
+	newUser := domain.User{
+		Name:         userName,
+		Email:        email,
+		PasswordHash: []byte(password),
 	}
 
 	tests := []struct {
-		name    string
-		req     *domain.User
-		want    *domain.User
-		wantErr error
-		prepare func(m *mocks)
+		name                  string
+		userName, email, pass string
+		want                  *domain.User
+		wantErr               error
+		prepare               func(m *mocks)
 	}{
 		{
-			name:    "success",
-			req:     req,
-			want:    user,
-			wantErr: nil,
+			name:     "success",
+			userName: userName,
+			email:    email,
+			pass:     password,
+			want:     user,
+			wantErr:  nil,
 			prepare: func(m *mocks) {
-				m.hash.EXPECT().Hashing(req.Password).Return([]byte(req.Password), nil).Times(1)
-				m.repo.EXPECT().CreateUser(ctx, req).Return(user, nil).Times(1)
+				m.hash.EXPECT().Hashing(password).Return([]byte(password), nil).Times(1)
+				m.repo.EXPECT().CreateUser(ctx, newUser).Return(user, nil).Times(1)
 			},
 		},
 		{
-			name:    "err any hashing password",
-			req:     req,
-			want:    nil,
-			wantErr: errAny,
+			name:     "err any hashing password",
+			userName: userName,
+			email:    email,
+			pass:     password,
+			want:     nil,
+			wantErr:  errAny,
 			prepare: func(m *mocks) {
-				m.hash.EXPECT().Hashing(req.Password).Return(nil, errAny).Times(1)
+				m.hash.EXPECT().Hashing(password).Return(nil, errAny).Times(1)
 			},
 		},
 		{
-			name:    "err email exist",
-			req:     req,
-			want:    nil,
-			wantErr: app.ErrEmailExist,
+			name:     "err email exist",
+			userName: userName,
+			email:    email,
+			pass:     password,
+			want:     nil,
+			wantErr:  app.ErrEmailExist,
 			prepare: func(m *mocks) {
-				m.hash.EXPECT().Hashing(req.Password).Return([]byte(req.Password), nil).Times(1)
-				m.repo.EXPECT().CreateUser(ctx, req).Return(nil, app.ErrEmailExist).Times(1)
+				m.hash.EXPECT().Hashing(password).Return([]byte(password), nil).Times(1)
+				m.repo.EXPECT().CreateUser(ctx, newUser).Return(nil, app.ErrEmailExist).Times(1)
 			},
 		},
 		{
-			name:    "err any",
-			req:     req,
-			want:    nil,
-			wantErr: errAny,
+			name:     "err any",
+			userName: userName,
+			email:    email,
+			pass:     password,
+			want:     nil,
+			wantErr:  errAny,
 			prepare: func(m *mocks) {
-				m.hash.EXPECT().Hashing(req.Password).Return([]byte(req.Password), nil).Times(1)
-				m.repo.EXPECT().CreateUser(ctx, req).Return(nil, errAny).Times(1)
+				m.hash.EXPECT().Hashing(password).Return([]byte(password), nil).Times(1)
+				m.repo.EXPECT().CreateUser(ctx, newUser).Return(nil, errAny).Times(1)
 			},
 		},
 	}
@@ -74,7 +81,7 @@ func TestApp_CreateUser(t *testing.T) {
 				tt.prepare(mocks)
 			}
 
-			u, err := app.CreateUser(ctx, tt.req)
+			u, err := app.CreateUser(ctx, tt.userName, tt.email, tt.pass)
 			assert.ErrorIs(err, tt.wantErr)
 			assert.Equal(tt.want, u)
 		})
@@ -140,12 +147,11 @@ func TestApp_GetUserByID(t *testing.T) {
 func TestApp_UpdateUserByID(t *testing.T) {
 	ctx := setupCtx(t)
 
-	userName, email := "user name", "email@email.com"
+	newName, newEmail := "user name", "email@email.com"
 	updateUser := &domain.User{
-		ID:       userID,
-		Name:     "user",
-		Email:    "user@mail.com",
-		Password: "",
+		ID:    userID,
+		Name:  "user",
+		Email: "user@mail.com",
 	}
 
 	tests := []struct {
@@ -159,28 +165,27 @@ func TestApp_UpdateUserByID(t *testing.T) {
 		{
 			name:     "success",
 			userID:   userID,
-			userName: userName,
-			email:    email,
+			userName: newName,
+			email:    newEmail,
 			want: &domain.User{
-				ID:       userID,
-				Name:     userName,
-				Email:    email,
-				Password: "",
+				ID:    userID,
+				Name:  newName,
+				Email: newEmail,
 			},
 			wantErr: nil,
 			prepare: func(m *mocks) {
 				m.repo.EXPECT().GetUserByID(ctx, userID).Return(user, nil).Times(1)
 
-				updateUser.Name = userName
-				updateUser.Email = email
-				m.repo.EXPECT().UpdateUserByID(ctx, userID, userName, email).Return(updateUser, nil).Times(1)
+				updateUser.Name = newName
+				updateUser.Email = newEmail
+				m.repo.EXPECT().UpdateUserByID(ctx, userID, newName, newEmail).Return(updateUser, nil).Times(1)
 			},
 		},
 		{
 			name:     "err not found",
 			userID:   userID,
-			userName: userName,
-			email:    email,
+			userName: newName,
+			email:    newEmail,
 			want:     nil,
 			wantErr:  app.ErrNotFound,
 			prepare: func(m *mocks) {
@@ -190,8 +195,8 @@ func TestApp_UpdateUserByID(t *testing.T) {
 		{
 			name:     "err any on GetUserByID",
 			userID:   userID,
-			userName: userName,
-			email:    email,
+			userName: newName,
+			email:    newEmail,
 			want:     nil,
 			wantErr:  errAny,
 			prepare: func(m *mocks) {
@@ -201,13 +206,13 @@ func TestApp_UpdateUserByID(t *testing.T) {
 		{
 			name:     "err any on UpdateUserByID",
 			userID:   userID,
-			userName: userName,
-			email:    email,
+			userName: newName,
+			email:    newEmail,
 			want:     nil,
 			wantErr:  errAny,
 			prepare: func(m *mocks) {
 				m.repo.EXPECT().GetUserByID(ctx, userID).Return(user, nil).Times(1)
-				m.repo.EXPECT().UpdateUserByID(ctx, userID, userName, email).Return(nil, errAny).Times(1)
+				m.repo.EXPECT().UpdateUserByID(ctx, userID, newName, newEmail).Return(nil, errAny).Times(1)
 			},
 		},
 	}

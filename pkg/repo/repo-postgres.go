@@ -10,6 +10,7 @@ import (
 	// Driver.
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/jmoiron/sqlx"
+
 	// Driver.
 	_ "github.com/lib/pq"
 )

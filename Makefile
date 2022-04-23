@@ -17,9 +17,10 @@ go_lint.fix:
 buf_lint:
 	buf lint
 
-# Generate
+# Generate go and buf
 generate:
 	go generate ./...
+	buf generate
 
 migrations.create:
 	migrate create -ext sql -dir modules/$(module)/migrations -format 2006010215 $(issue)

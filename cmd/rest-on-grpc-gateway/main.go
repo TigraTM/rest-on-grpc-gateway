@@ -4,19 +4,18 @@ import (
 	"context"
 	logStd "log"
 	"os/signal"
+	"rest-on-grpc-gateway/modules/user"
 	"syscall"
 	"time"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 
-	"rest-on-grpc-gateway/modules/user"
-
 	"go.uber.org/zap"
 )
 
 type embeddedService interface {
-	Init(parentCtx context.Context, log *zap.SugaredLogger) (err error)
-	RunServe() error
+	Init(ctx context.Context, log *zap.SugaredLogger) (err error)
+	RunServe(ctx context.Context) error
 }
 
 var embeddedServices = []embeddedService{
@@ -45,10 +44,11 @@ func main() {
 	for _, service := range embeddedServices {
 		err = service.Init(ctxWithLog, log)
 		if err != nil {
+			// nolint:gocritic // fatal will exit.
 			log.Fatalf("failed to init service: %s", err)
 		}
 
-		err = service.RunServe()
+		err = service.RunServe(ctxWithLog)
 		if err != nil {
 			log.Fatalf("failed to run service: %s", err)
 		}

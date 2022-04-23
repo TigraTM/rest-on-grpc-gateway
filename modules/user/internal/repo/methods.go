@@ -3,12 +3,11 @@ package repo
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
 // CreateUser create user in db.
-func (r *Repo) CreateUser(ctx context.Context, newUser *domain.User) (*domain.User, error) {
+func (r *Repo) CreateUser(ctx context.Context, newUser domain.User) (*domain.User, error) {
 	const query = `INSERT INTO
 						"user".users
 							(name,

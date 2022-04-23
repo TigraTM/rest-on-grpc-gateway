@@ -12,6 +12,5 @@ type User struct {
 	UpdateAt     time.Time
 	Name         string
 	Email        string
-	Password     string
 	PasswordHash []byte
 }

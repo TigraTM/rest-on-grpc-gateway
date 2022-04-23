@@ -4,7 +4,6 @@ package api
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 
@@ -29,7 +28,7 @@ var (
 
 // application interface business logic.
 type application interface {
-	CreateUser(ctx context.Context, user *domain.User) (*domain.User, error)
+	CreateUser(ctx context.Context, name, email, password string) (*domain.User, error)
 	GetUserByID(ctx context.Context, id int) (*domain.User, error)
 	UpdateUserByID(ctx context.Context, userID int, name, email string) (*domain.User, error)
 	UpdateUserPasswordByID(ctx context.Context, userID int, oldPass, newPass string) error

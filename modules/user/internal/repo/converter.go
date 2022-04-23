@@ -4,12 +4,11 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"rest-on-grpc-gateway/modules/user/internal/app"
+	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"strings"
 
 	"github.com/lib/pq"
-
-	"rest-on-grpc-gateway/modules/user/internal/app"
-	"rest-on-grpc-gateway/modules/user/internal/domain"
 )
 
 const duplEmail = "users_email_key"
@@ -45,7 +44,7 @@ func toDomain(user *User) *domain.User {
 	}
 }
 
-func toRepo(user *domain.User) *User {
+func toRepo(user domain.User) *User {
 	return &User{
 		ID:           user.ID,
 		Name:         user.Name,

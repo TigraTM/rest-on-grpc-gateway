@@ -85,7 +85,7 @@ service UserAPI {
   //
   // ```
   // Example response:
-  //    success: ok
+  //    empty
   // ```
   //
   // Specific codes:
@@ -103,8 +103,7 @@ service UserAPI {
   //
   // ```
   // Example response:
-  //    id: 1
-  //    success: ok
+  //    empty
   // ```
   //
   // Specific codes:

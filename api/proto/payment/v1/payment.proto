@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package api.proto.payment.v1;
+
+option go_package = "rest-on-grpc-gateway/api/proto/payment/v1;pb";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "validate/validate.proto";
+import "google/type/decimal.proto";
+
+// PaymentAPI service to work with payment.
+service PaymentAPI {
+  //  Create Payments. Payment can be created with positive or negative value
+  rpc CreatePayment (CreatePaymentRequest) returns (CreatePaymentResponse) {
+    option (google.api.http) = {post: "/payment/api/v1/payment", body: "*"};
+  };
+}
+
+message CreatePaymentRequest {
+    google.type.Decimal sum = 1;
+    string company_name =     2;
+    string category =         3;
+}
+
+message CreatePaymentResponse {}

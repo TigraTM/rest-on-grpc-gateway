@@ -91,7 +91,7 @@ type UserAPIClient interface {
 	//
 	// ```
 	// Example response:
-	//    success: ok
+	//    empty
 	// ```
 	//
 	// Specific codes:
@@ -107,8 +107,7 @@ type UserAPIClient interface {
 	//
 	// ```
 	// Example response:
-	//    id: 1
-	//    success: ok
+	//    empty
 	// ```
 	//
 	// Specific codes:
@@ -243,7 +242,7 @@ type UserAPIServer interface {
 	//
 	// ```
 	// Example response:
-	//    success: ok
+	//    empty
 	// ```
 	//
 	// Specific codes:
@@ -259,8 +258,7 @@ type UserAPIServer interface {
 	//
 	// ```
 	// Example response:
-	//    id: 1
-	//    success: ok
+	//    empty
 	// ```
 	//
 	// Specific codes:

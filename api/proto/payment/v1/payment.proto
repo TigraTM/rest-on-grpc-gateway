@@ -8,19 +8,140 @@ import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "validate/validate.proto";
 import "google/type/decimal.proto";
+import "google/protobuf/timestamp.proto";
 
 // PaymentAPI service to work with payment.
 service PaymentAPI {
   //  Create Payments. Payment can be created with positive or negative value
+  //
+  // ```
+  // Example request:
+  //    sum: '99.99'
+  //    company_name: 'AppStore'
+  //    category: 'supermarkets'
+  //    user_id: 1
+  // ```
+  //
+  // ```
+  // Example response:
+  //    empty
+  // Specific codes:
+  //    * codes.InvalidArgument
   rpc CreatePayment (CreatePaymentRequest) returns (CreatePaymentResponse) {
     option (google.api.http) = {post: "/payment/api/v1/payment", body: "*"};
+  };
+  // Get user balance by user ID.
+  //
+  // ```
+  // Example request:
+  //    id: 1
+  // ```
+  //
+  // ```
+  // Example response:
+  //    id: 1
+  //    sum: '99.99'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc GetBalanceByUserID (GetBalanceByUserIDRequest) returns (GetBalanceByUserIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/{user_id}"};
+  };
+  // Transferring money between users.
+  //
+  // ```
+  // Example request:
+  //    sum: '99.99'
+  //    sender_id: 1
+  //    recipient_id: 2
+  //    recipient_name: 'Artem'
+  // ```
+  //
+  // ```
+  // Example response:
+  //    sum: '99.99'
+  //    recipient_id: 2
+  //    recipient_name: 'Artem'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc TransferBetweenUsers (TransferBetweenUsersRequest) returns (TransferBetweenUsersResponse) {
+    option (google.api.http) = {post: "/payment/api/v1/payment/transfer", body: "*"};
+  };
+  // Get payments history by user id.
+  //
+  // ```
+  // Example request:
+  //    user_id: 1
+  // ```
+  //
+  // ```
+  // Example response:
+  //    sum: '99.99'
+  //    recipient_id: 2
+  //    recipient_name: 'Artem'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc GetPaymentsHistoryByUserID (GetPaymentsHistoryByUserIDRequest) returns (GetPaymentsHistoryByUserIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/{user_id}/history"};
   };
 }
 
 message CreatePaymentRequest {
-    google.type.Decimal sum = 1;
-    string company_name =     2;
-    string category =         3;
+    google.type.Decimal sum  = 1 [(validate.rules).any.required = true];
+    string     company_name  = 2 [(validate.rules).string = {min_len: 1, max_len: 50}];
+    string         category  = 3 [(validate.rules).string = {min_len: 1, max_len: 50}];
+    int64           user_id  = 4;
 }
 
 message CreatePaymentResponse {}
+
+message GetBalanceByUserIDRequest {
+  // TODO: add convert the other currencies.
+  int64 user_id = 1;
+}
+
+message GetBalanceByUserIDResponse {
+  int64           user_id = 1;
+  google.type.Decimal sum = 2;
+}
+
+message TransferBetweenUsersRequest {
+  google.type.Decimal sum = 1 [(validate.rules).any.required = true];
+  int64         sender_id = 2;
+  int64      recipient_id = 3;
+  string   recipient_name = 4 [(validate.rules).string = {min_len: 1, max_len: 50}];
+}
+
+message TransferBetweenUsersResponse {
+  google.type.Decimal sum = 1;
+  int64      recipient_id = 2;
+  string   recipient_name = 3;
+}
+
+message GetPaymentsHistoryByUserIDRequest {
+  int64   user_id = 1;
+  int64     limit = 2 [(validate.rules).int64 = {gte: 1, lte: 500}];
+  int64    offset = 3 [(validate.rules).int64 = {gte: 0}];
+}
+
+message GetPaymentsHistoryByUserIDResponse {
+//  TODO: add sort on data and sum.
+  repeated Payment payments = 1;
+  int64               total = 2;
+}
+
+message Payment {
+  int64                            id = 1;
+  google.protobuf.Timestamp create_at = 2;
+  google.type.Decimal             sum = 3 [(validate.rules).any.required = true];;
+  string                 company_name = 4 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string                     category = 5 [(validate.rules).string = {min_len: 1, max_len: 50}];
+}

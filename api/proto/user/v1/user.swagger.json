@@ -84,7 +84,7 @@
       },
       "delete": {
         "summary": "Delete User by ID.",
-        "description": "```\nExample request:\n   id: 1\n```\n\n```\nExample response:\n   id: 1\n   success: ok\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   id: 1\n```\n\n```\nExample response:\n   empty\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "UserAPI_DeleteUserByID",
         "responses": {
           "200": {
@@ -164,7 +164,7 @@
     "/user/api/v1/user/{id}/password": {
       "put": {
         "summary": "Update User Password by ID.",
-        "description": "```\nExample request:\n   id: 1\n   oldPassword: 'qwert123'\n   newPassword: '321trewq'\n```\n\n```\nExample response:\n   success: ok\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   id: 1\n   oldPassword: 'qwert123'\n   newPassword: '321trewq'\n```\n\n```\nExample response:\n   empty\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "UserAPI_UpdateUserPasswordByID",
         "responses": {
           "200": {

@@ -3,12 +3,12 @@ name: CI/CD
 on:
   push:
     paths:
-      - 'rest-on-grpc-gateway/*'
+      - './*'
     branches:
       - '*'
   pull_request:
     paths:
-      - 'rest-on-grpc-gateway/*'
+      - './*'
     branches:
       - '*'
 

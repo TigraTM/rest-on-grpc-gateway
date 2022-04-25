@@ -12,7 +12,8 @@ import "google/protobuf/timestamp.proto";
 
 // PaymentAPI service to work with payment.
 service PaymentAPI {
-  //  Create Payments. Payment can be created with positive or negative value
+  // Create Payments. Payment can be created with positive or negative value.
+  // Payments are made only in rubles(RUB).
   //
   // ```
   // Example request:
@@ -31,16 +32,21 @@ service PaymentAPI {
     option (google.api.http) = {post: "/payment/api/v1/payment", body: "*"};
   };
   // Get user balance by user ID.
+  // By default the balance is given in rubles, if you want to convert the amount into another currency,
+  // pass in query parameter ?currency={another_currency} another currency.
+  // The name of the other currency should consist of 3 letters
   //
   // ```
   // Example request:
   //    id: 1
+  //    currency: USD
   // ```
   //
   // ```
   // Example response:
   //    id: 1
   //    sum: '99.99'
+  //    currency: USD
   // ```
   //
   // Specific codes:
@@ -50,6 +56,7 @@ service PaymentAPI {
     option (google.api.http) = {get: "/payment/api/v1/payment/{user_id}"};
   };
   // Transferring money between users.
+  // Transferring money are made only in rubles(RUB).
   //
   // ```
   // Example request:
@@ -73,17 +80,29 @@ service PaymentAPI {
     option (google.api.http) = {post: "/payment/api/v1/payment/transfer", body: "*"};
   };
   // Get payments history by user id.
+  // Query params:
+  // - limit (default = 100)
+  // - offset (default = 0)
+  // - sort (only 'sum' and 'create_at', default = 'creat_at')
+  // - order_by (only 'asc' or 'desc', default = 'desc')
   //
   // ```
   // Example request:
   //    user_id: 1
+  //    limit: 5
+  //    offset: 0
+  //    sort: create_at
+  //    order_by: desc
   // ```
   //
   // ```
   // Example response:
+  //    id: 1
+  //    create_at: // FIXME: fix example time
   //    sum: '99.99'
-  //    recipient_id: 2
-  //    recipient_name: 'Artem'
+  //    company_name: 2
+  //    category: 'Artem'
+  //    total: 1
   // ```
   //
   // Specific codes:
@@ -104,13 +123,14 @@ message CreatePaymentRequest {
 message CreatePaymentResponse {}
 
 message GetBalanceByUserIDRequest {
-  // TODO: add convert the other currencies.
-  int64 user_id = 1;
+  int64   user_id = 1;
+  string currency = 2 [(validate.rules).string = {ignore_empty: true, len: 3}];
 }
 
 message GetBalanceByUserIDResponse {
   int64           user_id = 1;
   google.type.Decimal sum = 2;
+  string         currency = 3;
 }
 
 message TransferBetweenUsersRequest {
@@ -127,13 +147,14 @@ message TransferBetweenUsersResponse {
 }
 
 message GetPaymentsHistoryByUserIDRequest {
-  int64   user_id = 1;
-  int64     limit = 2 [(validate.rules).int64 = {gte: 1, lte: 500}];
-  int64    offset = 3 [(validate.rules).int64 = {gte: 0}];
+  int64    user_id = 1;
+  int64      limit = 2 [(validate.rules).int64 = {gte: 1, lte: 500}];
+  int64     offset = 3 [(validate.rules).int64 = {gte: 0}];
+  string      sort = 4 [(validate.rules).string = {in: ["create_at", "sum"]}];
+  string  order_by = 5 [(validate.rules).string = {in: ["asc", "desc"]}];
 }
 
 message GetPaymentsHistoryByUserIDResponse {
-//  TODO: add sort on data and sum.
   repeated Payment payments = 1;
   int64               total = 2;
 }

@@ -1,9 +1,10 @@
-// Package api contains handlers for work gRPC-gateway.
+// Package api contains user handlers for work gRPC-gateway.
 package api
 
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 
@@ -35,7 +36,7 @@ type application interface {
 	DeleteUserByID(ctx context.Context, userID int) error
 }
 
-// api structure api,.
+// api structure api.
 type api struct {
 	app application
 }
@@ -49,6 +50,7 @@ func New(log *zap.SugaredLogger, app application) *grpc.Server {
 	return srv
 }
 
+// apiError convert err in status code.
 func apiError(err error) *status.Status {
 	if err == nil {
 		return nil

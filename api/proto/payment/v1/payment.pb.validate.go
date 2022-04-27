@@ -96,6 +96,19 @@ func (m *CreatePaymentRequest) validate(all bool) error {
 
 	// no validation rules for UserId
 
+	// no validation rules for AccountId
+
+	if l := utf8.RuneCountInString(m.GetAccountNumber()); l < 1 || l > 20 {
+		err := CreatePaymentRequestValidationError{
+			field:  "AccountNumber",
+			reason: "value length must be between 1 and 20 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if len(errors) > 0 {
 		return CreatePaymentRequestMultiError(errors)
 	}
@@ -278,22 +291,22 @@ var _ interface {
 	ErrorName() string
 } = CreatePaymentResponseValidationError{}
 
-// Validate checks the field values on GetBalanceByUserIDRequest with the rules
+// Validate checks the field values on GetAccountByUserIDRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *GetBalanceByUserIDRequest) Validate() error {
+func (m *GetAccountByUserIDRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on GetBalanceByUserIDRequest with the
+// ValidateAll checks the field values on GetAccountByUserIDRequest with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// GetBalanceByUserIDRequestMultiError, or nil if none found.
-func (m *GetBalanceByUserIDRequest) ValidateAll() error {
+// GetAccountByUserIDRequestMultiError, or nil if none found.
+func (m *GetAccountByUserIDRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *GetBalanceByUserIDRequest) validate(all bool) error {
+func (m *GetAccountByUserIDRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -305,7 +318,7 @@ func (m *GetBalanceByUserIDRequest) validate(all bool) error {
 	if m.GetCurrency() != "" {
 
 		if utf8.RuneCountInString(m.GetCurrency()) != 3 {
-			err := GetBalanceByUserIDRequestValidationError{
+			err := GetAccountByUserIDRequestValidationError{
 				field:  "Currency",
 				reason: "value length must be 3 runes",
 			}
@@ -319,19 +332,19 @@ func (m *GetBalanceByUserIDRequest) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return GetBalanceByUserIDRequestMultiError(errors)
+		return GetAccountByUserIDRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// GetBalanceByUserIDRequestMultiError is an error wrapping multiple validation
-// errors returned by GetBalanceByUserIDRequest.ValidateAll() if the
+// GetAccountByUserIDRequestMultiError is an error wrapping multiple validation
+// errors returned by GetAccountByUserIDRequest.ValidateAll() if the
 // designated constraints aren't met.
-type GetBalanceByUserIDRequestMultiError []error
+type GetAccountByUserIDRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m GetBalanceByUserIDRequestMultiError) Error() string {
+func (m GetAccountByUserIDRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -340,11 +353,11 @@ func (m GetBalanceByUserIDRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m GetBalanceByUserIDRequestMultiError) AllErrors() []error { return m }
+func (m GetAccountByUserIDRequestMultiError) AllErrors() []error { return m }
 
-// GetBalanceByUserIDRequestValidationError is the validation error returned by
-// GetBalanceByUserIDRequest.Validate if the designated constraints aren't met.
-type GetBalanceByUserIDRequestValidationError struct {
+// GetAccountByUserIDRequestValidationError is the validation error returned by
+// GetAccountByUserIDRequest.Validate if the designated constraints aren't met.
+type GetAccountByUserIDRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -352,24 +365,24 @@ type GetBalanceByUserIDRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e GetBalanceByUserIDRequestValidationError) Field() string { return e.field }
+func (e GetAccountByUserIDRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e GetBalanceByUserIDRequestValidationError) Reason() string { return e.reason }
+func (e GetAccountByUserIDRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e GetBalanceByUserIDRequestValidationError) Cause() error { return e.cause }
+func (e GetAccountByUserIDRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e GetBalanceByUserIDRequestValidationError) Key() bool { return e.key }
+func (e GetAccountByUserIDRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e GetBalanceByUserIDRequestValidationError) ErrorName() string {
-	return "GetBalanceByUserIDRequestValidationError"
+func (e GetAccountByUserIDRequestValidationError) ErrorName() string {
+	return "GetAccountByUserIDRequestValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e GetBalanceByUserIDRequestValidationError) Error() string {
+func (e GetAccountByUserIDRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -381,14 +394,14 @@ func (e GetBalanceByUserIDRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sGetBalanceByUserIDRequest.%s: %s%s",
+		"invalid %sGetAccountByUserIDRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = GetBalanceByUserIDRequestValidationError{}
+var _ error = GetAccountByUserIDRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -396,24 +409,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = GetBalanceByUserIDRequestValidationError{}
+} = GetAccountByUserIDRequestValidationError{}
 
-// Validate checks the field values on GetBalanceByUserIDResponse with the
+// Validate checks the field values on GetAccountByUserIDResponse with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *GetBalanceByUserIDResponse) Validate() error {
+func (m *GetAccountByUserIDResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on GetBalanceByUserIDResponse with the
+// ValidateAll checks the field values on GetAccountByUserIDResponse with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// GetBalanceByUserIDResponseMultiError, or nil if none found.
-func (m *GetBalanceByUserIDResponse) ValidateAll() error {
+// GetAccountByUserIDResponseMultiError, or nil if none found.
+func (m *GetAccountByUserIDResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *GetBalanceByUserIDResponse) validate(all bool) error {
+func (m *GetAccountByUserIDResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -423,28 +436,28 @@ func (m *GetBalanceByUserIDResponse) validate(all bool) error {
 	// no validation rules for UserId
 
 	if all {
-		switch v := interface{}(m.GetSum()).(type) {
+		switch v := interface{}(m.GetBalance()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, GetBalanceByUserIDResponseValidationError{
-					field:  "Sum",
+				errors = append(errors, GetAccountByUserIDResponseValidationError{
+					field:  "Balance",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, GetBalanceByUserIDResponseValidationError{
-					field:  "Sum",
+				errors = append(errors, GetAccountByUserIDResponseValidationError{
+					field:  "Balance",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetSum()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetBalance()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return GetBalanceByUserIDResponseValidationError{
-				field:  "Sum",
+			return GetAccountByUserIDResponseValidationError{
+				field:  "Balance",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -453,20 +466,22 @@ func (m *GetBalanceByUserIDResponse) validate(all bool) error {
 
 	// no validation rules for Currency
 
+	// no validation rules for AccountNumber
+
 	if len(errors) > 0 {
-		return GetBalanceByUserIDResponseMultiError(errors)
+		return GetAccountByUserIDResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// GetBalanceByUserIDResponseMultiError is an error wrapping multiple
-// validation errors returned by GetBalanceByUserIDResponse.ValidateAll() if
+// GetAccountByUserIDResponseMultiError is an error wrapping multiple
+// validation errors returned by GetAccountByUserIDResponse.ValidateAll() if
 // the designated constraints aren't met.
-type GetBalanceByUserIDResponseMultiError []error
+type GetAccountByUserIDResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m GetBalanceByUserIDResponseMultiError) Error() string {
+func (m GetAccountByUserIDResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -475,11 +490,11 @@ func (m GetBalanceByUserIDResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m GetBalanceByUserIDResponseMultiError) AllErrors() []error { return m }
+func (m GetAccountByUserIDResponseMultiError) AllErrors() []error { return m }
 
-// GetBalanceByUserIDResponseValidationError is the validation error returned
-// by GetBalanceByUserIDResponse.Validate if the designated constraints aren't met.
-type GetBalanceByUserIDResponseValidationError struct {
+// GetAccountByUserIDResponseValidationError is the validation error returned
+// by GetAccountByUserIDResponse.Validate if the designated constraints aren't met.
+type GetAccountByUserIDResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -487,24 +502,24 @@ type GetBalanceByUserIDResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e GetBalanceByUserIDResponseValidationError) Field() string { return e.field }
+func (e GetAccountByUserIDResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e GetBalanceByUserIDResponseValidationError) Reason() string { return e.reason }
+func (e GetAccountByUserIDResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e GetBalanceByUserIDResponseValidationError) Cause() error { return e.cause }
+func (e GetAccountByUserIDResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e GetBalanceByUserIDResponseValidationError) Key() bool { return e.key }
+func (e GetAccountByUserIDResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e GetBalanceByUserIDResponseValidationError) ErrorName() string {
-	return "GetBalanceByUserIDResponseValidationError"
+func (e GetAccountByUserIDResponseValidationError) ErrorName() string {
+	return "GetAccountByUserIDResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e GetBalanceByUserIDResponseValidationError) Error() string {
+func (e GetAccountByUserIDResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -516,14 +531,14 @@ func (e GetBalanceByUserIDResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sGetBalanceByUserIDResponse.%s: %s%s",
+		"invalid %sGetAccountByUserIDResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = GetBalanceByUserIDResponseValidationError{}
+var _ error = GetAccountByUserIDResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -531,7 +546,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = GetBalanceByUserIDResponseValidationError{}
+} = GetAccountByUserIDResponseValidationError{}
 
 // Validate checks the field values on TransferBetweenUsersRequest with the
 // rules defined in the proto definition for this message. If any rules are
@@ -570,9 +585,53 @@ func (m *TransferBetweenUsersRequest) validate(all bool) error {
 
 	}
 
-	// no validation rules for SenderId
+	if m.GetSenderId() < 1 {
+		err := TransferBetweenUsersRequestValidationError{
+			field:  "SenderId",
+			reason: "value must be greater than or equal to 1",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for RecipientId
+	if m.GetSenderAccountId() < 1 {
+		err := TransferBetweenUsersRequestValidationError{
+			field:  "SenderAccountId",
+			reason: "value must be greater than or equal to 1",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for SenderAccountNumber
+
+	if m.GetRecipientId() < 1 {
+		err := TransferBetweenUsersRequestValidationError{
+			field:  "RecipientId",
+			reason: "value must be greater than or equal to 1",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetRecipientAccountId() < 1 {
+		err := TransferBetweenUsersRequestValidationError{
+			field:  "RecipientAccountId",
+			reason: "value must be greater than or equal to 1",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for RecipientAccountNumber
 
 	if l := utf8.RuneCountInString(m.GetRecipientName()); l < 1 || l > 50 {
 		err := TransferBetweenUsersRequestValidationError{
@@ -720,6 +779,8 @@ func (m *TransferBetweenUsersResponse) validate(all bool) error {
 	// no validation rules for RecipientId
 
 	// no validation rules for RecipientName
+
+	// no validation rules for RecipientAccountNumber
 
 	if len(errors) > 0 {
 		return TransferBetweenUsersResponseMultiError(errors)
@@ -1156,6 +1217,8 @@ func (m *Payment) validate(all bool) error {
 		}
 	}
 
+	// no validation rules for AccountNumber
+
 	if m.GetSum() == nil {
 		err := PaymentValidationError{
 			field:  "Sum",
@@ -1192,6 +1255,8 @@ func (m *Payment) validate(all bool) error {
 		}
 		errors = append(errors, err)
 	}
+
+	// no validation rules for AccountId
 
 	if len(errors) > 0 {
 		return PaymentMultiError(errors)
@@ -1269,3 +1334,375 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = PaymentValidationError{}
+
+// Validate checks the field values on GetAccountsByUserIDRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetAccountsByUserIDRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetAccountsByUserIDRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetAccountsByUserIDRequestMultiError, or nil if none found.
+func (m *GetAccountsByUserIDRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetAccountsByUserIDRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	if len(errors) > 0 {
+		return GetAccountsByUserIDRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetAccountsByUserIDRequestMultiError is an error wrapping multiple
+// validation errors returned by GetAccountsByUserIDRequest.ValidateAll() if
+// the designated constraints aren't met.
+type GetAccountsByUserIDRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetAccountsByUserIDRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetAccountsByUserIDRequestMultiError) AllErrors() []error { return m }
+
+// GetAccountsByUserIDRequestValidationError is the validation error returned
+// by GetAccountsByUserIDRequest.Validate if the designated constraints aren't met.
+type GetAccountsByUserIDRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetAccountsByUserIDRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetAccountsByUserIDRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetAccountsByUserIDRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetAccountsByUserIDRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetAccountsByUserIDRequestValidationError) ErrorName() string {
+	return "GetAccountsByUserIDRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetAccountsByUserIDRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetAccountsByUserIDRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetAccountsByUserIDRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetAccountsByUserIDRequestValidationError{}
+
+// Validate checks the field values on GetAccountsByUserIDResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetAccountsByUserIDResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetAccountsByUserIDResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetAccountsByUserIDResponseMultiError, or nil if none found.
+func (m *GetAccountsByUserIDResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetAccountsByUserIDResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetAccounts() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetAccountsByUserIDResponseValidationError{
+						field:  fmt.Sprintf("Accounts[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetAccountsByUserIDResponseValidationError{
+						field:  fmt.Sprintf("Accounts[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetAccountsByUserIDResponseValidationError{
+					field:  fmt.Sprintf("Accounts[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return GetAccountsByUserIDResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetAccountsByUserIDResponseMultiError is an error wrapping multiple
+// validation errors returned by GetAccountsByUserIDResponse.ValidateAll() if
+// the designated constraints aren't met.
+type GetAccountsByUserIDResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetAccountsByUserIDResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetAccountsByUserIDResponseMultiError) AllErrors() []error { return m }
+
+// GetAccountsByUserIDResponseValidationError is the validation error returned
+// by GetAccountsByUserIDResponse.Validate if the designated constraints
+// aren't met.
+type GetAccountsByUserIDResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetAccountsByUserIDResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetAccountsByUserIDResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetAccountsByUserIDResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetAccountsByUserIDResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetAccountsByUserIDResponseValidationError) ErrorName() string {
+	return "GetAccountsByUserIDResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetAccountsByUserIDResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetAccountsByUserIDResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetAccountsByUserIDResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetAccountsByUserIDResponseValidationError{}
+
+// Validate checks the field values on Account with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Account) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Account with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in AccountMultiError, or nil if none found.
+func (m *Account) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Account) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetBalance()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, AccountValidationError{
+					field:  "Balance",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, AccountValidationError{
+					field:  "Balance",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBalance()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return AccountValidationError{
+				field:  "Balance",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	// no validation rules for Currency
+
+	// no validation rules for AccountNumber
+
+	if len(errors) > 0 {
+		return AccountMultiError(errors)
+	}
+
+	return nil
+}
+
+// AccountMultiError is an error wrapping multiple validation errors returned
+// by Account.ValidateAll() if the designated constraints aren't met.
+type AccountMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AccountMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AccountMultiError) AllErrors() []error { return m }
+
+// AccountValidationError is the validation error returned by Account.Validate
+// if the designated constraints aren't met.
+type AccountValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AccountValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AccountValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AccountValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AccountValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AccountValidationError) ErrorName() string { return "AccountValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AccountValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAccount.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AccountValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AccountValidationError{}

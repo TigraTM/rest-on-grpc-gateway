@@ -66,11 +66,11 @@ func local_request_PaymentAPI_CreatePayment_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_PaymentAPI_GetBalanceByUserID_0 = &utilities.DoubleArray{Encoding: map[string]int{"user_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_PaymentAPI_GetAccountByUserID_0 = &utilities.DoubleArray{Encoding: map[string]int{"user_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_PaymentAPI_GetBalanceByUserID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetBalanceByUserIDRequest
+func request_PaymentAPI_GetAccountByUserID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAccountByUserIDRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -93,17 +93,17 @@ func request_PaymentAPI_GetBalanceByUserID_0(ctx context.Context, marshaler runt
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetBalanceByUserID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByUserID_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetBalanceByUserID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetAccountByUserID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_PaymentAPI_GetBalanceByUserID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetBalanceByUserIDRequest
+func local_request_PaymentAPI_GetAccountByUserID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAccountByUserIDRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -126,11 +126,11 @@ func local_request_PaymentAPI_GetBalanceByUserID_0(ctx context.Context, marshale
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetBalanceByUserID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByUserID_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetBalanceByUserID(ctx, &protoReq)
+	msg, err := server.GetAccountByUserID(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -239,6 +239,42 @@ func local_request_PaymentAPI_GetPaymentsHistoryByUserID_0(ctx context.Context, 
 
 }
 
+var (
+	filter_PaymentAPI_GetAccountsByUserID_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
+func request_PaymentAPI_GetAccountsByUserID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAccountsByUserIDRequest
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountsByUserID_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetAccountsByUserID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_PaymentAPI_GetAccountsByUserID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAccountsByUserIDRequest
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountsByUserID_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.GetAccountsByUserID(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 // RegisterPaymentAPIHandlerServer registers the http handlers for service PaymentAPI to "mux".
 // UnaryRPC     :call PaymentAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -269,19 +305,19 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetBalanceByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentAPI_GetAccountByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetBalanceByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{user_id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_GetBalanceByUserID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentAPI_GetAccountByUserID_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -289,7 +325,7 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_GetBalanceByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentAPI_GetAccountByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -338,6 +374,30 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		}
 
 		forward_PaymentAPI_GetPaymentsHistoryByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_PaymentAPI_GetAccountsByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountsByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_PaymentAPI_GetAccountsByUserID_0(ctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_PaymentAPI_GetAccountsByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -403,24 +463,24 @@ func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetBalanceByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentAPI_GetAccountByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetBalanceByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{user_id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_GetBalanceByUserID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentAPI_GetAccountByUserID_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_GetBalanceByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentAPI_GetAccountByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -466,25 +526,50 @@ func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
+	mux.Handle("GET", pattern_PaymentAPI_GetAccountsByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountsByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_PaymentAPI_GetAccountsByUserID_0(ctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_PaymentAPI_GetAccountsByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
 var (
 	pattern_PaymentAPI_CreatePayment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"payment", "api", "v1"}, ""))
 
-	pattern_PaymentAPI_GetBalanceByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"payment", "api", "v1", "user_id"}, ""))
+	pattern_PaymentAPI_GetAccountByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"payment", "api", "v1", "accounts", "user_id"}, ""))
 
 	pattern_PaymentAPI_TransferBetweenUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "transfer"}, ""))
 
 	pattern_PaymentAPI_GetPaymentsHistoryByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"payment", "api", "v1", "user_id", "history"}, ""))
+
+	pattern_PaymentAPI_GetAccountsByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "accounts"}, ""))
 )
 
 var (
 	forward_PaymentAPI_CreatePayment_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_GetBalanceByUserID_0 = runtime.ForwardResponseMessage
+	forward_PaymentAPI_GetAccountByUserID_0 = runtime.ForwardResponseMessage
 
 	forward_PaymentAPI_TransferBetweenUsers_0 = runtime.ForwardResponseMessage
 
 	forward_PaymentAPI_GetPaymentsHistoryByUserID_0 = runtime.ForwardResponseMessage
+
+	forward_PaymentAPI_GetAccountsByUserID_0 = runtime.ForwardResponseMessage
 )

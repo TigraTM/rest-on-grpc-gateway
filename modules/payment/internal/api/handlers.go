@@ -24,15 +24,15 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 		UserID:      int(in.UserId),
 	}
 
-	err = a.app.CreatePayment(ctx, newPayment)
+	err = a.app.CreatePayment(ctx, in.UserId, newPayment)
 	switch {
 	default:
 		return nil, fmt.Errorf("a.app.CreateUser: %w", err)
 	}
 }
 
-// GetBalanceByUserID implements userpb.UserAPIServer.
-func (a *api) GetBalanceByUserID(ctx context.Context, in *paymentpb.GetBalanceByUserIDRequest) (*paymentpb.GetBalanceByUserIDResponse, error) {
+// GetAccountByUserID implements userpb.UserAPIServer.
+func (a *api) GetAccountByUserID(ctx context.Context, in *paymentpb.GetAccountByUserIDRequest) (*paymentpb.GetAccountByUserIDResponse, error) {
 	return nil, nil
 }
 
@@ -43,5 +43,9 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 
 // GetPaymentsHistoryByUserID implements userpb.UserAPIServer.
 func (a *api) GetPaymentsHistoryByUserID(ctx context.Context, in *paymentpb.GetPaymentsHistoryByUserIDRequest) (*paymentpb.GetPaymentsHistoryByUserIDResponse, error) {
+	return nil, nil
+}
+
+func (a *api) GetAccountsByUserID(ctx context.Context, in *paymentpb.GetAccountsByUserIDRequest) (*paymentpb.GetAccountsByUserIDResponse, error) {
 	return nil, nil
 }

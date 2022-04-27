@@ -14,6 +14,7 @@ import (
 // Errors.
 var (
 	ErrNotEnoughMoney = errors.New("not enough money")
+	ErrNotFound       = errors.New("not found")
 )
 
 //go:generate mockgen -source=app.go -destination mock.app.contracts_test.go -package app_test
@@ -21,11 +22,10 @@ var (
 type (
 	// Repo interface for payment database.
 	Repo interface {
-		CreateOrUpdatePayment(ctx context.Context, payment domain.Payment) error
-		GetBalanceByUserID(ctx context.Context, userID int) (*domain.Balance, error)
-		GetPaymentHistoryByUserID(ctx context.Context, userID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
-		AddBalanceByUserID(ctx context.Context, userID int, sum decimal.Decimal) error
-		SubBalanceByUserID(ctx context.Context, userID int, sum decimal.Decimal) error
+		GetAccountByID(ctx context.Context, accountID int) (*domain.Account, error)
+		GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
+		GetPaymentHistoryByAccountID(ctx context.Context, accountID int, paging, filters filters.FilterContract) ([]domain.Payment, int, error)
+		CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error
 	}
 	// ExchangeClient interface to convert balance to other currencies.
 	ExchangeClient interface {

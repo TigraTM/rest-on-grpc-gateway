@@ -23,10 +23,11 @@ var (
 
 // application for easy test.
 type application interface {
-	CreatePayment(ctx context.Context, payment domain.Payment) error
-	GetBalanceByUserID(ctx context.Context, userID int, currency string) (*domain.Balance, error)
-	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (*domain.Transfer, error)
-	GetPaymentHistoryByUserID(ctx context.Context, userID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
+	CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error)
+	GetAccountByUserID(ctx context.Context, accountID int, currency string) (*domain.Account, error)
+	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error)
+	GetPaymentHistoryByAccountID(ctx context.Context, userID, accountID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
+	GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
 }
 
 // api structure api.

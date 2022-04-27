@@ -19,7 +19,7 @@
     "/payment/api/v1/payment": {
       "post": {
         "summary": "Create Payments. Payment can be created with positive or negative value.\nPayments are made only in rubles(RUB).",
-        "description": "```\nExample request:\n   sum: '99.99'\n   company_name: 'AppStore'\n   category: 'supermarkets'\n   user_id: 1\n```\n\n```\nExample response:\n   empty\nSpecific codes:\n   * codes.InvalidArgument",
+        "description": "```\nExample request:\n   sum: '99.99'\n   company_name: 'AppStore'\n   category: 'supermarkets'\n   user_id: 1                // query param\n   account_id: 1\n   account_number: '123456'\n```\n\n```\nExample response:\n   empty\nSpecific codes:\n   * codes.InvalidArgument",
         "operationId": "PaymentAPI_CreatePayment",
         "responses": {
           "200": {
@@ -50,10 +50,82 @@
         ]
       }
     },
+    "/payment/api/v1/payment/accounts": {
+      "get": {
+        "summary": "Get accounts by user id. Without paging and filters.",
+        "description": "```\nExample request:\n   user_id: 1\n```\n\n```\nExample response:\n   balance: '99.99'\n   currency: 'RUB'\n   account_number: '123'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentAPI_GetAccountsByUserID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountsByUserIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "PaymentAPI"
+        ]
+      }
+    },
+    "/payment/api/v1/payment/accounts/{userId}": {
+      "get": {
+        "summary": "Get user account balance by user ID.\nBy default the balance is given in rubles, if you want to convert the amount into another currency,\npass in query parameter ?currency={another_currency} another currency.\nThe name of the other currency should consist of 3 letters",
+        "description": "```\nExample request:\n   id: 1         // path param\n   currency: 'USD' // query param\n```\n\n```\nExample response:\n   user_id: 1\n   sum: '99.99'\n   currency: 'USD'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentAPI_GetAccountByUserID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountByUserIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PaymentAPI"
+        ]
+      }
+    },
     "/payment/api/v1/payment/transfer": {
       "post": {
         "summary": "Transferring money between users.\nTransferring money are made only in rubles(RUB).",
-        "description": "```\nExample request:\n   sum: '99.99'\n   sender_id: 1\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\n```\nExample response:\n   sum: '99.99'\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   sum: '99.99'\n   sender_id: 1\n   sender_account_id: 1\n   sender_account_number: '123'\n   recipient_id: 2\n   recipient_account_id: 1\n   recipient_account_number: '123'\n   recipient_name: 'Artem'\n```\n\n```\nExample response:\n   sum: '99.99'\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "PaymentAPI_TransferBetweenUsers",
         "responses": {
           "200": {
@@ -77,45 +149,6 @@
             "schema": {
               "$ref": "#/definitions/v1TransferBetweenUsersRequest"
             }
-          }
-        ],
-        "tags": [
-          "PaymentAPI"
-        ]
-      }
-    },
-    "/payment/api/v1/payment/{userId}": {
-      "get": {
-        "summary": "Get user balance by user ID.\nBy default the balance is given in rubles, if you want to convert the amount into another currency,\npass in query parameter ?currency={another_currency} another currency.\nThe name of the other currency should consist of 3 letters",
-        "description": "```\nExample request:\n   id: 1\n   currency: USD\n```\n\n```\nExample response:\n   id: 1\n   sum: '99.99'\n   currency: USD\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "PaymentAPI_GetBalanceByUserID",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetBalanceByUserIDResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "currency",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -221,6 +254,20 @@
       },
       "description": "A representation of a decimal value, such as 2.5. Clients may convert values\ninto language-native decimal formats, such as Java's [BigDecimal][] or\nPython's [decimal.Decimal][].\n\n[BigDecimal]:\nhttps://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html\n[decimal.Decimal]: https://docs.python.org/3/library/decimal.html"
     },
+    "v1Account": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        }
+      }
+    },
     "v1CreatePaymentRequest": {
       "type": "object",
       "properties": {
@@ -236,24 +283,45 @@
         "userId": {
           "type": "string",
           "format": "int64"
+        },
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "accountNumber": {
+          "type": "string"
         }
       }
     },
     "v1CreatePaymentResponse": {
       "type": "object"
     },
-    "v1GetBalanceByUserIDResponse": {
+    "v1GetAccountByUserIDResponse": {
       "type": "object",
       "properties": {
         "userId": {
           "type": "string",
           "format": "int64"
         },
-        "sum": {
+        "balance": {
           "$ref": "#/definitions/typeDecimal"
         },
         "currency": {
           "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetAccountsByUserIDResponse": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Account"
+          }
         }
       }
     },
@@ -283,6 +351,9 @@
           "type": "string",
           "format": "date-time"
         },
+        "accountNumber": {
+          "type": "string"
+        },
         "sum": {
           "$ref": "#/definitions/typeDecimal"
         },
@@ -291,6 +362,10 @@
         },
         "category": {
           "type": "string"
+        },
+        "accountId": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -304,9 +379,23 @@
           "type": "string",
           "format": "int64"
         },
+        "senderAccountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "senderAccountNumber": {
+          "type": "string"
+        },
         "recipientId": {
           "type": "string",
           "format": "int64"
+        },
+        "recipientAccountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "recipientAccountNumber": {
+          "type": "string"
         },
         "recipientName": {
           "type": "string"
@@ -324,6 +413,9 @@
           "format": "int64"
         },
         "recipientName": {
+          "type": "string"
+        },
+        "recipientAccountNumber": {
           "type": "string"
         }
       }

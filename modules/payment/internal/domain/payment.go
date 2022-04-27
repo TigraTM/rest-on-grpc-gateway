@@ -9,11 +9,11 @@ import (
 
 // Payment domain model payment.
 type Payment struct {
-	ID          int
-	CreateAt    time.Time
-	Sum         decimal.Decimal
-	OldBalance  decimal.Decimal
-	CompanyName string
-	Category    string
-	UserID      int
+	ID            int
+	CreateAt      time.Time
+	AccountNumber string
+	Sum           decimal.Decimal
+	CompanyName   string
+	Category      string
+	AccountID     int
 }

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 )
@@ -35,7 +34,6 @@ func toDomainPayment(payment Payment) *domain.Payment {
 		ID:          payment.ID,
 		CreateAt:    payment.CreateAt,
 		Sum:         payment.Sum,
-		OldBalance:  payment.OldBalance,
 		CompanyName: payment.CompanyName,
 		Category:    payment.Category,
 		AccountID:   payment.AccountID,
@@ -47,8 +45,9 @@ func toDomainAccounts(accounts []Account) []domain.Account {
 	for i, account := range accounts {
 		results[i] = *toDomainAccount(account)
 	}
-
+	//nolint:forbidigo,gosimple // ...
 	fmt.Println(fmt.Sprintf("cap: %d, len: %d", cap(results), len(results)))
+
 	return results
 }
 

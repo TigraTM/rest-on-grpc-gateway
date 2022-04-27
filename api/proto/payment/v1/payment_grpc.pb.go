@@ -48,7 +48,7 @@ type PaymentAPIClient interface {
 	//
 	// ```
 	// Example request:
-	//    id: 1         // path param
+	//    id: 1           // path param
 	//    currency: 'USD' // query param
 	// ```
 	//
@@ -65,6 +65,7 @@ type PaymentAPIClient interface {
 	GetAccountByUserID(ctx context.Context, in *GetAccountByUserIDRequest, opts ...grpc.CallOption) (*GetAccountByUserIDResponse, error)
 	// Transferring money between users.
 	// Transferring money are made only in rubles(RUB).
+	// If you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.
 	//
 	// ```
 	// Example request:
@@ -89,7 +90,7 @@ type PaymentAPIClient interface {
 	//    * codes.InvalidArgument
 	//    * codes.NotFound
 	TransferBetweenUsers(ctx context.Context, in *TransferBetweenUsersRequest, opts ...grpc.CallOption) (*TransferBetweenUsersResponse, error)
-	// Get payments history by user id.
+	// Get payments history by account id.
 	// Query params:
 	// - limit (default = 100)
 	// - offset (default = 0)
@@ -98,11 +99,11 @@ type PaymentAPIClient interface {
 	//
 	// ```
 	// Example request:
-	//    user_id: 1
-	//    limit: 5
-	//    offset: 0
-	//    sort: create_at
-	//    order_by: desc
+	//    user_id: 1      // path params
+	//    limit: 5        // query params
+	//    offset: 0       // query params
+	//    sort: create_at // query params
+	//    order_by: desc  // query params
 	// ```
 	//
 	// ```
@@ -118,12 +119,12 @@ type PaymentAPIClient interface {
 	// Specific codes:
 	//    * codes.InvalidArgument
 	//    * codes.NotFound
-	GetPaymentsHistoryByUserID(ctx context.Context, in *GetPaymentsHistoryByUserIDRequest, opts ...grpc.CallOption) (*GetPaymentsHistoryByUserIDResponse, error)
+	GetPaymentsHistoryByAccountID(ctx context.Context, in *GetPaymentsHistoryByAccountIDRequest, opts ...grpc.CallOption) (*GetPaymentsHistoryByAccountIDResponse, error)
 	//  Get accounts by user id. Without paging and filters.
 	//
 	// ```
 	// Example request:
-	//    user_id: 1
+	//    user_id: 1 // path params
 	// ```
 	//
 	// ```
@@ -174,9 +175,9 @@ func (c *paymentAPIClient) TransferBetweenUsers(ctx context.Context, in *Transfe
 	return out, nil
 }
 
-func (c *paymentAPIClient) GetPaymentsHistoryByUserID(ctx context.Context, in *GetPaymentsHistoryByUserIDRequest, opts ...grpc.CallOption) (*GetPaymentsHistoryByUserIDResponse, error) {
-	out := new(GetPaymentsHistoryByUserIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByUserID", in, out, opts...)
+func (c *paymentAPIClient) GetPaymentsHistoryByAccountID(ctx context.Context, in *GetPaymentsHistoryByAccountIDRequest, opts ...grpc.CallOption) (*GetPaymentsHistoryByAccountIDResponse, error) {
+	out := new(GetPaymentsHistoryByAccountIDResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -222,7 +223,7 @@ type PaymentAPIServer interface {
 	//
 	// ```
 	// Example request:
-	//    id: 1         // path param
+	//    id: 1           // path param
 	//    currency: 'USD' // query param
 	// ```
 	//
@@ -239,6 +240,7 @@ type PaymentAPIServer interface {
 	GetAccountByUserID(context.Context, *GetAccountByUserIDRequest) (*GetAccountByUserIDResponse, error)
 	// Transferring money between users.
 	// Transferring money are made only in rubles(RUB).
+	// If you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.
 	//
 	// ```
 	// Example request:
@@ -263,7 +265,7 @@ type PaymentAPIServer interface {
 	//    * codes.InvalidArgument
 	//    * codes.NotFound
 	TransferBetweenUsers(context.Context, *TransferBetweenUsersRequest) (*TransferBetweenUsersResponse, error)
-	// Get payments history by user id.
+	// Get payments history by account id.
 	// Query params:
 	// - limit (default = 100)
 	// - offset (default = 0)
@@ -272,11 +274,11 @@ type PaymentAPIServer interface {
 	//
 	// ```
 	// Example request:
-	//    user_id: 1
-	//    limit: 5
-	//    offset: 0
-	//    sort: create_at
-	//    order_by: desc
+	//    user_id: 1      // path params
+	//    limit: 5        // query params
+	//    offset: 0       // query params
+	//    sort: create_at // query params
+	//    order_by: desc  // query params
 	// ```
 	//
 	// ```
@@ -292,12 +294,12 @@ type PaymentAPIServer interface {
 	// Specific codes:
 	//    * codes.InvalidArgument
 	//    * codes.NotFound
-	GetPaymentsHistoryByUserID(context.Context, *GetPaymentsHistoryByUserIDRequest) (*GetPaymentsHistoryByUserIDResponse, error)
+	GetPaymentsHistoryByAccountID(context.Context, *GetPaymentsHistoryByAccountIDRequest) (*GetPaymentsHistoryByAccountIDResponse, error)
 	//  Get accounts by user id. Without paging and filters.
 	//
 	// ```
 	// Example request:
-	//    user_id: 1
+	//    user_id: 1 // path params
 	// ```
 	//
 	// ```
@@ -326,8 +328,8 @@ func (UnimplementedPaymentAPIServer) GetAccountByUserID(context.Context, *GetAcc
 func (UnimplementedPaymentAPIServer) TransferBetweenUsers(context.Context, *TransferBetweenUsersRequest) (*TransferBetweenUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransferBetweenUsers not implemented")
 }
-func (UnimplementedPaymentAPIServer) GetPaymentsHistoryByUserID(context.Context, *GetPaymentsHistoryByUserIDRequest) (*GetPaymentsHistoryByUserIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPaymentsHistoryByUserID not implemented")
+func (UnimplementedPaymentAPIServer) GetPaymentsHistoryByAccountID(context.Context, *GetPaymentsHistoryByAccountIDRequest) (*GetPaymentsHistoryByAccountIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPaymentsHistoryByAccountID not implemented")
 }
 func (UnimplementedPaymentAPIServer) GetAccountsByUserID(context.Context, *GetAccountsByUserIDRequest) (*GetAccountsByUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountsByUserID not implemented")
@@ -398,20 +400,20 @@ func _PaymentAPI_TransferBetweenUsers_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PaymentAPI_GetPaymentsHistoryByUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPaymentsHistoryByUserIDRequest)
+func _PaymentAPI_GetPaymentsHistoryByAccountID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPaymentsHistoryByAccountIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentAPIServer).GetPaymentsHistoryByUserID(ctx, in)
+		return srv.(PaymentAPIServer).GetPaymentsHistoryByAccountID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByUserID",
+		FullMethod: "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentAPIServer).GetPaymentsHistoryByUserID(ctx, req.(*GetPaymentsHistoryByUserIDRequest))
+		return srv.(PaymentAPIServer).GetPaymentsHistoryByAccountID(ctx, req.(*GetPaymentsHistoryByAccountIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -454,8 +456,8 @@ var PaymentAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PaymentAPI_TransferBetweenUsers_Handler,
 		},
 		{
-			MethodName: "GetPaymentsHistoryByUserID",
-			Handler:    _PaymentAPI_GetPaymentsHistoryByUserID_Handler,
+			MethodName: "GetPaymentsHistoryByAccountID",
+			Handler:    _PaymentAPI_GetPaymentsHistoryByAccountID_Handler,
 		},
 		{
 			MethodName: "GetAccountsByUserID",

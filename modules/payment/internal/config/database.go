@@ -16,7 +16,7 @@ type Database struct {
 	DBName        string `envconfig:"DB_NAME" default:"postgres"`
 	User          string `envconfig:"DB_USER" default:"postgres"`
 	Password      string `envconfig:"DB_PASSWORD" default:"postgres"`
-	MigrationsDir string `envconfig:"USER_MIGRATIONS_DIR"`
+	MigrationsDir string `envconfig:"PAYMENT_MIGRATIONS_DIR"`
 
 	Parameters *DBParameters
 }

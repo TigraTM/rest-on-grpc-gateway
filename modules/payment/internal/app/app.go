@@ -4,11 +4,10 @@ package app
 import (
 	"context"
 	"errors"
-
-	"github.com/shopspring/decimal"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
+
+	"github.com/shopspring/decimal"
 )
 
 // Errors.
@@ -28,8 +27,7 @@ type (
 		CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error
 	}
 	// ExchangeClient interface to convert balance to other currencies.
-	ExchangeClient interface {
-	}
+	ExchangeClient interface{}
 )
 
 type App struct {

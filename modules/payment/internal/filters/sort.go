@@ -24,6 +24,7 @@ func (d SortDirection) IsValid() error {
 		return nil
 	}
 
+	// nolint:goerr113 // need dynamic error.
 	return fmt.Errorf("%s - invalid sorting direction, should be ASC or DESC", d)
 }
 
@@ -53,6 +54,7 @@ func (f PaymentFilter) IsValid() error {
 		return nil
 	}
 
+	// nolint:goerr113 // need dynamic error.
 	return fmt.Errorf("%s - invalid sorting field, should be sum or created_at", f)
 }
 

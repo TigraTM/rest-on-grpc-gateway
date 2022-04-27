@@ -3,19 +3,18 @@ package app
 import (
 	"context"
 	"fmt"
-
-	"github.com/shopspring/decimal"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
+
+	"github.com/shopspring/decimal"
 )
 
 // CreatePayment create payment and update account balance.
 // Payment can be positive or negative. Payment create if:
 // - recipient exist
-// - balance value will not become negative after the payment
+// - balance value will not become negative after the payment.
 func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error) {
-	// TODO: add check exist user
+	// TODO: add check exist user, maybe helped session
 
 	// If sum is negative(example -1), then we have to check the balance after the subtraction,
 	// save the payment history and update balance.
@@ -35,19 +34,22 @@ func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Paym
 }
 
 // GetAccountByUserID get account by accountID.
-func (a *App) GetAccountByUserID(ctx context.Context, accountID int, currency string) (*domain.Account, error) {
-	//TODO: add convert in currency
+func (a *App) GetAccountByUserID(ctx context.Context, accountID int, _ string) (*domain.Account, error) {
+	// TODO: add convert in currency
 	return a.repo.GetAccountByID(ctx, accountID)
 }
 
 // TransferBetweenUsers transferring money between users.
 func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error) {
+	// TODO: add check exist recipient
+	// TODO: add check exist recipient account
+
 	if err = a.checkAccountBalanceByID(ctx, transfer.SenderAccountID, transfer.Sum); err != nil {
 		return nil, fmt.Errorf("a.checkingBalanceByUserID: %w", err)
 	}
-	//TODO: add check exist recipient
-	//TODO: add payment history|2 methods for sender and recipient
-	//TODO: add transactions
+
+	// TODO: add payment history|2 methods for sender and recipient
+	// TODO: add transactions
 	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Sum); err != nil {
 		return nil, fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)
 	}
@@ -56,11 +58,16 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 		return nil, fmt.Errorf("a.repo.AddBalanceByUserID: %w", err)
 	}
 
-	return nil, nil
+	return &domain.Transfer{
+		Sum:                    transfer.Sum,
+		RecipientID:            transfer.RecipientID,
+		RecipientAccountNumber: transfer.RecipientAccountNumber,
+		RecipientName:          transfer.RecipientName,
+	}, nil
 }
 
 // GetPaymentHistoryByAccountID get payment history by accountID.
-func (a *App) GetPaymentHistoryByAccountID(ctx context.Context, userID, accountID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error) {
+func (a *App) GetPaymentHistoryByAccountID(ctx context.Context, _, accountID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error) {
 	// TODO: add check if the account belongs to the user who made the request
 	return a.repo.GetPaymentHistoryByAccountID(ctx, accountID, paging, filter)
 }

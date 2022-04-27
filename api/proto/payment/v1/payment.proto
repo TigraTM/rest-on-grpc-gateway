@@ -40,7 +40,7 @@ service PaymentAPI {
   //
   // ```
   // Example request:
-  //    id: 1         // path param
+  //    id: 1           // path param
   //    currency: 'USD' // query param
   // ```
   //
@@ -59,6 +59,7 @@ service PaymentAPI {
   };
   // Transferring money between users.
   // Transferring money are made only in rubles(RUB).
+  // If you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.
   //
   // ```
   // Example request:
@@ -85,7 +86,7 @@ service PaymentAPI {
   rpc TransferBetweenUsers (TransferBetweenUsersRequest) returns (TransferBetweenUsersResponse) {
     option (google.api.http) = {post: "/payment/api/v1/payment/transfer", body: "*"};
   };
-  // Get payments history by user id.
+  // Get payments history by account id.
   // Query params:
   // - limit (default = 100)
   // - offset (default = 0)
@@ -94,11 +95,11 @@ service PaymentAPI {
   //
   // ```
   // Example request:
-  //    user_id: 1
-  //    limit: 5
-  //    offset: 0
-  //    sort: create_at
-  //    order_by: desc
+  //    user_id: 1      // path params
+  //    limit: 5        // query params
+  //    offset: 0       // query params
+  //    sort: create_at // query params
+  //    order_by: desc  // query params
   // ```
   //
   // ```
@@ -114,14 +115,14 @@ service PaymentAPI {
   // Specific codes:
   //    * codes.InvalidArgument
   //    * codes.NotFound
-  rpc GetPaymentsHistoryByUserID (GetPaymentsHistoryByUserIDRequest) returns (GetPaymentsHistoryByUserIDResponse) {
+  rpc GetPaymentsHistoryByAccountID (GetPaymentsHistoryByAccountIDRequest) returns (GetPaymentsHistoryByAccountIDResponse) {
     option (google.api.http) = {get: "/payment/api/v1/payment/{user_id}/history"};
   };
   //  Get accounts by user id. Without paging and filters.
   //
   // ```
   // Example request:
-  //    user_id: 1
+  //    user_id: 1 // path params
   // ```
   //
   // ```
@@ -180,15 +181,16 @@ message TransferBetweenUsersResponse {
   string  recipient_account_number = 4;
 }
 
-message GetPaymentsHistoryByUserIDRequest {
-  int64    user_id = 1;
+message GetPaymentsHistoryByAccountIDRequest {
+  int64 account_id = 1;
   int64      limit = 2 [(validate.rules).int64 = {gte: 1, lte: 500}];
   int64     offset = 3 [(validate.rules).int64 = {gte: 0}];
   string   sort_by = 4 [(validate.rules).string = {in: ["create_at", "sum"]}];
   string      sort = 5 [(validate.rules).string = {in: ["asc", "desc"]}];
+  int64    user_id = 6;
 }
 
-message GetPaymentsHistoryByUserIDResponse {
+message GetPaymentsHistoryByAccountIDResponse {
   repeated Payment payments = 1;
   int64               total = 2;
 }

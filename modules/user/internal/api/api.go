@@ -4,7 +4,6 @@ package api
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 

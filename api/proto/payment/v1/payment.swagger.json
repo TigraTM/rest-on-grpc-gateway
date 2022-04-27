@@ -53,7 +53,7 @@
     "/payment/api/v1/payment/accounts": {
       "get": {
         "summary": "Get accounts by user id. Without paging and filters.",
-        "description": "```\nExample request:\n   user_id: 1\n```\n\n```\nExample response:\n   balance: '99.99'\n   currency: 'RUB'\n   account_number: '123'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   user_id: 1 // path params\n```\n\n```\nExample response:\n   balance: '99.99'\n   currency: 'RUB'\n   account_number: '123'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "PaymentAPI_GetAccountsByUserID",
         "responses": {
           "200": {
@@ -86,7 +86,7 @@
     "/payment/api/v1/payment/accounts/{userId}": {
       "get": {
         "summary": "Get user account balance by user ID.\nBy default the balance is given in rubles, if you want to convert the amount into another currency,\npass in query parameter ?currency={another_currency} another currency.\nThe name of the other currency should consist of 3 letters",
-        "description": "```\nExample request:\n   id: 1         // path param\n   currency: 'USD' // query param\n```\n\n```\nExample response:\n   user_id: 1\n   sum: '99.99'\n   currency: 'USD'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   id: 1           // path param\n   currency: 'USD' // query param\n```\n\n```\nExample response:\n   user_id: 1\n   sum: '99.99'\n   currency: 'USD'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "PaymentAPI_GetAccountByUserID",
         "responses": {
           "200": {
@@ -124,7 +124,7 @@
     },
     "/payment/api/v1/payment/transfer": {
       "post": {
-        "summary": "Transferring money between users.\nTransferring money are made only in rubles(RUB).",
+        "summary": "Transferring money between users.\nTransferring money are made only in rubles(RUB).\nIf you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.",
         "description": "```\nExample request:\n   sum: '99.99'\n   sender_id: 1\n   sender_account_id: 1\n   sender_account_number: '123'\n   recipient_id: 2\n   recipient_account_id: 1\n   recipient_account_number: '123'\n   recipient_name: 'Artem'\n```\n\n```\nExample response:\n   sum: '99.99'\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "PaymentAPI_TransferBetweenUsers",
         "responses": {
@@ -158,14 +158,14 @@
     },
     "/payment/api/v1/payment/{userId}/history": {
       "get": {
-        "summary": "Get payments history by user id.\nQuery params:\n- limit (default = 100)\n- offset (default = 0)\n- sort (only 'sum' and 'create_at', default = 'creat_at')\n- order_by (only 'asc' or 'desc', default = 'desc')",
-        "description": "```\nExample request:\n   user_id: 1\n   limit: 5\n   offset: 0\n   sort: create_at\n   order_by: desc\n```\n\n```\nExample response:\n   id: 1\n   create_at: // FIXME: fix example time\n   sum: '99.99'\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "PaymentAPI_GetPaymentsHistoryByUserID",
+        "summary": "Get payments history by account id.\nQuery params:\n- limit (default = 100)\n- offset (default = 0)\n- sort (only 'sum' and 'create_at', default = 'creat_at')\n- order_by (only 'asc' or 'desc', default = 'desc')",
+        "description": "```\nExample request:\n   user_id: 1      // path params\n   limit: 5        // query params\n   offset: 0       // query params\n   sort: create_at // query params\n   order_by: desc  // query params\n```\n\n```\nExample response:\n   id: 1\n   create_at: // FIXME: fix example time\n   sum: '99.99'\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentAPI_GetPaymentsHistoryByAccountID",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetPaymentsHistoryByUserIDResponse"
+              "$ref": "#/definitions/v1GetPaymentsHistoryByAccountIDResponse"
             }
           },
           "default": {
@@ -180,6 +180,13 @@
             "name": "userId",
             "in": "path",
             "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": false,
             "type": "string",
             "format": "int64"
           },
@@ -325,7 +332,7 @@
         }
       }
     },
-    "v1GetPaymentsHistoryByUserIDResponse": {
+    "v1GetPaymentsHistoryByAccountIDResponse": {
       "type": "object",
       "properties": {
         "payments": {

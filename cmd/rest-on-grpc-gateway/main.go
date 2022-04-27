@@ -4,6 +4,7 @@ import (
 	"context"
 	logStd "log"
 	"os/signal"
+	"rest-on-grpc-gateway/modules/payment"
 	"rest-on-grpc-gateway/modules/user"
 	"syscall"
 	"time"
@@ -14,12 +15,14 @@ import (
 )
 
 type embeddedService interface {
+	Name() string
 	Init(ctx context.Context, log *zap.SugaredLogger) (err error)
 	RunServe(ctx context.Context) error
 }
 
 var embeddedServices = []embeddedService{
 	&user.Service{},
+	&payment.Service{},
 }
 
 func main() {
@@ -42,6 +45,8 @@ func main() {
 	go forceShutdown(ctxWithLog)
 
 	for _, service := range embeddedServices {
+		log := log.Named(service.Name())
+
 		err = service.Init(ctxWithLog, log)
 		if err != nil {
 			// nolint:gocritic // fatal will exit.

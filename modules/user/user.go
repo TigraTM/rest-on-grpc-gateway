@@ -19,11 +19,18 @@ import (
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
 )
 
+const appName = "payment"
+
 // Service ...
 type Service struct {
 	cfg *config.Config
 	log *zap.SugaredLogger
 	db  *repo.Repo
+}
+
+// Name return service name.
+func (*Service) Name() string {
+	return appName
 }
 
 // Init service initialization.

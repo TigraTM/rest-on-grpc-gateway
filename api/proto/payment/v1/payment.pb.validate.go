@@ -863,33 +863,33 @@ var _ interface {
 	ErrorName() string
 } = TransferBetweenUsersResponseValidationError{}
 
-// Validate checks the field values on GetPaymentsHistoryByUserIDRequest with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the first error encountered is returned, or nil if there are
-// no violations.
-func (m *GetPaymentsHistoryByUserIDRequest) Validate() error {
+// Validate checks the field values on GetPaymentsHistoryByAccountIDRequest
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the first error encountered is returned, or nil if
+// there are no violations.
+func (m *GetPaymentsHistoryByAccountIDRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on GetPaymentsHistoryByUserIDRequest
+// ValidateAll checks the field values on GetPaymentsHistoryByAccountIDRequest
 // with the rules defined in the proto definition for this message. If any
 // rules are violated, the result is a list of violation errors wrapped in
-// GetPaymentsHistoryByUserIDRequestMultiError, or nil if none found.
-func (m *GetPaymentsHistoryByUserIDRequest) ValidateAll() error {
+// GetPaymentsHistoryByAccountIDRequestMultiError, or nil if none found.
+func (m *GetPaymentsHistoryByAccountIDRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *GetPaymentsHistoryByUserIDRequest) validate(all bool) error {
+func (m *GetPaymentsHistoryByAccountIDRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for UserId
+	// no validation rules for AccountId
 
 	if val := m.GetLimit(); val < 1 || val > 500 {
-		err := GetPaymentsHistoryByUserIDRequestValidationError{
+		err := GetPaymentsHistoryByAccountIDRequestValidationError{
 			field:  "Limit",
 			reason: "value must be inside range [1, 500]",
 		}
@@ -900,7 +900,7 @@ func (m *GetPaymentsHistoryByUserIDRequest) validate(all bool) error {
 	}
 
 	if m.GetOffset() < 0 {
-		err := GetPaymentsHistoryByUserIDRequestValidationError{
+		err := GetPaymentsHistoryByAccountIDRequestValidationError{
 			field:  "Offset",
 			reason: "value must be greater than or equal to 0",
 		}
@@ -910,8 +910,8 @@ func (m *GetPaymentsHistoryByUserIDRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if _, ok := _GetPaymentsHistoryByUserIDRequest_SortBy_InLookup[m.GetSortBy()]; !ok {
-		err := GetPaymentsHistoryByUserIDRequestValidationError{
+	if _, ok := _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup[m.GetSortBy()]; !ok {
+		err := GetPaymentsHistoryByAccountIDRequestValidationError{
 			field:  "SortBy",
 			reason: "value must be in list [create_at sum]",
 		}
@@ -921,8 +921,8 @@ func (m *GetPaymentsHistoryByUserIDRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if _, ok := _GetPaymentsHistoryByUserIDRequest_Sort_InLookup[m.GetSort()]; !ok {
-		err := GetPaymentsHistoryByUserIDRequestValidationError{
+	if _, ok := _GetPaymentsHistoryByAccountIDRequest_Sort_InLookup[m.GetSort()]; !ok {
+		err := GetPaymentsHistoryByAccountIDRequestValidationError{
 			field:  "Sort",
 			reason: "value must be in list [asc desc]",
 		}
@@ -932,21 +932,23 @@ func (m *GetPaymentsHistoryByUserIDRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
+	// no validation rules for UserId
+
 	if len(errors) > 0 {
-		return GetPaymentsHistoryByUserIDRequestMultiError(errors)
+		return GetPaymentsHistoryByAccountIDRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// GetPaymentsHistoryByUserIDRequestMultiError is an error wrapping multiple
+// GetPaymentsHistoryByAccountIDRequestMultiError is an error wrapping multiple
 // validation errors returned by
-// GetPaymentsHistoryByUserIDRequest.ValidateAll() if the designated
+// GetPaymentsHistoryByAccountIDRequest.ValidateAll() if the designated
 // constraints aren't met.
-type GetPaymentsHistoryByUserIDRequestMultiError []error
+type GetPaymentsHistoryByAccountIDRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m GetPaymentsHistoryByUserIDRequestMultiError) Error() string {
+func (m GetPaymentsHistoryByAccountIDRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -955,12 +957,12 @@ func (m GetPaymentsHistoryByUserIDRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m GetPaymentsHistoryByUserIDRequestMultiError) AllErrors() []error { return m }
+func (m GetPaymentsHistoryByAccountIDRequestMultiError) AllErrors() []error { return m }
 
-// GetPaymentsHistoryByUserIDRequestValidationError is the validation error
-// returned by GetPaymentsHistoryByUserIDRequest.Validate if the designated
+// GetPaymentsHistoryByAccountIDRequestValidationError is the validation error
+// returned by GetPaymentsHistoryByAccountIDRequest.Validate if the designated
 // constraints aren't met.
-type GetPaymentsHistoryByUserIDRequestValidationError struct {
+type GetPaymentsHistoryByAccountIDRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -968,24 +970,24 @@ type GetPaymentsHistoryByUserIDRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e GetPaymentsHistoryByUserIDRequestValidationError) Field() string { return e.field }
+func (e GetPaymentsHistoryByAccountIDRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e GetPaymentsHistoryByUserIDRequestValidationError) Reason() string { return e.reason }
+func (e GetPaymentsHistoryByAccountIDRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e GetPaymentsHistoryByUserIDRequestValidationError) Cause() error { return e.cause }
+func (e GetPaymentsHistoryByAccountIDRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e GetPaymentsHistoryByUserIDRequestValidationError) Key() bool { return e.key }
+func (e GetPaymentsHistoryByAccountIDRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e GetPaymentsHistoryByUserIDRequestValidationError) ErrorName() string {
-	return "GetPaymentsHistoryByUserIDRequestValidationError"
+func (e GetPaymentsHistoryByAccountIDRequestValidationError) ErrorName() string {
+	return "GetPaymentsHistoryByAccountIDRequestValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e GetPaymentsHistoryByUserIDRequestValidationError) Error() string {
+func (e GetPaymentsHistoryByAccountIDRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -997,14 +999,14 @@ func (e GetPaymentsHistoryByUserIDRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sGetPaymentsHistoryByUserIDRequest.%s: %s%s",
+		"invalid %sGetPaymentsHistoryByAccountIDRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = GetPaymentsHistoryByUserIDRequestValidationError{}
+var _ error = GetPaymentsHistoryByAccountIDRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -1012,35 +1014,35 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = GetPaymentsHistoryByUserIDRequestValidationError{}
+} = GetPaymentsHistoryByAccountIDRequestValidationError{}
 
-var _GetPaymentsHistoryByUserIDRequest_SortBy_InLookup = map[string]struct{}{
+var _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup = map[string]struct{}{
 	"create_at": {},
 	"sum":       {},
 }
 
-var _GetPaymentsHistoryByUserIDRequest_Sort_InLookup = map[string]struct{}{
+var _GetPaymentsHistoryByAccountIDRequest_Sort_InLookup = map[string]struct{}{
 	"asc":  {},
 	"desc": {},
 }
 
-// Validate checks the field values on GetPaymentsHistoryByUserIDResponse with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the first error encountered is returned, or nil if there are
-// no violations.
-func (m *GetPaymentsHistoryByUserIDResponse) Validate() error {
+// Validate checks the field values on GetPaymentsHistoryByAccountIDResponse
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the first error encountered is returned, or nil if
+// there are no violations.
+func (m *GetPaymentsHistoryByAccountIDResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on GetPaymentsHistoryByUserIDResponse
+// ValidateAll checks the field values on GetPaymentsHistoryByAccountIDResponse
 // with the rules defined in the proto definition for this message. If any
 // rules are violated, the result is a list of violation errors wrapped in
-// GetPaymentsHistoryByUserIDResponseMultiError, or nil if none found.
-func (m *GetPaymentsHistoryByUserIDResponse) ValidateAll() error {
+// GetPaymentsHistoryByAccountIDResponseMultiError, or nil if none found.
+func (m *GetPaymentsHistoryByAccountIDResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *GetPaymentsHistoryByUserIDResponse) validate(all bool) error {
+func (m *GetPaymentsHistoryByAccountIDResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -1054,7 +1056,7 @@ func (m *GetPaymentsHistoryByUserIDResponse) validate(all bool) error {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, GetPaymentsHistoryByUserIDResponseValidationError{
+					errors = append(errors, GetPaymentsHistoryByAccountIDResponseValidationError{
 						field:  fmt.Sprintf("Payments[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
@@ -1062,7 +1064,7 @@ func (m *GetPaymentsHistoryByUserIDResponse) validate(all bool) error {
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, GetPaymentsHistoryByUserIDResponseValidationError{
+					errors = append(errors, GetPaymentsHistoryByAccountIDResponseValidationError{
 						field:  fmt.Sprintf("Payments[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
@@ -1071,7 +1073,7 @@ func (m *GetPaymentsHistoryByUserIDResponse) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return GetPaymentsHistoryByUserIDResponseValidationError{
+				return GetPaymentsHistoryByAccountIDResponseValidationError{
 					field:  fmt.Sprintf("Payments[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -1084,20 +1086,20 @@ func (m *GetPaymentsHistoryByUserIDResponse) validate(all bool) error {
 	// no validation rules for Total
 
 	if len(errors) > 0 {
-		return GetPaymentsHistoryByUserIDResponseMultiError(errors)
+		return GetPaymentsHistoryByAccountIDResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// GetPaymentsHistoryByUserIDResponseMultiError is an error wrapping multiple
-// validation errors returned by
-// GetPaymentsHistoryByUserIDResponse.ValidateAll() if the designated
+// GetPaymentsHistoryByAccountIDResponseMultiError is an error wrapping
+// multiple validation errors returned by
+// GetPaymentsHistoryByAccountIDResponse.ValidateAll() if the designated
 // constraints aren't met.
-type GetPaymentsHistoryByUserIDResponseMultiError []error
+type GetPaymentsHistoryByAccountIDResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m GetPaymentsHistoryByUserIDResponseMultiError) Error() string {
+func (m GetPaymentsHistoryByAccountIDResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -1106,12 +1108,12 @@ func (m GetPaymentsHistoryByUserIDResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m GetPaymentsHistoryByUserIDResponseMultiError) AllErrors() []error { return m }
+func (m GetPaymentsHistoryByAccountIDResponseMultiError) AllErrors() []error { return m }
 
-// GetPaymentsHistoryByUserIDResponseValidationError is the validation error
-// returned by GetPaymentsHistoryByUserIDResponse.Validate if the designated
-// constraints aren't met.
-type GetPaymentsHistoryByUserIDResponseValidationError struct {
+// GetPaymentsHistoryByAccountIDResponseValidationError is the validation error
+// returned by GetPaymentsHistoryByAccountIDResponse.Validate if the
+// designated constraints aren't met.
+type GetPaymentsHistoryByAccountIDResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -1119,24 +1121,24 @@ type GetPaymentsHistoryByUserIDResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e GetPaymentsHistoryByUserIDResponseValidationError) Field() string { return e.field }
+func (e GetPaymentsHistoryByAccountIDResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e GetPaymentsHistoryByUserIDResponseValidationError) Reason() string { return e.reason }
+func (e GetPaymentsHistoryByAccountIDResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e GetPaymentsHistoryByUserIDResponseValidationError) Cause() error { return e.cause }
+func (e GetPaymentsHistoryByAccountIDResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e GetPaymentsHistoryByUserIDResponseValidationError) Key() bool { return e.key }
+func (e GetPaymentsHistoryByAccountIDResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e GetPaymentsHistoryByUserIDResponseValidationError) ErrorName() string {
-	return "GetPaymentsHistoryByUserIDResponseValidationError"
+func (e GetPaymentsHistoryByAccountIDResponseValidationError) ErrorName() string {
+	return "GetPaymentsHistoryByAccountIDResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e GetPaymentsHistoryByUserIDResponseValidationError) Error() string {
+func (e GetPaymentsHistoryByAccountIDResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -1148,14 +1150,14 @@ func (e GetPaymentsHistoryByUserIDResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sGetPaymentsHistoryByUserIDResponse.%s: %s%s",
+		"invalid %sGetPaymentsHistoryByAccountIDResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = GetPaymentsHistoryByUserIDResponseValidationError{}
+var _ error = GetPaymentsHistoryByAccountIDResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -1163,7 +1165,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = GetPaymentsHistoryByUserIDResponseValidationError{}
+} = GetPaymentsHistoryByAccountIDResponseValidationError{}
 
 // Validate checks the field values on Payment with the rules defined in the
 // proto definition for this message. If any rules are violated, the first

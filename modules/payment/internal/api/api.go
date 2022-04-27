@@ -4,6 +4,9 @@ package api
 import (
 	"context"
 	"errors"
+	"rest-on-grpc-gateway/modules/payment/internal/domain"
+	"rest-on-grpc-gateway/modules/payment/internal/filters"
+	"rest-on-grpc-gateway/pkg/grpc_helper"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -11,14 +14,13 @@ import (
 	"google.golang.org/grpc/status"
 
 	paymentpb "rest-on-grpc-gateway/api/proto/payment/v1"
-	"rest-on-grpc-gateway/modules/payment/internal/domain"
-	"rest-on-grpc-gateway/modules/payment/internal/filters"
-	"rest-on-grpc-gateway/pkg/grpc_helper"
 )
 
 var (
-	errUncorrectedFilter = errors.New("uncorrected filter")
+	errUncorrectedSort   = errors.New("uncorrected sort")
 	errUncorrectedPaging = errors.New("uncorrected paging")
+	errNotFound          = errors.New("not found")
+	errNotEnoughMoney    = errors.New("not enough money")
 )
 
 // application for easy test.
@@ -26,7 +28,7 @@ type application interface {
 	CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error)
 	GetAccountByUserID(ctx context.Context, accountID int, currency string) (*domain.Account, error)
 	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error)
-	GetPaymentHistoryByAccountID(ctx context.Context, userID, accountID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
+	GetPaymentHistoryByAccountID(ctx context.Context, userID, accountID int, paging, sort filters.FilterContract) ([]domain.Payment, int, error)
 	GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
 }
 
@@ -52,9 +54,13 @@ func apiError(err error) *status.Status {
 
 	code := codes.Internal
 	switch {
+	case errors.Is(err, errNotFound):
+		code = codes.NotFound
+	case errors.Is(err, errNotEnoughMoney):
+		code = codes.InvalidArgument
 	case errors.Is(err, errUncorrectedPaging):
 		code = codes.InvalidArgument
-	case errors.Is(err, errUncorrectedFilter):
+	case errors.Is(err, errUncorrectedSort):
 		code = codes.InvalidArgument
 	case errors.Is(err, context.DeadlineExceeded):
 		code = codes.DeadlineExceeded

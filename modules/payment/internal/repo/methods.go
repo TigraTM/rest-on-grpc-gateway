@@ -3,12 +3,11 @@ package repo
 import (
 	"context"
 	"fmt"
+	"rest-on-grpc-gateway/modules/payment/internal/domain"
+	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/shopspring/decimal"
-
-	"rest-on-grpc-gateway/modules/payment/internal/domain"
-	"rest-on-grpc-gateway/modules/payment/internal/filters"
 )
 
 // GetAccountsByUserID get accounts by user id in db.
@@ -48,7 +47,7 @@ func (r *Repo) GetAccountByID(ctx context.Context, accountID int) (*domain.Accou
 					WHERE
 						id = $1`
 
-	var account = Account{}
+	account := Account{}
 	err := r.DB.GetContext(ctx, &account, query, accountID)
 	if err != nil {
 		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
@@ -59,7 +58,8 @@ func (r *Repo) GetAccountByID(ctx context.Context, accountID int) (*domain.Accou
 
 // GetPaymentHistoryByAccountID get payment history by account id in db.
 func (r *Repo) GetPaymentHistoryByAccountID(ctx context.Context, accountID int, paging, filters filters.FilterContract) (
-	_ []domain.Payment, total int, err error) {
+	_ []domain.Payment, total int, err error,
+) {
 	query := squirrel.Select("id",
 		"create_at",
 		"update_at",
@@ -121,7 +121,9 @@ func (r *Repo) getTotal(ctx context.Context, query squirrel.SelectBuilder) (tota
 	if err != nil {
 		return 0, fmt.Errorf("query.ToSql: %w", err)
 	}
+	//nolint:forbidigo // ...
 	fmt.Println("sql query total ", sqlQueryTotal)
+
 	err = r.DB.GetContext(ctx, &total, sqlQueryTotal, argsTotal)
 	if err != nil {
 		return 0, fmt.Errorf("db.GetContext: %w", convertErr(err))

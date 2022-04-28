@@ -28,7 +28,6 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 		Sum:           sum,
 		CompanyName:   in.CompanyName,
 		Category:      in.Category,
-		AccountID:     int(in.AccountId),
 	}
 
 	err = a.app.CreatePayment(ctx, int(in.UserId), newPayment)
@@ -42,13 +41,12 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 	}
 }
 
-// GetAccountByUserID implements userpb.UserAPIServer.
-func (a *api) GetAccountByUserID(ctx context.Context, in *paymentpb.GetAccountByUserIDRequest) (*paymentpb.GetAccountByUserIDResponse, error) {
-	account, err := a.app.GetAccountByUserID(ctx, int(in.UserId), in.Currency)
+// GetAccountByAccountNumber implements userpb.UserAPIServer.
+func (a *api) GetAccountByAccountNumber(ctx context.Context, in *paymentpb.GetAccountByUserIDRequest) (*paymentpb.GetAccountByUserIDResponse, error) {
+	account, err := a.app.GetAccountByAccountNumber(ctx, in.AccountNumber, in.Currency)
 	switch {
 	case err == nil:
 		return &paymentpb.GetAccountByUserIDResponse{
-			UserId: int64(account.UserID),
 			Balance: &decimalpb.Decimal{
 				Value: account.Balance.String(),
 			},
@@ -100,8 +98,8 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 	}
 }
 
-// GetPaymentsHistoryByAccountID implements userpb.UserAPIServer.
-func (a *api) GetPaymentsHistoryByAccountID(ctx context.Context, in *paymentpb.GetPaymentsHistoryByAccountIDRequest) (*paymentpb.GetPaymentsHistoryByAccountIDResponse, error) {
+// GetPaymentsHistoryByAccountNumber implements userpb.UserAPIServer.
+func (a *api) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *paymentpb.GetPaymentsHistoryByAccountIDRequest) (*paymentpb.GetPaymentsHistoryByAccountIDResponse, error) {
 	paging, err := getPaging(in)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", errUncorrectedPaging, err.Error())
@@ -112,7 +110,7 @@ func (a *api) GetPaymentsHistoryByAccountID(ctx context.Context, in *paymentpb.G
 		return nil, fmt.Errorf("%w: %s", errUncorrectedSort, err.Error())
 	}
 
-	payments, total, err := a.app.GetPaymentHistoryByAccountID(ctx, int(in.UserId), int(in.AccountId), &paging, &sort)
+	payments, total, err := a.app.GetPaymentHistoryByAccountID(ctx, int(in.UserId), in.AccountNumber, &paging, &sort)
 	if err != nil {
 		return nil, fmt.Errorf("a.app.GetPaymentHistoryByAccountID: %w", err)
 	}
@@ -128,7 +126,6 @@ func (a *api) GetPaymentsHistoryByAccountID(ctx context.Context, in *paymentpb.G
 			},
 			CompanyName: payments[i].CompanyName,
 			Category:    payments[i].Category,
-			AccountId:   int64(payments[i].AccountID),
 		}
 	}
 

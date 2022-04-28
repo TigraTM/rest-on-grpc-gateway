@@ -21,9 +21,9 @@ var (
 type (
 	// Repo interface for payment database.
 	Repo interface {
-		GetAccountByID(ctx context.Context, accountID int) (*domain.Account, error)
+		GetAccountByAccountNumber(ctx context.Context, accountNumber string) (*domain.Account, error)
 		GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
-		GetPaymentHistoryByAccountID(ctx context.Context, accountID int, paging, filters filters.FilterContract) ([]domain.Payment, int, error)
+		GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (_ []domain.Payment, total int, err error)
 		CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error
 	}
 	// ExchangeClient interface to convert balance to other currencies.

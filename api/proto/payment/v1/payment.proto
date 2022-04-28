@@ -17,11 +17,12 @@ service PaymentAPI {
   //
   // ```
   // Example request:
-  //    sum: '99.99'
+  //    sum: {
+  //		  'value': '1000'
+  //	  }
   //    company_name: 'AppStore'
   //    category: 'supermarkets'
-  //    user_id: 1                // query param
-  //    account_id: 1
+  //    user_id: 1
   //    account_number: '123456'
   // ```
   //
@@ -40,22 +41,24 @@ service PaymentAPI {
   //
   // ```
   // Example request:
-  //    id: 1           // path param
-  //    currency: 'USD' // query param
+  //    account_number: '123' // path param
+  //    currency: 'USD'       // query param
   // ```
   //
   // ```
   // Example response:
   //    user_id: 1
-  //    sum: '99.99'
+  //    sum: {
+  // 		  'value': '1000'
+  // 	  }
   //    currency: 'USD'
   // ```
   //
   // Specific codes:
   //    * codes.InvalidArgument
   //    * codes.NotFound
-  rpc GetAccountByUserID (GetAccountByUserIDRequest) returns (GetAccountByUserIDResponse) {
-    option (google.api.http) = {get: "/payment/api/v1/payment/accounts/{user_id}"};
+  rpc GetAccountByAccountNumber (GetAccountByUserIDRequest) returns (GetAccountByUserIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/accounts/{account_number}"};
   };
   // Transferring money between users.
   // Transferring money are made only in rubles(RUB).
@@ -63,7 +66,9 @@ service PaymentAPI {
   //
   // ```
   // Example request:
-  //    sum: '99.99'
+  //    sum: {
+  // 		  'value': '1000'
+  // 	  }
   //    sender_id: 1
   //    sender_account_id: 1
   //    sender_account_number: '123'
@@ -75,7 +80,9 @@ service PaymentAPI {
   //
   // ```
   // Example response:
-  //    sum: '99.99'
+  //    sum: {
+  // 		  'value': '1000'
+  // 	  }
   //    recipient_id: 2
   //    recipient_name: 'Artem'
   // ```
@@ -95,7 +102,7 @@ service PaymentAPI {
   //
   // ```
   // Example request:
-  //    user_id: 1      // path params
+  //    account_id: 1      // path params
   //    limit: 5        // query params
   //    offset: 0       // query params
   //    sort: create_at // query params
@@ -104,9 +111,11 @@ service PaymentAPI {
   //
   // ```
   // Example response:
-  //    id: 1
+  //    account_number: 1 // path param
   //    create_at: // FIXME: fix example time
-  //    sum: '99.99'
+  //    sum: {
+  // 		  'value': '1000'
+  // 	  }
   //    company_name: 2
   //    category: 'Artem'
   //    total: 1
@@ -115,8 +124,8 @@ service PaymentAPI {
   // Specific codes:
   //    * codes.InvalidArgument
   //    * codes.NotFound
-  rpc GetPaymentsHistoryByAccountID (GetPaymentsHistoryByAccountIDRequest) returns (GetPaymentsHistoryByAccountIDResponse) {
-    option (google.api.http) = {get: "/payment/api/v1/payment/{user_id}/history"};
+  rpc GetPaymentsHistoryByAccountNumber (GetPaymentsHistoryByAccountIDRequest) returns (GetPaymentsHistoryByAccountIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/{account_number}/history"};
   };
   //  Get accounts by user id. Without paging and filters.
   //
@@ -127,7 +136,9 @@ service PaymentAPI {
   //
   // ```
   // Example response:
-  //    balance: '99.99'
+  //    balance: {
+  // 		  'value': '1000'
+  // 	  }
   //    currency: 'RUB'
   //    account_number: '123'
   // ```
@@ -141,26 +152,24 @@ service PaymentAPI {
 }
 
 message CreatePaymentRequest {
-    google.type.Decimal sum  = 1 [(validate.rules).any.required = true];
+    google.type.Decimal sum  = 1 ;
     string     company_name  = 2 [(validate.rules).string = {min_len: 1, max_len: 50}];
     string         category  = 3 [(validate.rules).string = {min_len: 1, max_len: 50}];
     int64           user_id  = 4;
-    int64        account_id  = 5;
-    string   account_number  = 6 [(validate.rules).string = {min_len: 1, max_len: 20}];
+    string   account_number  = 5 [(validate.rules).string = {min_len: 1, max_len: 20}];
 }
 
 message CreatePaymentResponse {}
 
 message GetAccountByUserIDRequest {
-  int64   user_id = 1;
-  string currency = 2 [(validate.rules).string = {ignore_empty: true, len: 3}];
+  string  account_number = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string        currency = 2 [(validate.rules).string = {ignore_empty: true, len: 3}];
 }
 
 message GetAccountByUserIDResponse {
-  int64                 user_id = 1;
-  google.type.Decimal   balance = 2;
-  string               currency = 3;
-  string         account_number = 4;
+  google.type.Decimal   balance = 1;
+  string               currency = 2;
+  string         account_number = 3;
 }
 
 message TransferBetweenUsersRequest {
@@ -182,12 +191,12 @@ message TransferBetweenUsersResponse {
 }
 
 message GetPaymentsHistoryByAccountIDRequest {
-  int64 account_id = 1;
-  int64      limit = 2 [(validate.rules).int64 = {gte: 1, lte: 500}];
-  int64     offset = 3 [(validate.rules).int64 = {gte: 0}];
-  string   sort_by = 4 [(validate.rules).string = {in: ["create_at", "sum"]}];
-  string      sort = 5 [(validate.rules).string = {in: ["asc", "desc"]}];
-  int64    user_id = 6;
+  string account_number = 1;
+  int64           limit = 2 [(validate.rules).int64 = {gte: 1, lte: 500}];
+  int64          offset = 3 [(validate.rules).int64 = {gte: 0}];
+  string        sort_by = 4 [(validate.rules).string = {in: ["create_at", "sum"]}];
+  string           sort = 5 [(validate.rules).string = {in: ["asc", "desc"]}];
+  int64         user_id = 6;
 }
 
 message GetPaymentsHistoryByAccountIDResponse {
@@ -202,7 +211,6 @@ message Payment {
   google.type.Decimal              sum = 4 [(validate.rules).any.required = true];
   string                  company_name = 5 [(validate.rules).string = {min_len: 1, max_len: 50}];
   string                      category = 6 [(validate.rules).string = {min_len: 1, max_len: 50}];
-  int64                     account_id = 7;
 }
 
 message GetAccountsByUserIDRequest {

@@ -31,12 +31,12 @@ func toDomainAccount(account Account) *domain.Account {
 
 func toDomainPayment(payment Payment) *domain.Payment {
 	return &domain.Payment{
-		ID:          payment.ID,
-		CreateAt:    payment.CreateAt,
-		Sum:         payment.Sum,
-		CompanyName: payment.CompanyName,
-		Category:    payment.Category,
-		AccountID:   payment.AccountID,
+		ID:            payment.ID,
+		CreateAt:      payment.CreateAt,
+		Sum:           payment.Sum,
+		CompanyName:   payment.CompanyName,
+		Category:      payment.Category,
+		AccountNumber: payment.AccountNumber,
 	}
 }
 

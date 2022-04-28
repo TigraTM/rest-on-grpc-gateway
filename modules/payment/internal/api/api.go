@@ -26,9 +26,9 @@ var (
 // application for easy test.
 type application interface {
 	CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error)
-	GetAccountByUserID(ctx context.Context, accountID int, currency string) (*domain.Account, error)
+	GetAccountByAccountNumber(ctx context.Context, accountNumber, _ string) (*domain.Account, error)
 	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error)
-	GetPaymentHistoryByAccountID(ctx context.Context, userID, accountID int, paging, sort filters.FilterContract) ([]domain.Payment, int, error)
+	GetPaymentHistoryByAccountID(ctx context.Context, userID int, accountNumber string, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
 	GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
 }
 

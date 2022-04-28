@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	logStd "log"
 	"os/signal"
 	"rest-on-grpc-gateway/modules/payment"
 	"rest-on-grpc-gateway/modules/user"
+	"rest-on-grpc-gateway/pkg/serve"
 	"syscall"
 	"time"
 
@@ -44,20 +46,29 @@ func main() {
 	ctxWithLog := ctxzap.ToContext(ctx, log.Desugar())
 	go forceShutdown(ctxWithLog)
 
-	for _, service := range embeddedServices {
-		log := log.Named(service.Name())
+	if err = runServices(ctxWithLog, log); err != nil {
+		// nolint:gocritic // ...
+		log.Fatalf("failed run service: %s", err)
+	}
+}
 
-		err = service.Init(ctxWithLog, log)
+func runServices(ctx context.Context, log *zap.SugaredLogger) (err error) {
+	services := make([]func(context.Context) error, len(embeddedServices))
+	for i := range embeddedServices {
+		log := log.Named(embeddedServices[i].Name())
+
+		err = embeddedServices[i].Init(ctx, log)
 		if err != nil {
-			// nolint:gocritic // fatal will exit.
-			log.Fatalf("failed to init service: %s", err)
+			return fmt.Errorf("failed service - %s init: %w", embeddedServices[i].Name(), err)
 		}
 
-		err = service.RunServe(ctxWithLog)
-		if err != nil {
-			log.Fatalf("failed to run service: %s", err)
+		runServe := embeddedServices[i].RunServe
+		services[i] = func(ctxShutdown context.Context) error {
+			return runServe(ctxShutdown)
 		}
 	}
+
+	return serve.Start(ctx, services...)
 }
 
 func forceShutdown(ctx context.Context) {

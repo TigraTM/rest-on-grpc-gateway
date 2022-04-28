@@ -66,10 +66,10 @@ func local_request_PaymentAPI_CreatePayment_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_PaymentAPI_GetAccountByUserID_0 = &utilities.DoubleArray{Encoding: map[string]int{"user_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_PaymentAPI_GetAccountByAccountNumber_0 = &utilities.DoubleArray{Encoding: map[string]int{"account_number": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_PaymentAPI_GetAccountByUserID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAccountByUserIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -80,29 +80,29 @@ func request_PaymentAPI_GetAccountByUserID_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["user_id"]
+	val, ok = pathParams["account_number"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_number")
 	}
 
-	protoReq.UserId, err = runtime.Int64(val)
+	protoReq.AccountNumber, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_number", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByUserID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetAccountByUserID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetAccountByAccountNumber(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_PaymentAPI_GetAccountByUserID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAccountByUserIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -113,24 +113,24 @@ func local_request_PaymentAPI_GetAccountByUserID_0(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["user_id"]
+	val, ok = pathParams["account_number"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_number")
 	}
 
-	protoReq.UserId, err = runtime.Int64(val)
+	protoReq.AccountNumber, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_number", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByUserID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetAccountByUserID(ctx, &protoReq)
+	msg, err := server.GetAccountByAccountNumber(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -170,10 +170,10 @@ func local_request_PaymentAPI_TransferBetweenUsers_0(ctx context.Context, marsha
 }
 
 var (
-	filter_PaymentAPI_GetPaymentsHistoryByAccountID_0 = &utilities.DoubleArray{Encoding: map[string]int{"user_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_PaymentAPI_GetPaymentsHistoryByAccountNumber_0 = &utilities.DoubleArray{Encoding: map[string]int{"account_number": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetPaymentsHistoryByAccountIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -184,29 +184,29 @@ func request_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["user_id"]
+	val, ok = pathParams["account_number"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_number")
 	}
 
-	protoReq.UserId, err = runtime.Int64(val)
+	protoReq.AccountNumber, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_number", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetPaymentsHistoryByAccountID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetPaymentsHistoryByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetPaymentsHistoryByAccountID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetPaymentsHistoryByAccountNumber(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetPaymentsHistoryByAccountIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -217,24 +217,24 @@ func local_request_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx context.Contex
 		_   = err
 	)
 
-	val, ok = pathParams["user_id"]
+	val, ok = pathParams["account_number"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_number")
 	}
 
-	protoReq.UserId, err = runtime.Int64(val)
+	protoReq.AccountNumber, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_number", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetPaymentsHistoryByAccountID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetPaymentsHistoryByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetPaymentsHistoryByAccountID(ctx, &protoReq)
+	msg, err := server.GetPaymentsHistoryByAccountNumber(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -305,19 +305,19 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetAccountByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentAPI_GetAccountByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{user_id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{account_number}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_GetAccountByUserID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentAPI_GetAccountByAccountNumber_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -325,7 +325,7 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_GetAccountByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentAPI_GetAccountByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -353,19 +353,19 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetPaymentsHistoryByAccountID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentAPI_GetPaymentsHistoryByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{user_id}/history"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{account_number}/history"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -373,7 +373,7 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -463,24 +463,24 @@ func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetAccountByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentAPI_GetAccountByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{user_id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{account_number}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_GetAccountByUserID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentAPI_GetAccountByAccountNumber_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_GetAccountByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentAPI_GetAccountByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -505,24 +505,24 @@ func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetPaymentsHistoryByAccountID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentAPI_GetPaymentsHistoryByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{user_id}/history"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{account_number}/history"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_GetPaymentsHistoryByAccountID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -553,11 +553,11 @@ func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 var (
 	pattern_PaymentAPI_CreatePayment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"payment", "api", "v1"}, ""))
 
-	pattern_PaymentAPI_GetAccountByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"payment", "api", "v1", "accounts", "user_id"}, ""))
+	pattern_PaymentAPI_GetAccountByAccountNumber_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"payment", "api", "v1", "accounts", "account_number"}, ""))
 
 	pattern_PaymentAPI_TransferBetweenUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "transfer"}, ""))
 
-	pattern_PaymentAPI_GetPaymentsHistoryByAccountID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"payment", "api", "v1", "user_id", "history"}, ""))
+	pattern_PaymentAPI_GetPaymentsHistoryByAccountNumber_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"payment", "api", "v1", "account_number", "history"}, ""))
 
 	pattern_PaymentAPI_GetAccountsByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "accounts"}, ""))
 )
@@ -565,11 +565,11 @@ var (
 var (
 	forward_PaymentAPI_CreatePayment_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_GetAccountByUserID_0 = runtime.ForwardResponseMessage
+	forward_PaymentAPI_GetAccountByAccountNumber_0 = runtime.ForwardResponseMessage
 
 	forward_PaymentAPI_TransferBetweenUsers_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_GetPaymentsHistoryByAccountID_0 = runtime.ForwardResponseMessage
+	forward_PaymentAPI_GetPaymentsHistoryByAccountNumber_0 = runtime.ForwardResponseMessage
 
 	forward_PaymentAPI_GetAccountsByUserID_0 = runtime.ForwardResponseMessage
 )

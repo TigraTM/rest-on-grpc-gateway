@@ -19,11 +19,12 @@ type Account struct {
 
 // Payment model for work with database.
 type Payment struct {
-	ID          int             `db:"id"`
-	CreateAt    time.Time       `db:"create_at"`
-	Sum         decimal.Decimal `db:"sum"`
-	OldBalance  decimal.Decimal `db:"old_balance"`
-	CompanyName string          `db:"company_name"`
-	Category    string          `db:"category"`
-	AccountID   int             `db:"account_id"`
+	ID            int             `db:"id"`
+	CreateAt      time.Time       `db:"create_at"`
+	UpdateAt      time.Time       `db:"update_at"`
+	Sum           decimal.Decimal `db:"sum"`
+	OldBalance    decimal.Decimal `db:"old_balance"`
+	CompanyName   string          `db:"company_name"`
+	Category      string          `db:"category"`
+	AccountNumber string          `db:"account_number"`
 }

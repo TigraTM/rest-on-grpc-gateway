@@ -39,7 +39,7 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 		s.log.Fatalf("couldn't get envConfig: %+v \n", err)
 	}
 
-	s.db, err = repo.New(ctx, &s.cfg.Database)
+	s.db, err = repo.New(ctx, &s.cfg.Database, appName)
 	if err != nil {
 		s.log.Fatalf("failed repo.New: %+v \n", err)
 	}

@@ -15,5 +15,4 @@ type Payment struct {
 	Sum           decimal.Decimal
 	CompanyName   string
 	Category      string
-	AccountID     int
 }

@@ -26,10 +26,10 @@ create table if not exists "payment".payment_history
     old_balance  decimal not null,
     company_name text    not null,
     category     text    not null,
-    account_id   integer not null,
+    account_number text not null ,
 
-    constraint accounts_id_fk foreign key (account_id)
-        references "payment".accounts (id)
+    constraint accounts_number_fk foreign key (account_number)
+        references "payment".accounts (account_number)
 );
 
 END;

@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
-	// Driver.
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/jmoiron/sqlx"
 
 	// Driver.
@@ -23,7 +23,7 @@ const (
 
 const postgresDriverName = "postgres"
 
-func NewPostgres(ctx context.Context, dsn, migrationDir string) (_ *Repo, err error) {
+func NewPostgres(ctx context.Context, dsn, migrationDir, moduleName string) (_ *Repo, err error) {
 	db, err := sql.Open(postgresDriverName, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sql.Open: %w", err)
@@ -38,7 +38,7 @@ func NewPostgres(ctx context.Context, dsn, migrationDir string) (_ *Repo, err er
 		err = nextErr
 	}
 
-	if err = migrateUp(fmt.Sprintf("file://%s", migrationDir), dsn); err != nil {
+	if err = migrateUp(db, fmt.Sprintf("file://%s", migrationDir), moduleName); err != nil {
 		return nil, fmt.Errorf("migrateUp: %w", err)
 	}
 
@@ -47,8 +47,15 @@ func NewPostgres(ctx context.Context, dsn, migrationDir string) (_ *Repo, err er
 	}, nil
 }
 
-func migrateUp(fileRoot, dsn string) error {
-	mig, err := migrate.New(fileRoot, dsn)
+func migrateUp(dbConn *sql.DB, fileRoot, moduleName string) error {
+	driver, err := postgres.WithInstance(dbConn, &postgres.Config{
+		MigrationsTable: fmt.Sprintf("%s_migrations", moduleName),
+	})
+	if err != nil {
+		return fmt.Errorf("postgres.WithInstance: %w", err)
+	}
+
+	mig, err := migrate.NewWithDatabaseInstance(fileRoot, "postgres", driver)
 	if err != nil {
 		return fmt.Errorf("migrate.New: %w", err)
 	}

@@ -18,8 +18,8 @@ func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Paym
 
 	// If sum is negative(example -1), then we have to check the balance after the subtraction,
 	// save the payment history and update balance.
-	if !payment.Sum.IsNegative() {
-		if err = a.checkAccountBalanceByID(ctx, userID, payment.Sum); err != nil {
+	if payment.Sum.IsNegative() {
+		if err = a.checkAccountBalanceByID(ctx, payment.AccountNumber, payment.Sum); err != nil {
 			return fmt.Errorf("a.checkingBalanceByUserID: %w", err)
 		}
 		// TODO: add create payment history|1 method for 1 user
@@ -33,10 +33,11 @@ func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Paym
 	return a.repo.CreateOrUpdateAccount(ctx, userID, payment.AccountNumber, payment.Sum)
 }
 
-// GetAccountByUserID get account by accountID.
-func (a *App) GetAccountByUserID(ctx context.Context, accountID int, _ string) (*domain.Account, error) {
+// GetAccountByAccountNumber get account by account number.
+func (a *App) GetAccountByAccountNumber(ctx context.Context, accountNumber, _ string) (*domain.Account, error) {
+	// TODO: add check if the account belongs to the user who made the request
+	return a.repo.GetAccountByAccountNumber(ctx, accountNumber)
 	// TODO: add convert in currency
-	return a.repo.GetAccountByID(ctx, accountID)
 }
 
 // TransferBetweenUsers transferring money between users.
@@ -44,7 +45,7 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 	// TODO: add check exist recipient
 	// TODO: add check exist recipient account
 
-	if err = a.checkAccountBalanceByID(ctx, transfer.SenderAccountID, transfer.Sum); err != nil {
+	if err = a.checkAccountBalanceByID(ctx, transfer.SenderAccountNumber, transfer.Sum); err != nil {
 		return nil, fmt.Errorf("a.checkingBalanceByUserID: %w", err)
 	}
 
@@ -67,9 +68,9 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 }
 
 // GetPaymentHistoryByAccountID get payment history by accountID.
-func (a *App) GetPaymentHistoryByAccountID(ctx context.Context, _, accountID int, paging, filter filters.FilterContract) ([]domain.Payment, int, error) {
+func (a *App) GetPaymentHistoryByAccountID(ctx context.Context, _ int, accountNumber string, paging, filter filters.FilterContract) ([]domain.Payment, int, error) {
 	// TODO: add check if the account belongs to the user who made the request
-	return a.repo.GetPaymentHistoryByAccountID(ctx, accountID, paging, filter)
+	return a.repo.GetPaymentHistoryByAccountNumber(ctx, accountNumber, paging, filter)
 }
 
 // GetAccountsByUserID get all accounts for user by user id.
@@ -78,8 +79,8 @@ func (a *App) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Acc
 }
 
 // checkAccountBalanceByID checks the balance in the client's account when deducting money.
-func (a *App) checkAccountBalanceByID(ctx context.Context, accountID int, sum decimal.Decimal) error {
-	senderBalance, err := a.repo.GetAccountByID(ctx, accountID)
+func (a *App) checkAccountBalanceByID(ctx context.Context, accountNumber string, sum decimal.Decimal) error {
+	senderBalance, err := a.repo.GetAccountByAccountNumber(ctx, accountNumber)
 	if err != nil {
 		return fmt.Errorf("a.repo.GetBalanceByUserID: %w", err)
 	}

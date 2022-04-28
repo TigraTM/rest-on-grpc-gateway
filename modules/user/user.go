@@ -19,7 +19,7 @@ import (
 	userpb "rest-on-grpc-gateway/api/proto/user/v1"
 )
 
-const appName = "payment"
+const appName = "user"
 
 // Service ...
 type Service struct {
@@ -42,7 +42,7 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 		s.log.Fatalf("couldn't get envConfig: %+v \n", err)
 	}
 
-	s.db, err = repo.New(ctx, &s.cfg.Database)
+	s.db, err = repo.New(ctx, &s.cfg.Database, appName)
 	if err != nil {
 		s.log.Fatalf("failed repo.New: %+v \n", err)
 	}

@@ -33,8 +33,8 @@ func (r *Repo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Ac
 	return toDomainAccounts(accounts), nil
 }
 
-// GetAccountByID get account by id in db.
-func (r *Repo) GetAccountByID(ctx context.Context, accountID int) (*domain.Account, error) {
+// GetAccountByAccountNumber get account by account number in db.
+func (r *Repo) GetAccountByAccountNumber(ctx context.Context, accountNumber string) (*domain.Account, error) {
 	const query = `SELECT 
 						id,
 						create_at,
@@ -45,10 +45,10 @@ func (r *Repo) GetAccountByID(ctx context.Context, accountID int) (*domain.Accou
 					FROM
 					    "payment".accounts
 					WHERE
-						id = $1`
+						account_number = $1`
 
 	account := Account{}
-	err := r.DB.GetContext(ctx, &account, query, accountID)
+	err := r.DB.GetContext(ctx, &account, query, accountNumber)
 	if err != nil {
 		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
 	}
@@ -56,8 +56,8 @@ func (r *Repo) GetAccountByID(ctx context.Context, accountID int) (*domain.Accou
 	return toDomainAccount(account), nil
 }
 
-// GetPaymentHistoryByAccountID get payment history by account id in db.
-func (r *Repo) GetPaymentHistoryByAccountID(ctx context.Context, accountID int, paging, filters filters.FilterContract) (
+// GetPaymentHistoryByAccountNumber get payment history by account number in db.
+func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (
 	_ []domain.Payment, total int, err error,
 ) {
 	query := squirrel.Select("id",
@@ -67,9 +67,9 @@ func (r *Repo) GetPaymentHistoryByAccountID(ctx context.Context, accountID int, 
 		"old_balance",
 		"company_name",
 		"category",
-		"account_id").
+		"account_number").
 		From(`"payment".payment_history`).
-		Where("account_id = ?", accountID)
+		Where("account_number = ?", accountNumber)
 
 	paging.ApplyTo(query)
 	filters.ApplyTo(query)

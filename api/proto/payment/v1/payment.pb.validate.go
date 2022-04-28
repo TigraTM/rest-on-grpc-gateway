@@ -57,19 +57,33 @@ func (m *CreatePaymentRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetSum() == nil {
-		err := CreatePaymentRequestValidationError{
-			field:  "Sum",
-			reason: "value is required",
+	if all {
+		switch v := interface{}(m.GetSum()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreatePaymentRequestValidationError{
+					field:  "Sum",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreatePaymentRequestValidationError{
+					field:  "Sum",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
 		}
-		if !all {
-			return err
+	} else if v, ok := interface{}(m.GetSum()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreatePaymentRequestValidationError{
+				field:  "Sum",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
 		}
-		errors = append(errors, err)
-	}
-
-	if a := m.GetSum(); a != nil {
-
 	}
 
 	if l := utf8.RuneCountInString(m.GetCompanyName()); l < 1 || l > 50 {
@@ -95,8 +109,6 @@ func (m *CreatePaymentRequest) validate(all bool) error {
 	}
 
 	// no validation rules for UserId
-
-	// no validation rules for AccountId
 
 	if l := utf8.RuneCountInString(m.GetAccountNumber()); l < 1 || l > 20 {
 		err := CreatePaymentRequestValidationError{
@@ -313,7 +325,16 @@ func (m *GetAccountByUserIDRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for UserId
+	if l := utf8.RuneCountInString(m.GetAccountNumber()); l < 1 || l > 50 {
+		err := GetAccountByUserIDRequestValidationError{
+			field:  "AccountNumber",
+			reason: "value length must be between 1 and 50 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if m.GetCurrency() != "" {
 
@@ -432,8 +453,6 @@ func (m *GetAccountByUserIDResponse) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for UserId
 
 	if all {
 		switch v := interface{}(m.GetBalance()).(type) {
@@ -886,7 +905,7 @@ func (m *GetPaymentsHistoryByAccountIDRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for AccountId
+	// no validation rules for AccountNumber
 
 	if val := m.GetLimit(); val < 1 || val > 500 {
 		err := GetPaymentsHistoryByAccountIDRequestValidationError{
@@ -1257,8 +1276,6 @@ func (m *Payment) validate(all bool) error {
 		}
 		errors = append(errors, err)
 	}
-
-	// no validation rules for AccountId
 
 	if len(errors) > 0 {
 		return PaymentMultiError(errors)

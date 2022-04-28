@@ -19,9 +19,9 @@ type Repo struct {
 }
 
 // New build and return new Repo.
-func New(ctx context.Context, dbCfg *config.Database) (_ *Repo, err error) {
+func New(ctx context.Context, dbCfg *config.Database, moduleName string) (_ *Repo, err error) {
 	r := &Repo{}
-	r.Repo, err = repo.NewPostgres(ctx, dbCfg.DSN(), dbCfg.MigrationsDir)
+	r.Repo, err = repo.NewPostgres(ctx, dbCfg.DSN(), dbCfg.MigrationsDir, moduleName)
 	if err != nil {
 		return nil, fmt.Errorf("repo.NewPostgres: %w", err)
 	}

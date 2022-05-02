@@ -20,7 +20,7 @@ type Repo struct {
 // https://github.com/jmoiron/sqlx/issues/529. As we can't distinguish
 // between sqlx and other errors except driver ones, let's hope filtering
 // driver errors is enough and there are no other non-driver regular errors.
-func (r *Repo) strict(err error) error {
+func (*Repo) strict(err error) error {
 	switch {
 	case err == nil:
 	case errors.As(err, new(*pq.Error)):
@@ -44,7 +44,7 @@ func (r *Repo) Tx(ctx context.Context, opts *sql.TxOptions, f func(*sqlx.Tx) err
 			defer func() {
 				if err := recover(); err != nil {
 					if errRollback := tx.Rollback(); errRollback != nil {
-						err = fmt.Errorf("%v: %s", err, errRollback)
+						err = fmt.Errorf("%v: %w", err, errRollback)
 					}
 					panic(err)
 				}
@@ -59,7 +59,7 @@ func (r *Repo) Tx(ctx context.Context, opts *sql.TxOptions, f func(*sqlx.Tx) err
 		if err != nil {
 			err = fmt.Errorf("failed tx: %w", err)
 		}
+
 		return err
 	}())
 }
-

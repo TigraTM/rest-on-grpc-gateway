@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 
@@ -96,10 +95,6 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 		return nil, errSameAccountNumber
 	case errors.Is(err, app.ErrTransferAmountNotCorrect):
 		return nil, errTransferAmountNotCorrect
-	case errors.Is(err, app.ErrAccountExist):
-		return nil, errAccountExist
-	case errors.Is(err, app.ErrNegativeBalance):
-		return nil, errNegativeBalance
 	default:
 		return nil, fmt.Errorf("a.app.TransferBetweenUsers: %w", err)
 	}

@@ -4,7 +4,6 @@ package payment
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/payment/internal/api"
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/config"

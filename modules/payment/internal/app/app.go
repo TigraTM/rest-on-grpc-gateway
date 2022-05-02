@@ -5,11 +5,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-
-	"github.com/jmoiron/sqlx"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
+
+	"github.com/jmoiron/sqlx"
 
 	"github.com/shopspring/decimal"
 )
@@ -20,8 +19,6 @@ var (
 	ErrNotFound                 = errors.New("not found")
 	ErrSameAccountNumber        = errors.New("same account number")
 	ErrTransferAmountNotCorrect = errors.New("transfer amount is not correct")
-	ErrAccountExist             = errors.New("account exist")
-	ErrNegativeBalance          = errors.New("negative balance")
 )
 
 //go:generate mockgen -source=app.go -destination mock.app.contracts_test.go -package app_test

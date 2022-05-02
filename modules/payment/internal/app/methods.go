@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -33,7 +32,7 @@ func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Paym
 }
 
 // GetAccountByAccountNumber get account by account number.
-func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, accountNumber, currency string) (*domain.Account, error) {
+func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, accountNumber, _ string) (*domain.Account, error) {
 	return a.repo.GetUserAccountByAccountNumber(ctx, userID, accountNumber)
 	// TODO: add convert in currency
 }

@@ -3,7 +3,6 @@ package repo
 import (
 	"database/sql"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 )

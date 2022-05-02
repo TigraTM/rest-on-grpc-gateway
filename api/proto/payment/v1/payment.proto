@@ -178,12 +178,10 @@ message GetAccountByUserIDResponse {
 message TransferBetweenUsersRequest {
   google.type.Decimal       amount = 1 [(validate.rules).any.required = true];
   int64                  sender_id = 2 [(validate.rules).int64.gte = 1];
-  int64          sender_account_id = 3 [(validate.rules).int64.gte = 1];
-  string     sender_account_number = 4;
-  int64               recipient_id = 5 [(validate.rules).int64.gte = 1];
-  int64       recipient_account_id = 6 [(validate.rules).int64.gte = 1];
-  string  recipient_account_number = 7;
-  string            recipient_name = 8 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string     sender_account_number = 3 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  int64               recipient_id = 4 [(validate.rules).int64.gte = 1];
+  string  recipient_account_number = 5 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string            recipient_name = 6 [(validate.rules).string = {min_len: 1, max_len: 50}];
 }
 
 message TransferBetweenUsersResponse {
@@ -197,7 +195,7 @@ message GetPaymentsHistoryByAccountIDRequest {
   string account_number = 1;
   int64           limit = 2 [(validate.rules).int64 = {gte: 0, lte: 500}];
   int64          offset = 3 [(validate.rules).int64 = {gte: 0}];
-  string        sort_by = 4 [(validate.rules).string = {ignore_empty: true, in: ["create_at", "amount"]}];
+  string        sort_by = 4 [(validate.rules).string = {ignore_empty: true, in: ["create_at", "amount "]}];
   string           sort = 5 [(validate.rules).string = {ignore_empty: true, in: ["asc", "desc"]}];
   int64         user_id = 6;
 }

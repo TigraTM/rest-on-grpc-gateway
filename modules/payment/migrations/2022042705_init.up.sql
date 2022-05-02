@@ -13,8 +13,7 @@ create table if not exists "payment".accounts
     user_id        integer not null,
 
     constraint user_id_account_number_constraint unique (user_id, account_number),
-    constraint account_number_constraint unique (account_number),
-    constraint balance_constraint check (balance >= 0)
+    constraint account_number_constraint unique (account_number)
 );
 
 create table if not exists "payment".payment_history

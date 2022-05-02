@@ -71,10 +71,8 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 	newTransfer := domain.Transfer{
 		Amount:                 amount,
 		SenderID:               int(in.SenderId),
-		SenderAccountID:        int(in.SenderAccountId),
 		SenderAccountNumber:    in.SenderAccountNumber,
 		RecipientID:            int(in.RecipientId),
-		RecipientAccountID:     int(in.RecipientAccountId),
 		RecipientAccountNumber: in.RecipientAccountNumber,
 		RecipientName:          in.RecipientName,
 	}
@@ -94,6 +92,14 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 		return nil, errNotFound
 	case errors.Is(err, app.ErrNotEnoughMoney):
 		return nil, errNotEnoughMoney
+	case errors.Is(err, app.ErrSameAccountNumber):
+		return nil, errSameAccountNumber
+	case errors.Is(err, app.ErrTransferAmountNotCorrect):
+		return nil, errTransferAmountNotCorrect
+	case errors.Is(err, app.ErrAccountExist):
+		return nil, errAccountExist
+	case errors.Is(err, app.ErrNegativeBalance):
+		return nil, errNegativeBalance
 	default:
 		return nil, fmt.Errorf("a.app.TransferBetweenUsers: %w", err)
 	}

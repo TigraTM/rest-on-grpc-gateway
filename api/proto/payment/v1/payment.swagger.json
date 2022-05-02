@@ -378,18 +378,10 @@
           "type": "string",
           "format": "int64"
         },
-        "senderAccountId": {
-          "type": "string",
-          "format": "int64"
-        },
         "senderAccountNumber": {
           "type": "string"
         },
         "recipientId": {
-          "type": "string",
-          "format": "int64"
-        },
-        "recipientAccountId": {
           "type": "string",
           "format": "int64"
         },

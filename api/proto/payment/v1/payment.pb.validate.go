@@ -617,18 +617,16 @@ func (m *TransferBetweenUsersRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if m.GetSenderAccountId() < 1 {
+	if l := utf8.RuneCountInString(m.GetSenderAccountNumber()); l < 1 || l > 50 {
 		err := TransferBetweenUsersRequestValidationError{
-			field:  "SenderAccountId",
-			reason: "value must be greater than or equal to 1",
+			field:  "SenderAccountNumber",
+			reason: "value length must be between 1 and 50 runes, inclusive",
 		}
 		if !all {
 			return err
 		}
 		errors = append(errors, err)
 	}
-
-	// no validation rules for SenderAccountNumber
 
 	if m.GetRecipientId() < 1 {
 		err := TransferBetweenUsersRequestValidationError{
@@ -641,18 +639,16 @@ func (m *TransferBetweenUsersRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if m.GetRecipientAccountId() < 1 {
+	if l := utf8.RuneCountInString(m.GetRecipientAccountNumber()); l < 1 || l > 50 {
 		err := TransferBetweenUsersRequestValidationError{
-			field:  "RecipientAccountId",
-			reason: "value must be greater than or equal to 1",
+			field:  "RecipientAccountNumber",
+			reason: "value length must be between 1 and 50 runes, inclusive",
 		}
 		if !all {
 			return err
 		}
 		errors = append(errors, err)
 	}
-
-	// no validation rules for RecipientAccountNumber
 
 	if l := utf8.RuneCountInString(m.GetRecipientName()); l < 1 || l > 50 {
 		err := TransferBetweenUsersRequestValidationError{
@@ -936,7 +932,7 @@ func (m *GetPaymentsHistoryByAccountIDRequest) validate(all bool) error {
 		if _, ok := _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup[m.GetSortBy()]; !ok {
 			err := GetPaymentsHistoryByAccountIDRequestValidationError{
 				field:  "SortBy",
-				reason: "value must be in list [create_at amount]",
+				reason: "value must be in list [create_at amount ]",
 			}
 			if !all {
 				return err
@@ -1047,7 +1043,7 @@ var _ interface {
 
 var _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup = map[string]struct{}{
 	"create_at": {},
-	"amount":    {},
+	"amount ":   {},
 }
 
 var _GetPaymentsHistoryByAccountIDRequest_Sort_InLookup = map[string]struct{}{

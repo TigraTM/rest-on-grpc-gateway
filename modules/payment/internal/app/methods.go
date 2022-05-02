@@ -38,7 +38,7 @@ func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, account
 	// TODO: add convert in currency
 }
 
-// TransferBetweenUsers ~transferring money between users.
+// TransferBetweenUsers transferring money between users.
 func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error) {
 	if transfer.SenderAccountNumber == transfer.RecipientAccountNumber {
 		return nil, ErrSameAccountNumber
@@ -55,13 +55,13 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 
 	// TODO: add transactions
 
-	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount); err != nil {
+	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount.Neg()); err != nil {
 		return nil, fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)
 	}
 
 	if err = a.repo.CreatePayment(ctx, domain.Payment{
 		AccountNumber: transfer.SenderAccountNumber,
-		Amount:        decimal.Decimal{},
+		Amount:        transfer.Amount.Neg(),
 		CompanyName:   transfer.RecipientName,
 		Category:      domain.PaymentCategoryTransfer,
 	}); err != nil {
@@ -73,9 +73,9 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 	}
 
 	if err = a.repo.CreatePayment(ctx, domain.Payment{
-		AccountNumber: transfer.SenderAccountNumber,
-		Amount:        decimal.Decimal{},
-		CompanyName:   transfer.RecipientName,
+		AccountNumber: transfer.RecipientAccountNumber,
+		Amount:        transfer.Amount,
+		CompanyName:   "senderName", // TODO: add sender name in session
 		Category:      domain.PaymentCategoryTransfer,
 	}); err != nil {
 		return nil, fmt.Errorf("a.repo.CreatePayment: %w", err)

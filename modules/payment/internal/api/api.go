@@ -18,11 +18,14 @@ import (
 )
 
 var (
-	errUncorrectedSort   = errors.New("uncorrected sort")
-	errUncorrectedPaging = errors.New("uncorrected paging")
-	errNotFound          = errors.New("not found")
-	errNotEnoughMoney    = errors.New("not enough money")
-	errSameAccountNumber = errors.New("sender's and receiver's accounts are the same")
+	errUncorrectedSort          = errors.New("uncorrected sort")
+	errUncorrectedPaging        = errors.New("uncorrected paging")
+	errNotFound                 = errors.New("not found")
+	errNotEnoughMoney           = errors.New("not enough money")
+	errSameAccountNumber        = errors.New("sender's and receiver's accounts are the same")
+	errTransferAmountNotCorrect = errors.New("amount of the transfer must not be negative")
+	errAccountExist             = errors.New("account exist")
+	errNegativeBalance          = errors.New("negative balance")
 )
 
 // application for easy test.
@@ -62,10 +65,16 @@ func apiError(err error) *status.Status {
 		code = codes.NotFound
 	case errors.Is(err, errNotEnoughMoney):
 		code = codes.InvalidArgument
+	case errors.Is(err, errTransferAmountNotCorrect):
+		code = codes.InvalidArgument
 	case errors.Is(err, errUncorrectedPaging):
 		code = codes.InvalidArgument
 	case errors.Is(err, errUncorrectedSort):
 		code = codes.InvalidArgument
+	case errors.Is(err, errNegativeBalance):
+		code = codes.InvalidArgument
+	case errors.Is(err, errAccountExist):
+		code = codes.AlreadyExists
 	case errors.Is(err, context.DeadlineExceeded):
 		code = codes.DeadlineExceeded
 	case errors.Is(err, context.Canceled):

@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_PaymentAPI_CreatePayment_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentExternalAPI_CreatePayment_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreatePaymentRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_PaymentAPI_CreatePayment_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func local_request_PaymentAPI_CreatePayment_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentExternalAPI_CreatePayment_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreatePaymentRequest
 	var metadata runtime.ServerMetadata
 
@@ -66,10 +66,10 @@ func local_request_PaymentAPI_CreatePayment_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_PaymentAPI_GetAccountByAccountNumber_0 = &utilities.DoubleArray{Encoding: map[string]int{"account_number": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_PaymentExternalAPI_GetAccountByAccountNumber_0 = &utilities.DoubleArray{Encoding: map[string]int{"account_number": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentExternalAPI_GetAccountByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAccountByUserIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -93,7 +93,7 @@ func request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, marshal
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByAccountNumber_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentExternalAPI_GetAccountByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -102,7 +102,7 @@ func request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, marshal
 
 }
 
-func local_request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentExternalAPI_GetAccountByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAccountByUserIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -126,7 +126,7 @@ func local_request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, m
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountByAccountNumber_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentExternalAPI_GetAccountByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -135,7 +135,7 @@ func local_request_PaymentAPI_GetAccountByAccountNumber_0(ctx context.Context, m
 
 }
 
-func request_PaymentAPI_TransferBetweenUsers_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentExternalAPI_TransferBetweenUsers_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq TransferBetweenUsersRequest
 	var metadata runtime.ServerMetadata
 
@@ -152,7 +152,7 @@ func request_PaymentAPI_TransferBetweenUsers_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_PaymentAPI_TransferBetweenUsers_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentExternalAPI_TransferBetweenUsers_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq TransferBetweenUsersRequest
 	var metadata runtime.ServerMetadata
 
@@ -170,10 +170,10 @@ func local_request_PaymentAPI_TransferBetweenUsers_0(ctx context.Context, marsha
 }
 
 var (
-	filter_PaymentAPI_GetPaymentsHistoryByAccountNumber_0 = &utilities.DoubleArray{Encoding: map[string]int{"account_number": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0 = &utilities.DoubleArray{Encoding: map[string]int{"account_number": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetPaymentsHistoryByAccountIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -197,7 +197,7 @@ func request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context,
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetPaymentsHistoryByAccountNumber_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -206,7 +206,7 @@ func request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context,
 
 }
 
-func local_request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetPaymentsHistoryByAccountIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -230,7 +230,7 @@ func local_request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Co
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetPaymentsHistoryByAccountNumber_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -240,17 +240,17 @@ func local_request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx context.Co
 }
 
 var (
-	filter_PaymentAPI_GetAccountsByUserID_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_PaymentExternalAPI_GetAccountsByUserID_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_PaymentAPI_GetAccountsByUserID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_PaymentExternalAPI_GetAccountsByUserID_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAccountsByUserIDRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountsByUserID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentExternalAPI_GetAccountsByUserID_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -259,14 +259,14 @@ func request_PaymentAPI_GetAccountsByUserID_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_PaymentAPI_GetAccountsByUserID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_PaymentExternalAPI_GetAccountsByUserID_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAccountsByUserIDRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentAPI_GetAccountsByUserID_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PaymentExternalAPI_GetAccountsByUserID_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -275,25 +275,25 @@ func local_request_PaymentAPI_GetAccountsByUserID_0(ctx context.Context, marshal
 
 }
 
-// RegisterPaymentAPIHandlerServer registers the http handlers for service PaymentAPI to "mux".
-// UnaryRPC     :call PaymentAPIServer directly.
+// RegisterPaymentExternalAPIHandlerServer registers the http handlers for service PaymentExternalAPI to "mux".
+// UnaryRPC     :call PaymentExternalAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterPaymentAPIHandlerFromEndpoint instead.
-func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server PaymentAPIServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterPaymentExternalAPIHandlerFromEndpoint instead.
+func RegisterPaymentExternalAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server PaymentExternalAPIServer) error {
 
-	mux.Handle("POST", pattern_PaymentAPI_CreatePayment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_PaymentExternalAPI_CreatePayment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/CreatePayment", runtime.WithHTTPPathPattern("/payment/api/v1/payment"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/CreatePayment", runtime.WithHTTPPathPattern("/payment/api/v1/payment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_CreatePayment_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentExternalAPI_CreatePayment_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -301,23 +301,23 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_CreatePayment_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_CreatePayment_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetAccountByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentExternalAPI_GetAccountByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{account_number}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{account_number}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_GetAccountByAccountNumber_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentExternalAPI_GetAccountByAccountNumber_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -325,23 +325,23 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_GetAccountByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_GetAccountByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_PaymentAPI_TransferBetweenUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_PaymentExternalAPI_TransferBetweenUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/TransferBetweenUsers", runtime.WithHTTPPathPattern("/payment/api/v1/payment/transfer"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/TransferBetweenUsers", runtime.WithHTTPPathPattern("/payment/api/v1/payment/transfer"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_TransferBetweenUsers_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentExternalAPI_TransferBetweenUsers_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -349,23 +349,23 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_TransferBetweenUsers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_TransferBetweenUsers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetPaymentsHistoryByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{account_number}/history"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/GetPaymentsHistoryByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{account_number}/history"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -373,23 +373,23 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetAccountsByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentExternalAPI_GetAccountsByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountsByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountsByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PaymentAPI_GetAccountsByUserID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PaymentExternalAPI_GetAccountsByUserID_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -397,16 +397,16 @@ func RegisterPaymentAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_PaymentAPI_GetAccountsByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_GetAccountsByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterPaymentAPIHandlerFromEndpoint is same as RegisterPaymentAPIHandler but
+// RegisterPaymentExternalAPIHandlerFromEndpoint is same as RegisterPaymentExternalAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterPaymentAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterPaymentExternalAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -426,124 +426,124 @@ func RegisterPaymentAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.Ser
 		}()
 	}()
 
-	return RegisterPaymentAPIHandler(ctx, mux, conn)
+	return RegisterPaymentExternalAPIHandler(ctx, mux, conn)
 }
 
-// RegisterPaymentAPIHandler registers the http handlers for service PaymentAPI to "mux".
+// RegisterPaymentExternalAPIHandler registers the http handlers for service PaymentExternalAPI to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterPaymentAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterPaymentAPIHandlerClient(ctx, mux, NewPaymentAPIClient(conn))
+func RegisterPaymentExternalAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterPaymentExternalAPIHandlerClient(ctx, mux, NewPaymentExternalAPIClient(conn))
 }
 
-// RegisterPaymentAPIHandlerClient registers the http handlers for service PaymentAPI
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "PaymentAPIClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "PaymentAPIClient"
+// RegisterPaymentExternalAPIHandlerClient registers the http handlers for service PaymentExternalAPI
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "PaymentExternalAPIClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "PaymentExternalAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "PaymentAPIClient" to call the correct interceptors.
-func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client PaymentAPIClient) error {
+// "PaymentExternalAPIClient" to call the correct interceptors.
+func RegisterPaymentExternalAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client PaymentExternalAPIClient) error {
 
-	mux.Handle("POST", pattern_PaymentAPI_CreatePayment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_PaymentExternalAPI_CreatePayment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/CreatePayment", runtime.WithHTTPPathPattern("/payment/api/v1/payment"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/CreatePayment", runtime.WithHTTPPathPattern("/payment/api/v1/payment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_CreatePayment_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentExternalAPI_CreatePayment_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_CreatePayment_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_CreatePayment_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetAccountByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentExternalAPI_GetAccountByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{account_number}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts/{account_number}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_GetAccountByAccountNumber_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentExternalAPI_GetAccountByAccountNumber_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_GetAccountByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_GetAccountByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_PaymentAPI_TransferBetweenUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_PaymentExternalAPI_TransferBetweenUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/TransferBetweenUsers", runtime.WithHTTPPathPattern("/payment/api/v1/payment/transfer"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/TransferBetweenUsers", runtime.WithHTTPPathPattern("/payment/api/v1/payment/transfer"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_TransferBetweenUsers_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentExternalAPI_TransferBetweenUsers_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_TransferBetweenUsers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_TransferBetweenUsers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetPaymentsHistoryByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{account_number}/history"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/GetPaymentsHistoryByAccountNumber", runtime.WithHTTPPathPattern("/payment/api/v1/payment/{account_number}/history"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_GetPaymentsHistoryByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PaymentAPI_GetAccountsByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PaymentExternalAPI_GetAccountsByUserID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentAPI/GetAccountsByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountsByUserID", runtime.WithHTTPPathPattern("/payment/api/v1/payment/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PaymentAPI_GetAccountsByUserID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PaymentExternalAPI_GetAccountsByUserID_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PaymentAPI_GetAccountsByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PaymentExternalAPI_GetAccountsByUserID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -551,25 +551,25 @@ func RegisterPaymentAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 }
 
 var (
-	pattern_PaymentAPI_CreatePayment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"payment", "api", "v1"}, ""))
+	pattern_PaymentExternalAPI_CreatePayment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"payment", "api", "v1"}, ""))
 
-	pattern_PaymentAPI_GetAccountByAccountNumber_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"payment", "api", "v1", "accounts", "account_number"}, ""))
+	pattern_PaymentExternalAPI_GetAccountByAccountNumber_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"payment", "api", "v1", "accounts", "account_number"}, ""))
 
-	pattern_PaymentAPI_TransferBetweenUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "transfer"}, ""))
+	pattern_PaymentExternalAPI_TransferBetweenUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "transfer"}, ""))
 
-	pattern_PaymentAPI_GetPaymentsHistoryByAccountNumber_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"payment", "api", "v1", "account_number", "history"}, ""))
+	pattern_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"payment", "api", "v1", "account_number", "history"}, ""))
 
-	pattern_PaymentAPI_GetAccountsByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "accounts"}, ""))
+	pattern_PaymentExternalAPI_GetAccountsByUserID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 2, 3}, []string{"payment", "api", "v1", "accounts"}, ""))
 )
 
 var (
-	forward_PaymentAPI_CreatePayment_0 = runtime.ForwardResponseMessage
+	forward_PaymentExternalAPI_CreatePayment_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_GetAccountByAccountNumber_0 = runtime.ForwardResponseMessage
+	forward_PaymentExternalAPI_GetAccountByAccountNumber_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_TransferBetweenUsers_0 = runtime.ForwardResponseMessage
+	forward_PaymentExternalAPI_TransferBetweenUsers_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_GetPaymentsHistoryByAccountNumber_0 = runtime.ForwardResponseMessage
+	forward_PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_0 = runtime.ForwardResponseMessage
 
-	forward_PaymentAPI_GetAccountsByUserID_0 = runtime.ForwardResponseMessage
+	forward_PaymentExternalAPI_GetAccountsByUserID_0 = runtime.ForwardResponseMessage
 )

@@ -58,11 +58,11 @@ func (m *CreatePaymentRequest) validate(all bool) error {
 	var errors []error
 
 	if all {
-		switch v := interface{}(m.GetSum()).(type) {
+		switch v := interface{}(m.GetAmount()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, CreatePaymentRequestValidationError{
-					field:  "Sum",
+					field:  "Amount",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -70,16 +70,16 @@ func (m *CreatePaymentRequest) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, CreatePaymentRequestValidationError{
-					field:  "Sum",
+					field:  "Amount",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetSum()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetAmount()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return CreatePaymentRequestValidationError{
-				field:  "Sum",
+				field:  "Amount",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -352,6 +352,8 @@ func (m *GetAccountByUserIDRequest) validate(all bool) error {
 
 	}
 
+	// no validation rules for UserId
+
 	if len(errors) > 0 {
 		return GetAccountByUserIDRequestMultiError(errors)
 	}
@@ -589,9 +591,9 @@ func (m *TransferBetweenUsersRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetSum() == nil {
+	if m.GetAmount() == nil {
 		err := TransferBetweenUsersRequestValidationError{
-			field:  "Sum",
+			field:  "Amount",
 			reason: "value is required",
 		}
 		if !all {
@@ -600,7 +602,7 @@ func (m *TransferBetweenUsersRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if a := m.GetSum(); a != nil {
+	if a := m.GetAmount(); a != nil {
 
 	}
 
@@ -767,11 +769,11 @@ func (m *TransferBetweenUsersResponse) validate(all bool) error {
 	var errors []error
 
 	if all {
-		switch v := interface{}(m.GetSum()).(type) {
+		switch v := interface{}(m.GetAmount()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, TransferBetweenUsersResponseValidationError{
-					field:  "Sum",
+					field:  "Amount",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -779,16 +781,16 @@ func (m *TransferBetweenUsersResponse) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, TransferBetweenUsersResponseValidationError{
-					field:  "Sum",
+					field:  "Amount",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetSum()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetAmount()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return TransferBetweenUsersResponseValidationError{
-				field:  "Sum",
+				field:  "Amount",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -907,10 +909,10 @@ func (m *GetPaymentsHistoryByAccountIDRequest) validate(all bool) error {
 
 	// no validation rules for AccountNumber
 
-	if val := m.GetLimit(); val < 1 || val > 500 {
+	if val := m.GetLimit(); val < 0 || val > 500 {
 		err := GetPaymentsHistoryByAccountIDRequestValidationError{
 			field:  "Limit",
-			reason: "value must be inside range [1, 500]",
+			reason: "value must be inside range [0, 500]",
 		}
 		if !all {
 			return err
@@ -929,26 +931,34 @@ func (m *GetPaymentsHistoryByAccountIDRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if _, ok := _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup[m.GetSortBy()]; !ok {
-		err := GetPaymentsHistoryByAccountIDRequestValidationError{
-			field:  "SortBy",
-			reason: "value must be in list [create_at sum]",
+	if m.GetSortBy() != "" {
+
+		if _, ok := _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup[m.GetSortBy()]; !ok {
+			err := GetPaymentsHistoryByAccountIDRequestValidationError{
+				field:  "SortBy",
+				reason: "value must be in list [create_at amount]",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
+
 	}
 
-	if _, ok := _GetPaymentsHistoryByAccountIDRequest_Sort_InLookup[m.GetSort()]; !ok {
-		err := GetPaymentsHistoryByAccountIDRequestValidationError{
-			field:  "Sort",
-			reason: "value must be in list [asc desc]",
+	if m.GetSort() != "" {
+
+		if _, ok := _GetPaymentsHistoryByAccountIDRequest_Sort_InLookup[m.GetSort()]; !ok {
+			err := GetPaymentsHistoryByAccountIDRequestValidationError{
+				field:  "Sort",
+				reason: "value must be in list [asc desc]",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
+
 	}
 
 	// no validation rules for UserId
@@ -1037,7 +1047,7 @@ var _ interface {
 
 var _GetPaymentsHistoryByAccountIDRequest_SortBy_InLookup = map[string]struct{}{
 	"create_at": {},
-	"sum":       {},
+	"amount":    {},
 }
 
 var _GetPaymentsHistoryByAccountIDRequest_Sort_InLookup = map[string]struct{}{
@@ -1240,9 +1250,9 @@ func (m *Payment) validate(all bool) error {
 
 	// no validation rules for AccountNumber
 
-	if m.GetSum() == nil {
+	if m.GetAmount() == nil {
 		err := PaymentValidationError{
-			field:  "Sum",
+			field:  "Amount",
 			reason: "value is required",
 		}
 		if !all {
@@ -1251,7 +1261,7 @@ func (m *Payment) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if a := m.GetSum(); a != nil {
+	if a := m.GetAmount(); a != nil {
 
 	}
 

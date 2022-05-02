@@ -4,6 +4,7 @@ package api
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
@@ -21,13 +22,14 @@ var (
 	errUncorrectedPaging = errors.New("uncorrected paging")
 	errNotFound          = errors.New("not found")
 	errNotEnoughMoney    = errors.New("not enough money")
+	errSameAccountNumber = errors.New("sender's and receiver's accounts are the same")
 )
 
 // application for easy test.
 type application interface {
 	CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error)
-	GetAccountByAccountNumber(ctx context.Context, accountNumber, _ string) (*domain.Account, error)
-	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error)
+	GetAccountByAccountNumber(ctx context.Context, userID int, accountNumber, currency string) (*domain.Account, error)
+	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (*domain.Transfer, error)
 	GetPaymentHistoryByAccountID(ctx context.Context, userID int, accountNumber string, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
 	GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
 }
@@ -41,7 +43,7 @@ type api struct {
 func New(log *zap.SugaredLogger, app application) *grpc.Server {
 	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
 
-	paymentpb.RegisterPaymentAPIServer(srv, &api{app: app})
+	paymentpb.RegisterPaymentExternalAPIServer(srv, &api{app: app})
 
 	return srv
 }
@@ -54,6 +56,8 @@ func apiError(err error) *status.Status {
 
 	code := codes.Internal
 	switch {
+	case errors.Is(err, errSameAccountNumber):
+		code = codes.InvalidArgument
 	case errors.Is(err, errNotFound):
 		code = codes.NotFound
 	case errors.Is(err, errNotEnoughMoney):

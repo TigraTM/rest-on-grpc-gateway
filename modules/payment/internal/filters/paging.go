@@ -34,7 +34,9 @@ func NewPaging() *Paging {
 // SetLimit set limit.
 func (p *Paging) SetLimit(limit int64) error {
 	if limit <= 0 {
-		return ErrInvalidLimit
+		p.limit = uint64(defaultLimit)
+
+		return nil
 	}
 
 	p.limit = uint64(limit)
@@ -45,7 +47,9 @@ func (p *Paging) SetLimit(limit int64) error {
 // SetOffset set offset.
 func (p *Paging) SetOffset(offset int64) error {
 	if offset < 0 {
-		return ErrInvalidOffset
+		p.offset = uint64(defaultOffset)
+
+		return nil
 	}
 
 	p.offset = uint64(offset)

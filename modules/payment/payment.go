@@ -4,6 +4,7 @@ package payment
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/api"
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/config"
@@ -60,7 +61,7 @@ func (s *Service) RunServe(ctx context.Context) error {
 		Namespace:      "payment",
 		GRPCGWPattern:  "/",
 		OpenAPIPattern: "/openapi/",
-		Register:       paymentpb.RegisterPaymentAPIHandler,
+		Register:       paymentpb.RegisterPaymentExternalAPIHandler,
 	}
 
 	err := serve.Start(

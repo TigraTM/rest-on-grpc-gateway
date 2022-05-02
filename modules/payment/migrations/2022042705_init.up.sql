@@ -19,14 +19,13 @@ create table if not exists "payment".accounts
 
 create table if not exists "payment".payment_history
 (
-    id           serial primary key,
-    create_at    timestamp default now(),
-    update_at    timestamp default now(),
-    sum          decimal not null,
-    old_balance  decimal not null,
-    company_name text    not null,
-    category     text    not null,
-    account_number text not null ,
+    id             serial primary key,
+    create_at      timestamp default now(),
+    update_at      timestamp default now(),
+    amount         decimal not null,
+    company_name   text    not null,
+    category       text    not null,
+    account_number text    not null,
 
     constraint accounts_number_fk foreign key (account_number)
         references "payment".accounts (account_number)

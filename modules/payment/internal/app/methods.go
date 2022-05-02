@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -16,51 +17,72 @@ import (
 func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error) {
 	// TODO: add check exist user, maybe helped session
 
-	// If sum is negative(example -1), then we have to check the balance after the subtraction,
-	// save the payment history and update balance.
-	if payment.Sum.IsNegative() {
-		if err = a.checkAccountBalanceByID(ctx, payment.AccountNumber, payment.Sum); err != nil {
+	// if sum is negative, need to check value account balance after the payment has been charged
+	if payment.Amount.IsNegative() {
+		if err = a.checkAccountBalanceByID(ctx, userID, payment.AccountNumber, payment.Amount); err != nil {
 			return fmt.Errorf("a.checkingBalanceByUserID: %w", err)
 		}
-		// TODO: add create payment history|1 method for 1 user
-		if err = a.repo.CreateOrUpdateAccount(ctx, userID, payment.AccountNumber, payment.Sum); err != nil {
-			return fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)
-		}
 	}
-	// if sim is positive(example +1), we don't check the balance and can add sum to balance.
 
-	// TODO: add create payment history|1 method for 1 user
-	return a.repo.CreateOrUpdateAccount(ctx, userID, payment.AccountNumber, payment.Sum)
+	// TODO: add transaction
+	if err = a.repo.CreateOrUpdateAccount(ctx, userID, payment.AccountNumber, payment.Amount); err != nil {
+		return fmt.Errorf("a.repo.CreateOrUpdateAccount: %w", err)
+	}
+
+	return a.repo.CreatePayment(ctx, payment)
 }
 
 // GetAccountByAccountNumber get account by account number.
-func (a *App) GetAccountByAccountNumber(ctx context.Context, accountNumber, _ string) (*domain.Account, error) {
-	// TODO: add check if the account belongs to the user who made the request
-	return a.repo.GetAccountByAccountNumber(ctx, accountNumber)
+func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, accountNumber, currency string) (*domain.Account, error) {
+	return a.repo.GetUserAccountByAccountNumber(ctx, userID, accountNumber)
 	// TODO: add convert in currency
 }
 
-// TransferBetweenUsers transferring money between users.
+// TransferBetweenUsers ~transferring money between users.
 func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error) {
-	// TODO: add check exist recipient
-	// TODO: add check exist recipient account
+	if transfer.SenderAccountNumber == transfer.RecipientAccountNumber {
+		return nil, ErrSameAccountNumber
+	}
 
-	if err = a.checkAccountBalanceByID(ctx, transfer.SenderAccountNumber, transfer.Sum); err != nil {
+	if transfer.Amount.IsNegative() {
+		return nil, ErrTransferAmountNotCorrect
+	}
+	// TODO: add check exist recipient
+
+	if err = a.checkAccountBalanceByID(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount); err != nil {
 		return nil, fmt.Errorf("a.checkingBalanceByUserID: %w", err)
 	}
 
-	// TODO: add payment history|2 methods for sender and recipient
 	// TODO: add transactions
-	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Sum); err != nil {
+
+	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount); err != nil {
 		return nil, fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)
 	}
 
-	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.RecipientID, transfer.RecipientAccountNumber, transfer.Sum); err != nil {
+	if err = a.repo.CreatePayment(ctx, domain.Payment{
+		AccountNumber: transfer.SenderAccountNumber,
+		Amount:        decimal.Decimal{},
+		CompanyName:   transfer.RecipientName,
+		Category:      domain.PaymentCategoryTransfer,
+	}); err != nil {
+		return nil, fmt.Errorf("a.repo.CreatePayment: %w", err)
+	}
+
+	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.RecipientID, transfer.RecipientAccountNumber, transfer.Amount); err != nil {
 		return nil, fmt.Errorf("a.repo.AddBalanceByUserID: %w", err)
 	}
 
+	if err = a.repo.CreatePayment(ctx, domain.Payment{
+		AccountNumber: transfer.SenderAccountNumber,
+		Amount:        decimal.Decimal{},
+		CompanyName:   transfer.RecipientName,
+		Category:      domain.PaymentCategoryTransfer,
+	}); err != nil {
+		return nil, fmt.Errorf("a.repo.CreatePayment: %w", err)
+	}
+
 	return &domain.Transfer{
-		Sum:                    transfer.Sum,
+		Amount:                 transfer.Amount,
 		RecipientID:            transfer.RecipientID,
 		RecipientAccountNumber: transfer.RecipientAccountNumber,
 		RecipientName:          transfer.RecipientName,
@@ -79,8 +101,8 @@ func (a *App) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Acc
 }
 
 // checkAccountBalanceByID checks the balance in the client's account when deducting money.
-func (a *App) checkAccountBalanceByID(ctx context.Context, accountNumber string, sum decimal.Decimal) error {
-	senderBalance, err := a.repo.GetAccountByAccountNumber(ctx, accountNumber)
+func (a *App) checkAccountBalanceByID(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error {
+	senderBalance, err := a.repo.GetUserAccountByAccountNumber(ctx, userID, accountNumber)
 	if err != nil {
 		return fmt.Errorf("a.repo.GetBalanceByUserID: %w", err)
 	}

@@ -7,12 +7,24 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+// PaymentCategory type payment category.
+type PaymentCategory string
+
+const (
+	// PaymentCategoryTransfer transferring money between users (+/- money).
+	PaymentCategoryTransfer PaymentCategory = "transfer"
+	// PaymentCategoryReplenishment cash deposit (+ money).
+	PaymentCategoryReplenishment PaymentCategory = "replenishment"
+	// PaymentCategoryWriteOff charge money (- money).
+	PaymentCategoryWriteOff PaymentCategory = "write-off"
+)
+
 // Payment domain model payment.
 type Payment struct {
 	ID            int
 	CreateAt      time.Time
 	AccountNumber string
-	Sum           decimal.Decimal
+	Amount        decimal.Decimal
 	CompanyName   string
-	Category      string
+	Category      PaymentCategory
 }

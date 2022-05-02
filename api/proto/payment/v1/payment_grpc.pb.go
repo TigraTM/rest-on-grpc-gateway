@@ -18,27 +18,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// PaymentAPIClient is the client API for PaymentAPI service.
+// PaymentExternalAPIClient is the client API for PaymentExternalAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type PaymentAPIClient interface {
-	// Create Payments. Payment can be created with positive or negative value.
-	// Payments are made only in rubles(RUB).
-	//
-	// ```
-	// Example request:
-	//    sum: {
-	//		  'value': '1000'
-	//	  }
-	//    company_name: 'AppStore'
-	//    category: 'supermarkets'
-	//    user_id: 1
-	//    account_number: '123456'
-	// ```
-	//
-	// ```
-	// Example response:
-	//    empty
+type PaymentExternalAPIClient interface {
 	// Specific codes:
 	//    * codes.InvalidArgument
 	CreatePayment(ctx context.Context, in *CreatePaymentRequest, opts ...grpc.CallOption) (*CreatePaymentResponse, error)
@@ -51,12 +34,13 @@ type PaymentAPIClient interface {
 	// Example request:
 	//    account_number: '123' // path param
 	//    currency: 'USD'       // query param
+	//    user_id: 1            // query param
 	// ```
 	//
 	// ```
 	// Example response:
 	//    user_id: 1
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    currency: 'USD'
@@ -72,7 +56,7 @@ type PaymentAPIClient interface {
 	//
 	// ```
 	// Example request:
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    sender_id: 1
@@ -86,7 +70,7 @@ type PaymentAPIClient interface {
 	//
 	// ```
 	// Example response:
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    recipient_id: 2
@@ -117,7 +101,7 @@ type PaymentAPIClient interface {
 	// Example response:
 	//    account_number: 1 // path param
 	//    create_at: // FIXME: fix example time
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    company_name: 2
@@ -133,7 +117,7 @@ type PaymentAPIClient interface {
 	//
 	// ```
 	// Example request:
-	//    user_id: 1 // path params
+	//    user_id: 1 // query params
 	// ```
 	//
 	// ```
@@ -147,84 +131,66 @@ type PaymentAPIClient interface {
 	//
 	// Specific codes:
 	//    * codes.InvalidArgument
-	//    * codes.NotFound
 	GetAccountsByUserID(ctx context.Context, in *GetAccountsByUserIDRequest, opts ...grpc.CallOption) (*GetAccountsByUserIDResponse, error)
 }
 
-type paymentAPIClient struct {
+type paymentExternalAPIClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewPaymentAPIClient(cc grpc.ClientConnInterface) PaymentAPIClient {
-	return &paymentAPIClient{cc}
+func NewPaymentExternalAPIClient(cc grpc.ClientConnInterface) PaymentExternalAPIClient {
+	return &paymentExternalAPIClient{cc}
 }
 
-func (c *paymentAPIClient) CreatePayment(ctx context.Context, in *CreatePaymentRequest, opts ...grpc.CallOption) (*CreatePaymentResponse, error) {
+func (c *paymentExternalAPIClient) CreatePayment(ctx context.Context, in *CreatePaymentRequest, opts ...grpc.CallOption) (*CreatePaymentResponse, error) {
 	out := new(CreatePaymentResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/CreatePayment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/CreatePayment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *paymentAPIClient) GetAccountByAccountNumber(ctx context.Context, in *GetAccountByUserIDRequest, opts ...grpc.CallOption) (*GetAccountByUserIDResponse, error) {
+func (c *paymentExternalAPIClient) GetAccountByAccountNumber(ctx context.Context, in *GetAccountByUserIDRequest, opts ...grpc.CallOption) (*GetAccountByUserIDResponse, error) {
 	out := new(GetAccountByUserIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/GetAccountByAccountNumber", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountByAccountNumber", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *paymentAPIClient) TransferBetweenUsers(ctx context.Context, in *TransferBetweenUsersRequest, opts ...grpc.CallOption) (*TransferBetweenUsersResponse, error) {
+func (c *paymentExternalAPIClient) TransferBetweenUsers(ctx context.Context, in *TransferBetweenUsersRequest, opts ...grpc.CallOption) (*TransferBetweenUsersResponse, error) {
 	out := new(TransferBetweenUsersResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/TransferBetweenUsers", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/TransferBetweenUsers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *paymentAPIClient) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *GetPaymentsHistoryByAccountIDRequest, opts ...grpc.CallOption) (*GetPaymentsHistoryByAccountIDResponse, error) {
+func (c *paymentExternalAPIClient) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *GetPaymentsHistoryByAccountIDRequest, opts ...grpc.CallOption) (*GetPaymentsHistoryByAccountIDResponse, error) {
 	out := new(GetPaymentsHistoryByAccountIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountNumber", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/GetPaymentsHistoryByAccountNumber", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *paymentAPIClient) GetAccountsByUserID(ctx context.Context, in *GetAccountsByUserIDRequest, opts ...grpc.CallOption) (*GetAccountsByUserIDResponse, error) {
+func (c *paymentExternalAPIClient) GetAccountsByUserID(ctx context.Context, in *GetAccountsByUserIDRequest, opts ...grpc.CallOption) (*GetAccountsByUserIDResponse, error) {
 	out := new(GetAccountsByUserIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentAPI/GetAccountsByUserID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountsByUserID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// PaymentAPIServer is the server API for PaymentAPI service.
-// All implementations should embed UnimplementedPaymentAPIServer
+// PaymentExternalAPIServer is the server API for PaymentExternalAPI service.
+// All implementations should embed UnimplementedPaymentExternalAPIServer
 // for forward compatibility
-type PaymentAPIServer interface {
-	// Create Payments. Payment can be created with positive or negative value.
-	// Payments are made only in rubles(RUB).
-	//
-	// ```
-	// Example request:
-	//    sum: {
-	//		  'value': '1000'
-	//	  }
-	//    company_name: 'AppStore'
-	//    category: 'supermarkets'
-	//    user_id: 1
-	//    account_number: '123456'
-	// ```
-	//
-	// ```
-	// Example response:
-	//    empty
+type PaymentExternalAPIServer interface {
 	// Specific codes:
 	//    * codes.InvalidArgument
 	CreatePayment(context.Context, *CreatePaymentRequest) (*CreatePaymentResponse, error)
@@ -237,12 +203,13 @@ type PaymentAPIServer interface {
 	// Example request:
 	//    account_number: '123' // path param
 	//    currency: 'USD'       // query param
+	//    user_id: 1            // query param
 	// ```
 	//
 	// ```
 	// Example response:
 	//    user_id: 1
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    currency: 'USD'
@@ -258,7 +225,7 @@ type PaymentAPIServer interface {
 	//
 	// ```
 	// Example request:
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    sender_id: 1
@@ -272,7 +239,7 @@ type PaymentAPIServer interface {
 	//
 	// ```
 	// Example response:
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    recipient_id: 2
@@ -303,7 +270,7 @@ type PaymentAPIServer interface {
 	// Example response:
 	//    account_number: 1 // path param
 	//    create_at: // FIXME: fix example time
-	//    sum: {
+	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
 	//    company_name: 2
@@ -319,7 +286,7 @@ type PaymentAPIServer interface {
 	//
 	// ```
 	// Example request:
-	//    user_id: 1 // path params
+	//    user_id: 1 // query params
 	// ```
 	//
 	// ```
@@ -333,157 +300,156 @@ type PaymentAPIServer interface {
 	//
 	// Specific codes:
 	//    * codes.InvalidArgument
-	//    * codes.NotFound
 	GetAccountsByUserID(context.Context, *GetAccountsByUserIDRequest) (*GetAccountsByUserIDResponse, error)
 }
 
-// UnimplementedPaymentAPIServer should be embedded to have forward compatible implementations.
-type UnimplementedPaymentAPIServer struct {
+// UnimplementedPaymentExternalAPIServer should be embedded to have forward compatible implementations.
+type UnimplementedPaymentExternalAPIServer struct {
 }
 
-func (UnimplementedPaymentAPIServer) CreatePayment(context.Context, *CreatePaymentRequest) (*CreatePaymentResponse, error) {
+func (UnimplementedPaymentExternalAPIServer) CreatePayment(context.Context, *CreatePaymentRequest) (*CreatePaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePayment not implemented")
 }
-func (UnimplementedPaymentAPIServer) GetAccountByAccountNumber(context.Context, *GetAccountByUserIDRequest) (*GetAccountByUserIDResponse, error) {
+func (UnimplementedPaymentExternalAPIServer) GetAccountByAccountNumber(context.Context, *GetAccountByUserIDRequest) (*GetAccountByUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountByAccountNumber not implemented")
 }
-func (UnimplementedPaymentAPIServer) TransferBetweenUsers(context.Context, *TransferBetweenUsersRequest) (*TransferBetweenUsersResponse, error) {
+func (UnimplementedPaymentExternalAPIServer) TransferBetweenUsers(context.Context, *TransferBetweenUsersRequest) (*TransferBetweenUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransferBetweenUsers not implemented")
 }
-func (UnimplementedPaymentAPIServer) GetPaymentsHistoryByAccountNumber(context.Context, *GetPaymentsHistoryByAccountIDRequest) (*GetPaymentsHistoryByAccountIDResponse, error) {
+func (UnimplementedPaymentExternalAPIServer) GetPaymentsHistoryByAccountNumber(context.Context, *GetPaymentsHistoryByAccountIDRequest) (*GetPaymentsHistoryByAccountIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPaymentsHistoryByAccountNumber not implemented")
 }
-func (UnimplementedPaymentAPIServer) GetAccountsByUserID(context.Context, *GetAccountsByUserIDRequest) (*GetAccountsByUserIDResponse, error) {
+func (UnimplementedPaymentExternalAPIServer) GetAccountsByUserID(context.Context, *GetAccountsByUserIDRequest) (*GetAccountsByUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountsByUserID not implemented")
 }
 
-// UnsafePaymentAPIServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PaymentAPIServer will
+// UnsafePaymentExternalAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PaymentExternalAPIServer will
 // result in compilation errors.
-type UnsafePaymentAPIServer interface {
-	mustEmbedUnimplementedPaymentAPIServer()
+type UnsafePaymentExternalAPIServer interface {
+	mustEmbedUnimplementedPaymentExternalAPIServer()
 }
 
-func RegisterPaymentAPIServer(s grpc.ServiceRegistrar, srv PaymentAPIServer) {
-	s.RegisterService(&PaymentAPI_ServiceDesc, srv)
+func RegisterPaymentExternalAPIServer(s grpc.ServiceRegistrar, srv PaymentExternalAPIServer) {
+	s.RegisterService(&PaymentExternalAPI_ServiceDesc, srv)
 }
 
-func _PaymentAPI_CreatePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentExternalAPI_CreatePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreatePaymentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentAPIServer).CreatePayment(ctx, in)
+		return srv.(PaymentExternalAPIServer).CreatePayment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.payment.v1.PaymentAPI/CreatePayment",
+		FullMethod: "/api.proto.payment.v1.PaymentExternalAPI/CreatePayment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentAPIServer).CreatePayment(ctx, req.(*CreatePaymentRequest))
+		return srv.(PaymentExternalAPIServer).CreatePayment(ctx, req.(*CreatePaymentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PaymentAPI_GetAccountByAccountNumber_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentExternalAPI_GetAccountByAccountNumber_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAccountByUserIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentAPIServer).GetAccountByAccountNumber(ctx, in)
+		return srv.(PaymentExternalAPIServer).GetAccountByAccountNumber(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.payment.v1.PaymentAPI/GetAccountByAccountNumber",
+		FullMethod: "/api.proto.payment.v1.PaymentExternalAPI/GetAccountByAccountNumber",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentAPIServer).GetAccountByAccountNumber(ctx, req.(*GetAccountByUserIDRequest))
+		return srv.(PaymentExternalAPIServer).GetAccountByAccountNumber(ctx, req.(*GetAccountByUserIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PaymentAPI_TransferBetweenUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentExternalAPI_TransferBetweenUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TransferBetweenUsersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentAPIServer).TransferBetweenUsers(ctx, in)
+		return srv.(PaymentExternalAPIServer).TransferBetweenUsers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.payment.v1.PaymentAPI/TransferBetweenUsers",
+		FullMethod: "/api.proto.payment.v1.PaymentExternalAPI/TransferBetweenUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentAPIServer).TransferBetweenUsers(ctx, req.(*TransferBetweenUsersRequest))
+		return srv.(PaymentExternalAPIServer).TransferBetweenUsers(ctx, req.(*TransferBetweenUsersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PaymentAPI_GetPaymentsHistoryByAccountNumber_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetPaymentsHistoryByAccountIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentAPIServer).GetPaymentsHistoryByAccountNumber(ctx, in)
+		return srv.(PaymentExternalAPIServer).GetPaymentsHistoryByAccountNumber(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.payment.v1.PaymentAPI/GetPaymentsHistoryByAccountNumber",
+		FullMethod: "/api.proto.payment.v1.PaymentExternalAPI/GetPaymentsHistoryByAccountNumber",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentAPIServer).GetPaymentsHistoryByAccountNumber(ctx, req.(*GetPaymentsHistoryByAccountIDRequest))
+		return srv.(PaymentExternalAPIServer).GetPaymentsHistoryByAccountNumber(ctx, req.(*GetPaymentsHistoryByAccountIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PaymentAPI_GetAccountsByUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentExternalAPI_GetAccountsByUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAccountsByUserIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentAPIServer).GetAccountsByUserID(ctx, in)
+		return srv.(PaymentExternalAPIServer).GetAccountsByUserID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.payment.v1.PaymentAPI/GetAccountsByUserID",
+		FullMethod: "/api.proto.payment.v1.PaymentExternalAPI/GetAccountsByUserID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentAPIServer).GetAccountsByUserID(ctx, req.(*GetAccountsByUserIDRequest))
+		return srv.(PaymentExternalAPIServer).GetAccountsByUserID(ctx, req.(*GetAccountsByUserIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// PaymentAPI_ServiceDesc is the grpc.ServiceDesc for PaymentAPI service.
+// PaymentExternalAPI_ServiceDesc is the grpc.ServiceDesc for PaymentExternalAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var PaymentAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.proto.payment.v1.PaymentAPI",
-	HandlerType: (*PaymentAPIServer)(nil),
+var PaymentExternalAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "api.proto.payment.v1.PaymentExternalAPI",
+	HandlerType: (*PaymentExternalAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreatePayment",
-			Handler:    _PaymentAPI_CreatePayment_Handler,
+			Handler:    _PaymentExternalAPI_CreatePayment_Handler,
 		},
 		{
 			MethodName: "GetAccountByAccountNumber",
-			Handler:    _PaymentAPI_GetAccountByAccountNumber_Handler,
+			Handler:    _PaymentExternalAPI_GetAccountByAccountNumber_Handler,
 		},
 		{
 			MethodName: "TransferBetweenUsers",
-			Handler:    _PaymentAPI_TransferBetweenUsers_Handler,
+			Handler:    _PaymentExternalAPI_TransferBetweenUsers_Handler,
 		},
 		{
 			MethodName: "GetPaymentsHistoryByAccountNumber",
-			Handler:    _PaymentAPI_GetPaymentsHistoryByAccountNumber_Handler,
+			Handler:    _PaymentExternalAPI_GetPaymentsHistoryByAccountNumber_Handler,
 		},
 		{
 			MethodName: "GetAccountsByUserID",
-			Handler:    _PaymentAPI_GetAccountsByUserID_Handler,
+			Handler:    _PaymentExternalAPI_GetAccountsByUserID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

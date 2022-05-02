@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 
@@ -18,16 +19,16 @@ import (
 
 // CreatePayment implements userpb.UserAPIServer.
 func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequest) (*paymentpb.CreatePaymentResponse, error) {
-	sum, err := decimal.NewFromString(in.Sum.Value)
+	amount, err := decimal.NewFromString(in.Amount.Value)
 	if err != nil {
 		return nil, fmt.Errorf("decimal.NewFromString: %w", err)
 	}
 
 	newPayment := domain.Payment{
 		AccountNumber: in.AccountNumber,
-		Sum:           sum,
+		Amount:        amount,
 		CompanyName:   in.CompanyName,
-		Category:      in.Category,
+		Category:      domain.PaymentCategory(in.Category),
 	}
 
 	err = a.app.CreatePayment(ctx, int(in.UserId), newPayment)
@@ -43,7 +44,7 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 
 // GetAccountByAccountNumber implements userpb.UserAPIServer.
 func (a *api) GetAccountByAccountNumber(ctx context.Context, in *paymentpb.GetAccountByUserIDRequest) (*paymentpb.GetAccountByUserIDResponse, error) {
-	account, err := a.app.GetAccountByAccountNumber(ctx, in.AccountNumber, in.Currency)
+	account, err := a.app.GetAccountByAccountNumber(ctx, int(in.UserId), in.AccountNumber, in.Currency)
 	switch {
 	case err == nil:
 		return &paymentpb.GetAccountByUserIDResponse{
@@ -62,13 +63,13 @@ func (a *api) GetAccountByAccountNumber(ctx context.Context, in *paymentpb.GetAc
 
 // TransferBetweenUsers implements userpb.UserAPIServer.
 func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBetweenUsersRequest) (*paymentpb.TransferBetweenUsersResponse, error) {
-	sum, err := decimal.NewFromString(in.Sum.Value)
+	amount, err := decimal.NewFromString(in.Amount.Value)
 	if err != nil {
 		return nil, fmt.Errorf("decimal.NewFromString: %w", err)
 	}
 
 	newTransfer := domain.Transfer{
-		Sum:                    sum,
+		Amount:                 amount,
 		SenderID:               int(in.SenderId),
 		SenderAccountID:        int(in.SenderAccountId),
 		SenderAccountNumber:    in.SenderAccountNumber,
@@ -82,8 +83,8 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 	switch {
 	case err == nil:
 		return &paymentpb.TransferBetweenUsersResponse{
-			Sum: &decimalpb.Decimal{
-				Value: transfer.Sum.String(),
+			Amount: &decimalpb.Decimal{
+				Value: transfer.Amount.String(),
 			},
 			RecipientId:            int64(transfer.RecipientID),
 			RecipientName:          transfer.RecipientName,
@@ -111,7 +112,10 @@ func (a *api) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *payment
 	}
 
 	payments, total, err := a.app.GetPaymentHistoryByAccountID(ctx, int(in.UserId), in.AccountNumber, &paging, &sort)
-	if err != nil {
+	switch {
+	case errors.Is(err, app.ErrNotFound):
+		return nil, errNotFound
+	case err != nil:
 		return nil, fmt.Errorf("a.app.GetPaymentHistoryByAccountID: %w", err)
 	}
 
@@ -121,11 +125,11 @@ func (a *api) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *payment
 			Id:            int64(payments[i].ID),
 			CreateAt:      timestamppb.New(payments[i].CreateAt),
 			AccountNumber: payments[i].AccountNumber,
-			Sum: &decimalpb.Decimal{
-				Value: payments[i].Sum.String(),
+			Amount: &decimalpb.Decimal{
+				Value: payments[i].Amount.String(),
 			},
 			CompanyName: payments[i].CompanyName,
-			Category:    payments[i].Category,
+			Category:    string(payments[i].Category),
 		}
 	}
 

@@ -6,7 +6,7 @@
   },
   "tags": [
     {
-      "name": "PaymentAPI"
+      "name": "PaymentExternalAPI"
     }
   ],
   "consumes": [
@@ -18,9 +18,8 @@
   "paths": {
     "/payment/api/v1/payment": {
       "post": {
-        "summary": "Create Payments. Payment can be created with positive or negative value.\nPayments are made only in rubles(RUB).",
-        "description": "```\nExample request:\n   sum: {\n\t\t  'value': '1000'\n\t  }\n   company_name: 'AppStore'\n   category: 'supermarkets'\n   user_id: 1\n   account_number: '123456'\n```\n\n```\nExample response:\n   empty\nSpecific codes:\n   * codes.InvalidArgument",
-        "operationId": "PaymentAPI_CreatePayment",
+        "summary": "Specific codes:\n   * codes.InvalidArgument",
+        "operationId": "PaymentExternalAPI_CreatePayment",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -46,15 +45,15 @@
           }
         ],
         "tags": [
-          "PaymentAPI"
+          "PaymentExternalAPI"
         ]
       }
     },
     "/payment/api/v1/payment/accounts": {
       "get": {
         "summary": "Get accounts by user id. Without paging and filters.",
-        "description": "```\nExample request:\n   user_id: 1 // path params\n```\n\n```\nExample response:\n   balance: {\n\t\t  'value': '1000'\n\t  }\n   currency: 'RUB'\n   account_number: '123'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "PaymentAPI_GetAccountsByUserID",
+        "description": "```\nExample request:\n   user_id: 1 // query params\n```\n\n```\nExample response:\n   balance: {\n\t\t  'value': '1000'\n\t  }\n   currency: 'RUB'\n   account_number: '123'\n```\n\nSpecific codes:\n   * codes.InvalidArgument",
+        "operationId": "PaymentExternalAPI_GetAccountsByUserID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -79,15 +78,15 @@
           }
         ],
         "tags": [
-          "PaymentAPI"
+          "PaymentExternalAPI"
         ]
       }
     },
     "/payment/api/v1/payment/accounts/{accountNumber}": {
       "get": {
         "summary": "Get user account balance by user ID.\nBy default the balance is given in rubles, if you want to convert the amount into another currency,\npass in query parameter ?currency={another_currency} another currency.\nThe name of the other currency should consist of 3 letters",
-        "description": "```\nExample request:\n   account_number: '123' // path param\n   currency: 'USD'       // query param\n```\n\n```\nExample response:\n   user_id: 1\n   sum: {\n\t\t  'value': '1000'\n\t  }\n   currency: 'USD'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "PaymentAPI_GetAccountByAccountNumber",
+        "description": "```\nExample request:\n   account_number: '123' // path param\n   currency: 'USD'       // query param\n   user_id: 1            // query param\n```\n\n```\nExample response:\n   user_id: 1\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   currency: 'USD'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentExternalAPI_GetAccountByAccountNumber",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -114,18 +113,25 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
           }
         ],
         "tags": [
-          "PaymentAPI"
+          "PaymentExternalAPI"
         ]
       }
     },
     "/payment/api/v1/payment/transfer": {
       "post": {
         "summary": "Transferring money between users.\nTransferring money are made only in rubles(RUB).\nIf you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.",
-        "description": "```\nExample request:\n   sum: {\n\t\t  'value': '1000'\n\t  }\n   sender_id: 1\n   sender_account_id: 1\n   sender_account_number: '123'\n   recipient_id: 2\n   recipient_account_id: 1\n   recipient_account_number: '123'\n   recipient_name: 'Artem'\n```\n\n```\nExample response:\n   sum: {\n\t\t  'value': '1000'\n\t  }\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "PaymentAPI_TransferBetweenUsers",
+        "description": "```\nExample request:\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   sender_id: 1\n   sender_account_id: 1\n   sender_account_number: '123'\n   recipient_id: 2\n   recipient_account_id: 1\n   recipient_account_number: '123'\n   recipient_name: 'Artem'\n```\n\n```\nExample response:\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentExternalAPI_TransferBetweenUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -151,15 +157,15 @@
           }
         ],
         "tags": [
-          "PaymentAPI"
+          "PaymentExternalAPI"
         ]
       }
     },
     "/payment/api/v1/payment/{accountNumber}/history": {
       "get": {
         "summary": "Get payments history by account id.\nQuery params:\n- limit (default = 100)\n- offset (default = 0)\n- sort (only 'sum' and 'create_at', default = 'creat_at')\n- order_by (only 'asc' or 'desc', default = 'desc')",
-        "description": "```\nExample request:\n   account_id: 1      // path params\n   limit: 5        // query params\n   offset: 0       // query params\n   sort: create_at // query params\n   order_by: desc  // query params\n```\n\n```\nExample response:\n   account_number: 1 // path param\n   create_at: // FIXME: fix example time\n   sum: {\n\t\t  'value': '1000'\n\t  }\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "PaymentAPI_GetPaymentsHistoryByAccountNumber",
+        "description": "```\nExample request:\n   account_id: 1      // path params\n   limit: 5        // query params\n   offset: 0       // query params\n   sort: create_at // query params\n   order_by: desc  // query params\n```\n\n```\nExample response:\n   account_number: 1 // path param\n   create_at: // FIXME: fix example time\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentExternalAPI_GetPaymentsHistoryByAccountNumber",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -216,7 +222,7 @@
           }
         ],
         "tags": [
-          "PaymentAPI"
+          "PaymentExternalAPI"
         ]
       }
     }
@@ -276,7 +282,7 @@
     "v1CreatePaymentRequest": {
       "type": "object",
       "properties": {
-        "sum": {
+        "amount": {
           "$ref": "#/definitions/typeDecimal"
         },
         "companyName": {
@@ -351,7 +357,7 @@
         "accountNumber": {
           "type": "string"
         },
-        "sum": {
+        "amount": {
           "$ref": "#/definitions/typeDecimal"
         },
         "companyName": {
@@ -365,7 +371,7 @@
     "v1TransferBetweenUsersRequest": {
       "type": "object",
       "properties": {
-        "sum": {
+        "amount": {
           "$ref": "#/definitions/typeDecimal"
         },
         "senderId": {
@@ -398,7 +404,7 @@
     "v1TransferBetweenUsersResponse": {
       "type": "object",
       "properties": {
-        "sum": {
+        "amount": {
           "$ref": "#/definitions/typeDecimal"
         },
         "recipientId": {

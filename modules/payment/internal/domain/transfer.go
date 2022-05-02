@@ -6,7 +6,7 @@ import (
 
 // Transfer domain model for transferring money between users.
 type Transfer struct {
-	Sum                    decimal.Decimal
+	Amount                 decimal.Decimal
 	SenderID               int
 	SenderAccountID        int
 	SenderAccountNumber    string

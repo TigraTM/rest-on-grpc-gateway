@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -18,7 +19,8 @@ func (r *Repo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Ac
 						update_at,
 						balance,
 						currency,
-						user_id
+						user_id,
+						account_number
 					FROM
 						"payment".accounts
 					WHERE
@@ -33,22 +35,25 @@ func (r *Repo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Ac
 	return toDomainAccounts(accounts), nil
 }
 
-// GetAccountByAccountNumber get account by account number in db.
-func (r *Repo) GetAccountByAccountNumber(ctx context.Context, accountNumber string) (*domain.Account, error) {
+// GetUserAccountByAccountNumber get user account by account number in db.
+func (r *Repo) GetUserAccountByAccountNumber(ctx context.Context, userID int, accountNumber string) (*domain.Account, error) {
 	const query = `SELECT 
 						id,
 						create_at,
 						update_at,
 						balance,
 						currency,
-						user_id
+						user_id,
+						account_number
 					FROM
 					    "payment".accounts
 					WHERE
-						account_number = $1`
+						account_number = $1
+					AND
+						user_id = $2`
 
 	account := Account{}
-	err := r.DB.GetContext(ctx, &account, query, accountNumber)
+	err := r.DB.GetContext(ctx, &account, query, accountNumber, userID)
 	if err != nil {
 		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
 	}
@@ -63,16 +68,15 @@ func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumb
 	query := squirrel.Select("id",
 		"create_at",
 		"update_at",
-		"sum",
-		"old_balance",
+		"amount",
 		"company_name",
 		"category",
 		"account_number").
 		From(`"payment".payment_history`).
-		Where("account_number = ?", accountNumber)
+		Where("account_number = $1", accountNumber)
 
-	paging.ApplyTo(query)
-	filters.ApplyTo(query)
+	query = paging.ApplyTo(query)
+	query = filters.ApplyTo(query)
 
 	sqlQuery, args, err := query.ToSql()
 	if err != nil {
@@ -80,12 +84,12 @@ func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumb
 	}
 
 	var payments []Payment
-	err = r.DB.SelectContext(ctx, &payments, sqlQuery, args)
+	err = r.DB.SelectContext(ctx, &payments, sqlQuery, args...)
 	if err != nil {
 		return nil, 0, fmt.Errorf("r.DB.SelectContext: %w", convertErr(err))
 	}
 
-	total, err = r.getTotal(ctx, query)
+	total, err = r.getTotal(ctx, accountNumber)
 	if err != nil {
 		return nil, 0, fmt.Errorf("r.getTotal: %w", err)
 	}
@@ -115,16 +119,30 @@ func (r *Repo) CreateOrUpdateAccount(ctx context.Context, userID int, accountNum
 	return nil
 }
 
-// getTotal helper method for get total count payment history.
-func (r *Repo) getTotal(ctx context.Context, query squirrel.SelectBuilder) (total int, err error) {
-	sqlQueryTotal, argsTotal, err := query.ToSql()
-	if err != nil {
-		return 0, fmt.Errorf("query.ToSql: %w", err)
-	}
-	//nolint:forbidigo // ...
-	fmt.Println("sql query total ", sqlQueryTotal)
+// CreatePayment create payment in db.
+func (r *Repo) CreatePayment(ctx context.Context, payment domain.Payment) error {
+	const query = `INSERT INTO
+						"payment".payment_history
+							( amount,
+							company_name,
+							category,
+							account_number )
+					VALUES ($1, $2, $3, $4) `
 
-	err = r.DB.GetContext(ctx, &total, sqlQueryTotal, argsTotal)
+	_, err := r.DB.ExecContext(ctx, query, payment.Amount, payment.CompanyName, payment.Category,
+		payment.AccountNumber)
+	if err != nil {
+		return fmt.Errorf("r.DB.ExecContext: %w", convertErr(err))
+	}
+
+	return nil
+}
+
+// getTotal helper method for get total count payment history.
+func (r *Repo) getTotal(ctx context.Context, accountNumber string) (total int, err error) {
+	const getTotal = `SELECT count(*) OVER() AS total FROM  "payment".payment_history WHERE account_number = $1`
+
+	err = r.DB.GetContext(ctx, &total, getTotal, accountNumber)
 	if err != nil {
 		return 0, fmt.Errorf("db.GetContext: %w", convertErr(err))
 	}

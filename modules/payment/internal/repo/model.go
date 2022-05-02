@@ -22,8 +22,7 @@ type Payment struct {
 	ID            int             `db:"id"`
 	CreateAt      time.Time       `db:"create_at"`
 	UpdateAt      time.Time       `db:"update_at"`
-	Sum           decimal.Decimal `db:"sum"`
-	OldBalance    decimal.Decimal `db:"old_balance"`
+	Amount        decimal.Decimal `db:"amount"`
 	CompanyName   string          `db:"company_name"`
 	Category      string          `db:"category"`
 	AccountNumber string          `db:"account_number"`

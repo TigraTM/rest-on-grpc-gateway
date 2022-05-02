@@ -29,6 +29,10 @@ func (d SortDirection) IsValid() error {
 }
 
 func NewSortDirection(value string) SortDirection {
+	if value == "" {
+		return SortDirectionDESC
+	}
+
 	return SortDirection(strings.ToUpper(value))
 }
 
@@ -38,24 +42,28 @@ type PaymentFilter string
 const (
 	// PaymentFilterCreateAt field `create_at` from the database, by which the sorting will be done.
 	PaymentFilterCreateAt PaymentFilter = "create_at"
-	// PaymentFilterSum field `sum` from the database, by which the sorting will be done.
-	PaymentFilterSum PaymentFilter = "sum"
+	// PaymentFilterAmount field `amount` from the database, by which the sorting will be done.
+	PaymentFilterAmount PaymentFilter = "amount"
 )
 
 // NewPaymentFilter return PaymentFilter to lower.
 func NewPaymentFilter(value string) PaymentFilter {
+	if value == "" {
+		return PaymentFilterCreateAt
+	}
+
 	return PaymentFilter(strings.ToLower(value))
 }
 
 func (f PaymentFilter) IsValid() error {
 	switch f {
 	case PaymentFilterCreateAt,
-		PaymentFilterSum:
+		PaymentFilterAmount:
 		return nil
 	}
 
 	// nolint:goerr113 // need dynamic error.
-	return fmt.Errorf("%s - invalid sorting field, should be sum or created_at", f)
+	return fmt.Errorf("%s - invalid sorting field, should be amount or created_at", f)
 }
 
 // Filter structure for sorting.
@@ -84,5 +92,5 @@ func (f *Filter) SetSortingField(field PaymentFilter) {
 
 // ApplyTo implements FilterContract.
 func (f *Filter) ApplyTo(builder squirrel.SelectBuilder) squirrel.SelectBuilder {
-	return builder.OrderByClause(fmt.Sprintf("? %s", f.direction), f.field)
+	return builder.OrderByClause(fmt.Sprintf("%s %s", f.field, f.direction))
 }

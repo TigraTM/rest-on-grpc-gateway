@@ -16,7 +16,7 @@ import (
 	paymentpb "rest-on-grpc-gateway/api/proto/payment/v1"
 )
 
-// CreatePayment implements userpb.UserAPIServer.
+// CreatePayment implements paymentpb.UserAPIServer.
 func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequest) (*paymentpb.CreatePaymentResponse, error) {
 	amount, err := decimal.NewFromString(in.Amount.Value)
 	if err != nil {
@@ -41,7 +41,7 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 	}
 }
 
-// GetAccountByAccountNumber implements userpb.UserAPIServer.
+// GetAccountByAccountNumber implements paymentpb.UserAPIServer.
 func (a *api) GetAccountByAccountNumber(ctx context.Context, in *paymentpb.GetAccountByUserIDRequest) (*paymentpb.GetAccountByUserIDResponse, error) {
 	account, err := a.app.GetAccountByAccountNumber(ctx, int(in.UserId), in.AccountNumber, in.Currency)
 	switch {
@@ -60,7 +60,7 @@ func (a *api) GetAccountByAccountNumber(ctx context.Context, in *paymentpb.GetAc
 	}
 }
 
-// TransferBetweenUsers implements userpb.UserAPIServer.
+// TransferBetweenUsers implements paymentpb.UserAPIServer.
 func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBetweenUsersRequest) (*paymentpb.TransferBetweenUsersResponse, error) {
 	amount, err := decimal.NewFromString(in.Amount.Value)
 	if err != nil {
@@ -100,7 +100,7 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 	}
 }
 
-// GetPaymentsHistoryByAccountNumber implements userpb.UserAPIServer.
+// GetPaymentsHistoryByAccountNumber implements paymentpb.UserAPIServer.
 func (a *api) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *paymentpb.GetPaymentsHistoryByAccountIDRequest) (*paymentpb.GetPaymentsHistoryByAccountIDResponse, error) {
 	paging, err := getPaging(in)
 	if err != nil {
@@ -140,7 +140,7 @@ func (a *api) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *payment
 	}, nil
 }
 
-// GetAccountsByUserID implements userpb.UserAPIServer.
+// GetAccountsByUserID implements paymentpb.UserAPIServer.
 func (a *api) GetAccountsByUserID(ctx context.Context, in *paymentpb.GetAccountsByUserIDRequest) (*paymentpb.GetAccountsByUserIDResponse, error) {
 	accounts, err := a.app.GetAccountsByUserID(ctx, int(in.UserId))
 	if err != nil {
@@ -159,4 +159,15 @@ func (a *api) GetAccountsByUserID(ctx context.Context, in *paymentpb.GetAccounts
 	}
 
 	return &paymentpb.GetAccountsByUserIDResponse{Accounts: pbAccounts}, nil
+}
+
+// GetAllCurrencies implements paymentpb.UserAPIServer.
+func (a *api) GetAllCurrencies(ctx context.Context, _ *paymentpb.GetAllCurrenciesRequest) (*paymentpb.GetAllCurrenciesResponse, error) {
+	currencies, err := a.app.GetAllCurrencies(ctx)
+	switch {
+	case err == nil:
+		return &paymentpb.GetAllCurrenciesResponse{Symbols: currencies}, nil
+	default:
+		return nil, fmt.Errorf("a.app.GetAllCurrencies: %w", err)
+	}
 }

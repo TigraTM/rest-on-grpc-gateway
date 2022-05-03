@@ -151,6 +151,29 @@ service PaymentExternalAPI {
   rpc GetAccountsByUserID (GetAccountsByUserIDRequest) returns (GetAccountsByUserIDResponse) {
     option (google.api.http) = {get: "/payment/api/v1/payment/accounts"};
   }
+  // Returns all currencies with which you can make a balance conversion.
+  //
+  // ```
+  // Example request:
+  //    empty
+  // ```
+  //
+  // ```
+  // Example response:
+  //    "symbols": {
+  //    "AED": "United Arab Emirates Dirham",
+  //    "AFN": "Afghan Afghani",
+  //    "ALL": "Albanian Lek",
+  //    "AMD": "Armenian Dram",
+  //    [...]
+  //    }
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  rpc GetAllCurrencies (GetAllCurrenciesRequest) returns (GetAllCurrenciesResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/accounts/type_currency"};
+  }
 }
 
 message CreatePaymentRequest {
@@ -226,4 +249,10 @@ message Account {
   google.type.Decimal   balance = 1;
   string               currency = 2;
   string         account_number = 3;
+}
+
+message GetAllCurrenciesRequest {}
+
+message GetAllCurrenciesResponse {
+  map<string, string> symbols = 1;
 }

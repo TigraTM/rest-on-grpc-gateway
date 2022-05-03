@@ -82,6 +82,30 @@
         ]
       }
     },
+    "/payment/api/v1/payment/accounts/type_currency": {
+      "get": {
+        "summary": "Returns all currencies with which you can make a balance conversion.",
+        "description": "```\nExample request:\n   empty\n```\n\n```\nExample response:\n   \"symbols\": {\n   \"AED\": \"United Arab Emirates Dirham\",\n   \"AFN\": \"Afghan Afghani\",\n   \"ALL\": \"Albanian Lek\",\n   \"AMD\": \"Armenian Dram\",\n   [...]\n   }\n```\n\nSpecific codes:\n   * codes.InvalidArgument",
+        "operationId": "PaymentExternalAPI_GetAllCurrencies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllCurrenciesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    },
     "/payment/api/v1/payment/accounts/{accountNumber}": {
       "get": {
         "summary": "Get user account balance by user ID.\nBy default the balance is given in rubles, if you want to convert the amount into another currency,\npass in query parameter ?currency={another_currency} another currency.\nThe name of the other currency should consist of 3 letters",
@@ -324,6 +348,17 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Account"
+          }
+        }
+      }
+    },
+    "v1GetAllCurrenciesResponse": {
+      "type": "object",
+      "properties": {
+        "symbols": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
           }
         }
       }

@@ -132,6 +132,27 @@ type PaymentExternalAPIClient interface {
 	// Specific codes:
 	//    * codes.InvalidArgument
 	GetAccountsByUserID(ctx context.Context, in *GetAccountsByUserIDRequest, opts ...grpc.CallOption) (*GetAccountsByUserIDResponse, error)
+	// Returns all currencies with which you can make a balance conversion.
+	//
+	// ```
+	// Example request:
+	//    empty
+	// ```
+	//
+	// ```
+	// Example response:
+	//    "symbols": {
+	//    "AED": "United Arab Emirates Dirham",
+	//    "AFN": "Afghan Afghani",
+	//    "ALL": "Albanian Lek",
+	//    "AMD": "Armenian Dram",
+	//    [...]
+	//    }
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	GetAllCurrencies(ctx context.Context, in *GetAllCurrenciesRequest, opts ...grpc.CallOption) (*GetAllCurrenciesResponse, error)
 }
 
 type paymentExternalAPIClient struct {
@@ -181,6 +202,15 @@ func (c *paymentExternalAPIClient) GetPaymentsHistoryByAccountNumber(ctx context
 func (c *paymentExternalAPIClient) GetAccountsByUserID(ctx context.Context, in *GetAccountsByUserIDRequest, opts ...grpc.CallOption) (*GetAccountsByUserIDResponse, error) {
 	out := new(GetAccountsByUserIDResponse)
 	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/GetAccountsByUserID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentExternalAPIClient) GetAllCurrencies(ctx context.Context, in *GetAllCurrenciesRequest, opts ...grpc.CallOption) (*GetAllCurrenciesResponse, error) {
+	out := new(GetAllCurrenciesResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.payment.v1.PaymentExternalAPI/GetAllCurrencies", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -301,6 +331,27 @@ type PaymentExternalAPIServer interface {
 	// Specific codes:
 	//    * codes.InvalidArgument
 	GetAccountsByUserID(context.Context, *GetAccountsByUserIDRequest) (*GetAccountsByUserIDResponse, error)
+	// Returns all currencies with which you can make a balance conversion.
+	//
+	// ```
+	// Example request:
+	//    empty
+	// ```
+	//
+	// ```
+	// Example response:
+	//    "symbols": {
+	//    "AED": "United Arab Emirates Dirham",
+	//    "AFN": "Afghan Afghani",
+	//    "ALL": "Albanian Lek",
+	//    "AMD": "Armenian Dram",
+	//    [...]
+	//    }
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	GetAllCurrencies(context.Context, *GetAllCurrenciesRequest) (*GetAllCurrenciesResponse, error)
 }
 
 // UnimplementedPaymentExternalAPIServer should be embedded to have forward compatible implementations.
@@ -321,6 +372,9 @@ func (UnimplementedPaymentExternalAPIServer) GetPaymentsHistoryByAccountNumber(c
 }
 func (UnimplementedPaymentExternalAPIServer) GetAccountsByUserID(context.Context, *GetAccountsByUserIDRequest) (*GetAccountsByUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountsByUserID not implemented")
+}
+func (UnimplementedPaymentExternalAPIServer) GetAllCurrencies(context.Context, *GetAllCurrenciesRequest) (*GetAllCurrenciesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllCurrencies not implemented")
 }
 
 // UnsafePaymentExternalAPIServer may be embedded to opt out of forward compatibility for this service.
@@ -424,6 +478,24 @@ func _PaymentExternalAPI_GetAccountsByUserID_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PaymentExternalAPI_GetAllCurrencies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllCurrenciesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentExternalAPIServer).GetAllCurrencies(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.proto.payment.v1.PaymentExternalAPI/GetAllCurrencies",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentExternalAPIServer).GetAllCurrencies(ctx, req.(*GetAllCurrenciesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PaymentExternalAPI_ServiceDesc is the grpc.ServiceDesc for PaymentExternalAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -450,6 +522,10 @@ var PaymentExternalAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAccountsByUserID",
 			Handler:    _PaymentExternalAPI_GetAccountsByUserID_Handler,
+		},
+		{
+			MethodName: "GetAllCurrencies",
+			Handler:    _PaymentExternalAPI_GetAllCurrencies_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

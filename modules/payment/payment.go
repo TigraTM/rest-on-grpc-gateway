@@ -4,11 +4,11 @@ package payment
 import (
 	"context"
 	"fmt"
+	"rest-on-grpc-gateway/modules/payment/adapters/apilayer"
 	"rest-on-grpc-gateway/modules/payment/internal/api"
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/config"
 	"rest-on-grpc-gateway/modules/payment/internal/repo"
-	"rest-on-grpc-gateway/pkg/password"
 	"rest-on-grpc-gateway/pkg/serve"
 
 	"go.uber.org/zap"
@@ -49,9 +49,9 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 
 // RunServe start service.
 func (s *Service) RunServe(ctx context.Context) error {
-	hashSvc := password.New()
+	apiLayerClient := apilayer.New("jnsJ6CWrRm1hTdbYTwcTejR3gy9zLcal", "https://api.apilayer.com/exchangerates_data")
 
-	appl := app.New(s.db, hashSvc)
+	appl := app.New(s.db, apiLayerClient)
 	grpcAPI := api.New(s.log, appl)
 
 	gwCfg := serve.GateWayConfig{

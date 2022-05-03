@@ -32,9 +32,20 @@ func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Paym
 }
 
 // GetAccountByAccountNumber get account by account number.
-func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, accountNumber, _ string) (*domain.Account, error) {
-	return a.repo.GetUserAccountByAccountNumber(ctx, userID, accountNumber)
+func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, accountNumber, needCurrency string) (*domain.Account, error) {
+	account, err := a.repo.GetUserAccountByAccountNumber(ctx, userID, accountNumber)
+	if err != nil {
+		return nil, fmt.Errorf("a.repo.GetUserAccountByAccountNumber: %w", err)
+	}
 	// TODO: add convert in currency
+	convertBalance, err := a.exchange.ConvertAmount(ctx, account.Currency, needCurrency, account.Balance)
+	if err != nil {
+		return nil, fmt.Errorf("a.exchange.Convert: %w", err)
+	}
+	account.Balance = convertBalance
+	account.Currency = needCurrency
+
+	return account, nil
 }
 
 // TransferBetweenUsers transferring money between users.
@@ -111,4 +122,9 @@ func (a *App) checkAccountBalanceByID(ctx context.Context, userID int, accountNu
 	}
 
 	return nil
+}
+
+// GetAllCurrencies return all currencies with platform APILayer.
+func (a *App) GetAllCurrencies(ctx context.Context) (map[string]string, error) {
+	return a.exchange.GetSymbols(ctx)
 }

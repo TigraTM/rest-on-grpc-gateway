@@ -4,7 +4,6 @@ package app
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -17,6 +16,7 @@ var (
 	ErrNotFound                 = errors.New("not found")
 	ErrSameAccountNumber        = errors.New("same account number")
 	ErrTransferAmountNotCorrect = errors.New("transfer amount is not correct")
+	ErrExchangeClient           = errors.New("exchange client")
 )
 
 //go:generate mockgen -source=app.go -destination mock.app.contracts_test.go -package app_test
@@ -36,7 +36,10 @@ type (
 		Repo
 	}
 	// ExchangeClient interface to convert balance to other currencies.
-	ExchangeClient interface{}
+	ExchangeClient interface {
+		ConvertAmount(ctx context.Context, fromCurrency, toCurrency string, amount decimal.Decimal) (decimal.Decimal, error)
+		GetSymbols(ctx context.Context) (map[string]string, error)
+	}
 )
 
 type App struct {

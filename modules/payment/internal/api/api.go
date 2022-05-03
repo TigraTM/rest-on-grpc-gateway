@@ -4,7 +4,6 @@ package api
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
@@ -33,6 +32,7 @@ type application interface {
 	TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (*domain.Transfer, error)
 	GetPaymentHistoryByAccountID(ctx context.Context, userID int, accountNumber string, paging, filter filters.FilterContract) ([]domain.Payment, int, error)
 	GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
+	GetAllCurrencies(ctx context.Context) (map[string]string, error)
 }
 
 // api structure api.

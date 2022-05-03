@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/config"
 	"rest-on-grpc-gateway/pkg/repo"
 )
@@ -12,10 +13,12 @@ const (
 	dbMaxIdleConns = 5
 )
 
+// Repo structure for work with database.
 type Repo struct {
 	*repo.Repo
 }
 
+// New build and return new Repo.
 func New(ctx context.Context, dbCfg *config.Database, moduleName string) (_ *Repo, err error) {
 	r := &Repo{}
 	r.Repo, err = repo.NewPostgres(ctx, dbCfg.DSN(), dbCfg.MigrationsDir, moduleName)

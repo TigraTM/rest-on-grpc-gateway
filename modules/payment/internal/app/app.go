@@ -3,12 +3,10 @@ package app
 
 import (
 	"context"
-	"database/sql"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
-
-	"github.com/jmoiron/sqlx"
 
 	"github.com/shopspring/decimal"
 )
@@ -31,7 +29,11 @@ type (
 		GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (_ []domain.Payment, total int, err error)
 		CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error
 		CreatePayment(ctx context.Context, payment domain.Payment) error
-		Tx(ctx context.Context, opts *sql.TxOptions, f func(*sqlx.Tx) error) (err error)
+	}
+	// TxRepo interface for payment database with transaction.
+	TxRepo interface {
+		DoTx(ctx context.Context, f func(repo Repo) error) error
+		Repo
 	}
 	// ExchangeClient interface to convert balance to other currencies.
 	ExchangeClient interface{}

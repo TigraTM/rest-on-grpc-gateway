@@ -44,13 +44,15 @@ type (
 
 type App struct {
 	repo     Repo
+	txRepo   TxRepo
 	exchange ExchangeClient
 }
 
 // New build and return new App.
-func New(repo Repo, exchange ExchangeClient) *App {
+func New(repo Repo, txRepo TxRepo, exchange ExchangeClient) *App {
 	return &App{
 		repo:     repo,
+		txRepo:   txRepo,
 		exchange: exchange,
 	}
 }

@@ -37,7 +37,7 @@ func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, account
 	if err != nil {
 		return nil, fmt.Errorf("a.repo.GetUserAccountByAccountNumber: %w", err)
 	}
-	// TODO: add convert in currency
+
 	convertBalance, err := a.exchange.ConvertAmount(ctx, account.Currency, needCurrency, account.Balance)
 	if err != nil {
 		return nil, fmt.Errorf("a.exchange.Convert: %w", err)
@@ -64,31 +64,37 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 	}
 
 	// TODO: add transactions
+	err = a.txRepo.DoTx(ctx, func(repo Repo) error {
+		if err = repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount.Neg()); err != nil {
+			return fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)
+		}
 
-	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount.Neg()); err != nil {
-		return nil, fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)
-	}
+		if err = repo.CreatePayment(ctx, domain.Payment{
+			AccountNumber: transfer.SenderAccountNumber,
+			Amount:        transfer.Amount.Neg(),
+			CompanyName:   transfer.RecipientName,
+			Category:      domain.PaymentCategoryTransfer,
+		}); err != nil {
+			return fmt.Errorf("a.repo.CreatePayment: %w", err)
+		}
 
-	if err = a.repo.CreatePayment(ctx, domain.Payment{
-		AccountNumber: transfer.SenderAccountNumber,
-		Amount:        transfer.Amount.Neg(),
-		CompanyName:   transfer.RecipientName,
-		Category:      domain.PaymentCategoryTransfer,
-	}); err != nil {
-		return nil, fmt.Errorf("a.repo.CreatePayment: %w", err)
-	}
+		if err = repo.CreateOrUpdateAccount(ctx, transfer.RecipientID, transfer.RecipientAccountNumber, transfer.Amount); err != nil {
+			return fmt.Errorf("a.repo.AddBalanceByUserID: %w", err)
+		}
 
-	if err = a.repo.CreateOrUpdateAccount(ctx, transfer.RecipientID, transfer.RecipientAccountNumber, transfer.Amount); err != nil {
-		return nil, fmt.Errorf("a.repo.AddBalanceByUserID: %w", err)
-	}
+		if err = repo.CreatePayment(ctx, domain.Payment{
+			AccountNumber: transfer.RecipientAccountNumber,
+			Amount:        transfer.Amount,
+			CompanyName:   "senderName", // TODO: add sender name in session
+			Category:      domain.PaymentCategoryTransfer,
+		}); err != nil {
+			return fmt.Errorf("a.repo.CreatePayment: %w", err)
+		}
 
-	if err = a.repo.CreatePayment(ctx, domain.Payment{
-		AccountNumber: transfer.RecipientAccountNumber,
-		Amount:        transfer.Amount,
-		CompanyName:   "senderName", // TODO: add sender name in session
-		Category:      domain.PaymentCategoryTransfer,
-	}); err != nil {
-		return nil, fmt.Errorf("a.repo.CreatePayment: %w", err)
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("a.txRepo.DoTx: %w", err)
 	}
 
 	return &domain.Transfer{

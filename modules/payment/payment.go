@@ -51,7 +51,7 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 func (s *Service) RunServe(ctx context.Context) error {
 	apiLayerClient := apilayer.New("jnsJ6CWrRm1hTdbYTwcTejR3gy9zLcal", "https://api.apilayer.com/exchangerates_data")
 
-	appl := app.New(s.db, apiLayerClient)
+	appl := app.New(s.db, s.db, apiLayerClient)
 	grpcAPI := api.New(s.log, appl)
 
 	gwCfg := serve.GateWayConfig{

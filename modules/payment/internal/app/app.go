@@ -4,6 +4,7 @@ package app
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -26,7 +27,7 @@ type (
 	Repo interface {
 		GetUserAccountByAccountNumber(ctx context.Context, userID int, accountNumber string) (*domain.Account, error)
 		GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error)
-		GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (_ []domain.Payment, total int, err error)
+		GetPaymentHistoryByAccountNumber(ctx context.Context, userID int, accountNumber string, paging, filters filters.FilterContract) (_ []domain.Payment, total int, err error)
 		CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error
 		CreatePayment(ctx context.Context, payment domain.Payment) error
 	}

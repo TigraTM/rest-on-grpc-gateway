@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -19,10 +20,10 @@ func (w *WrapperTx) GetUserAccountByAccountNumber(ctx context.Context, userID in
 }
 
 // GetPaymentHistoryByAccountNumber get payment history by account number in db with transaction.
-func (w *WrapperTx) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (
+func (w *WrapperTx) GetPaymentHistoryByAccountNumber(ctx context.Context, userID int, accountNumber string, paging, filters filters.FilterContract) (
 	_ []domain.Payment, total int, err error,
 ) {
-	return getPaymentHistoryByAccountNumber(ctx, w.tx, accountNumber, paging, filters)
+	return getPaymentHistoryByAccountNumber(ctx, w.tx, userID, accountNumber, paging, filters)
 }
 
 // CreateOrUpdateAccount create or update account balance in db with transaction.

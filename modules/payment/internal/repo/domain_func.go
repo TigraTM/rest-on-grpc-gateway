@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -66,18 +67,20 @@ func getUserAccountByAccountNumber(ctx context.Context, sqlx WrapperOnSqlx, user
 	return toDomainAccount(account), nil
 }
 
-func getPaymentHistoryByAccountNumber(ctx context.Context, sqlx WrapperOnSqlx, accountNumber string, paging, filters filters.FilterContract) (
+func getPaymentHistoryByAccountNumber(ctx context.Context, sqlx WrapperOnSqlx, userID int, accountNumber string, paging, filters filters.FilterContract) (
 	_ []domain.Payment, total int, err error,
 ) {
-	query := squirrel.Select("id",
-		"create_at",
-		"update_at",
-		"amount",
-		"company_name",
-		"category",
-		"account_number").
+	query := squirrel.Select("payment_history.id",
+		"payment_history.create_at",
+		"payment_history.update_at",
+		"payment_history.amount",
+		"payment_history.company_name",
+		"payment_history.category",
+		"payment_history.account_number").
 		From(`"payment".payment_history`).
-		Where("account_number = $1", accountNumber)
+		LeftJoin(`payment.accounts a on a.account_number = payment_history.account_number`).
+		Where(`payment_history.account_number = $1`, accountNumber).
+		Where(`a.user_id = $2`, userID)
 
 	query = paging.ApplyTo(query)
 	query = filters.ApplyTo(query)
@@ -93,7 +96,7 @@ func getPaymentHistoryByAccountNumber(ctx context.Context, sqlx WrapperOnSqlx, a
 		return nil, 0, fmt.Errorf("r.DB.SelectContext: %w", convertErr(err))
 	}
 
-	total, err = getTotal(ctx, sqlx, accountNumber)
+	total, err = getTotal(ctx, sqlx, userID, accountNumber)
 	if err != nil {
 		return nil, 0, fmt.Errorf("r.getTotal: %w", err)
 	}
@@ -140,10 +143,18 @@ func createPayment(ctx context.Context, sqlx WrapperOnSqlx, payment domain.Payme
 	return nil
 }
 
-func getTotal(ctx context.Context, sqlx WrapperOnSqlx, accountNumber string) (total int, err error) {
-	const getTotal = `SELECT count(*) OVER() AS total FROM  "payment".payment_history WHERE account_number = $1`
+func getTotal(ctx context.Context, sqlx WrapperOnSqlx, userID int, accountNumber string) (total int, err error) {
+	const getTotal = ` SELECT 
+							count(*) OVER() AS total 
+						FROM  
+							"payment".payment_history 
+						LEFT JOIN 
+							payment.accounts a on a.account_number = payment_history.account_number
+						WHERE 
+							payment_history.account_number = $1
+						AND a.user_id = $2`
 
-	err = sqlx.GetContext(ctx, &total, getTotal, accountNumber)
+	err = sqlx.GetContext(ctx, &total, getTotal, accountNumber, userID)
 	if err != nil {
 		return 0, fmt.Errorf("db.GetContext: %w", convertErr(err))
 	}

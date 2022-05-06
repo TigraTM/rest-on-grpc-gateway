@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
@@ -22,10 +23,10 @@ func (r *Repo) GetUserAccountByAccountNumber(ctx context.Context, userID int, ac
 }
 
 // GetPaymentHistoryByAccountNumber get payment history by account number in db without transaction.
-func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (
+func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, userID int, accountNumber string, paging, filters filters.FilterContract) (
 	_ []domain.Payment, total int, err error,
 ) {
-	return getPaymentHistoryByAccountNumber(ctx, r.DB, accountNumber, paging, filters)
+	return getPaymentHistoryByAccountNumber(ctx, r.DB, userID, accountNumber, paging, filters)
 }
 
 // CreateOrUpdateAccount create or update account balance in db without transaction.

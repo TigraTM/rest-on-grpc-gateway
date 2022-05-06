@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -108,9 +109,8 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 }
 
 // GetPaymentHistoryByAccountID get payment history by accountID.
-func (a *App) GetPaymentHistoryByAccountID(ctx context.Context, _ int, accountNumber string, paging, filter filters.FilterContract) ([]domain.Payment, int, error) {
-	// TODO: add check if the account belongs to the user who made the request
-	return a.repo.GetPaymentHistoryByAccountNumber(ctx, accountNumber, paging, filter)
+func (a *App) GetPaymentHistoryByAccountID(ctx context.Context, userID int, accountNumber string, paging, filter filters.FilterContract) ([]domain.Payment, int, error) {
+	return a.repo.GetPaymentHistoryByAccountNumber(ctx, userID, accountNumber, paging, filter)
 }
 
 // GetAccountsByUserID get all accounts for user by user id.

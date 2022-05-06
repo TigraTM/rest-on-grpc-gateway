@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
@@ -155,6 +156,6 @@ func (r *Repo) getTotal(ctx context.Context, accountNumber string) (total int, e
 // DoTx wrapper over a transaction, used to apply the transaction at the business logic level.
 func (r *Repo) DoTx(ctx context.Context, f func(repo app.Repo) error) error {
 	return r.Repo.Tx(ctx, nil, func(tx *sqlx.Tx) error {
-		return f(r)
+		return f(&WrapperTx{tx: tx})
 	})
 }

@@ -3,6 +3,9 @@ package repo
 import (
 	"context"
 	"fmt"
+
+	"github.com/jmoiron/sqlx"
+
 	"rest-on-grpc-gateway/modules/payment/internal/config"
 	"rest-on-grpc-gateway/pkg/repo"
 )
@@ -15,6 +18,11 @@ const (
 // Repo structure for work with database.
 type Repo struct {
 	*repo.Repo
+}
+
+// WrapperTx structure for work with transaction database.
+type WrapperTx struct {
+	tx *sqlx.Tx
 }
 
 // New build and return new Repo.

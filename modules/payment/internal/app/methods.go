@@ -23,12 +23,15 @@ func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Paym
 		}
 	}
 
-	// TODO: add transaction
-	if err = a.repo.CreateOrUpdateAccount(ctx, userID, payment.AccountNumber, payment.Amount); err != nil {
-		return fmt.Errorf("a.repo.CreateOrUpdateAccount: %w", err)
-	}
+	err = a.txRepo.DoTx(ctx, func(repo Repo) error {
+		if err = repo.CreateOrUpdateAccount(ctx, userID, payment.AccountNumber, payment.Amount); err != nil {
+			return fmt.Errorf("a.repo.CreateOrUpdateAccount: %w", err)
+		}
 
-	return a.repo.CreatePayment(ctx, payment)
+		return repo.CreatePayment(ctx, payment)
+	})
+
+	return nil
 }
 
 // GetAccountByAccountNumber get account by account number.
@@ -63,7 +66,6 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 		return nil, fmt.Errorf("a.checkingBalanceByUserID: %w", err)
 	}
 
-	// TODO: add transactions
 	err = a.txRepo.DoTx(ctx, func(repo Repo) error {
 		if err = repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount.Neg()); err != nil {
 			return fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)

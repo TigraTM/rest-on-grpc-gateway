@@ -2,20 +2,23 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
-
-	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
-
-	"github.com/jmoiron/sqlx"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/shopspring/decimal"
 )
 
-// GetAccountsByUserID get accounts by user id in db.
-func (r *Repo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error) {
+// WrapperOnSqlx wrapper on method sqlx for work with transaction and without transaction.
+type WrapperOnSqlx interface {
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+	SelectContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
+	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
+}
+
+func getAccountsByUserID(ctx context.Context, sqlx WrapperOnSqlx, userID int) ([]domain.Account, error) {
 	const query = `SELECT 
 						id,
 						create_at,
@@ -30,7 +33,7 @@ func (r *Repo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Ac
 						user_id = $1 `
 
 	var accounts []Account
-	err := r.DB.SelectContext(ctx, &accounts, query, userID)
+	err := sqlx.SelectContext(ctx, &accounts, query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("r.DB.SelectContext: %w", convertErr(err))
 	}
@@ -38,8 +41,7 @@ func (r *Repo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Ac
 	return toDomainAccounts(accounts), nil
 }
 
-// GetUserAccountByAccountNumber get user account by account number in db.
-func (r *Repo) GetUserAccountByAccountNumber(ctx context.Context, userID int, accountNumber string) (*domain.Account, error) {
+func getUserAccountByAccountNumber(ctx context.Context, sqlx WrapperOnSqlx, userID int, accountNumber string) (*domain.Account, error) {
 	const query = `SELECT 
 						id,
 						create_at,
@@ -56,7 +58,7 @@ func (r *Repo) GetUserAccountByAccountNumber(ctx context.Context, userID int, ac
 						user_id = $2`
 
 	account := Account{}
-	err := r.DB.GetContext(ctx, &account, query, accountNumber, userID)
+	err := sqlx.GetContext(ctx, &account, query, accountNumber, userID)
 	if err != nil {
 		return nil, fmt.Errorf("r.DB.GetContext: %w", convertErr(err))
 	}
@@ -64,8 +66,7 @@ func (r *Repo) GetUserAccountByAccountNumber(ctx context.Context, userID int, ac
 	return toDomainAccount(account), nil
 }
 
-// GetPaymentHistoryByAccountNumber get payment history by account number in db.
-func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumber string, paging, filters filters.FilterContract) (
+func getPaymentHistoryByAccountNumber(ctx context.Context, sqlx WrapperOnSqlx, accountNumber string, paging, filters filters.FilterContract) (
 	_ []domain.Payment, total int, err error,
 ) {
 	query := squirrel.Select("id",
@@ -87,12 +88,12 @@ func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumb
 	}
 
 	var payments []Payment
-	err = r.DB.SelectContext(ctx, &payments, sqlQuery, args...)
+	err = sqlx.SelectContext(ctx, &payments, sqlQuery, args...)
 	if err != nil {
 		return nil, 0, fmt.Errorf("r.DB.SelectContext: %w", convertErr(err))
 	}
 
-	total, err = r.getTotal(ctx, accountNumber)
+	total, err = getTotal(ctx, sqlx, accountNumber)
 	if err != nil {
 		return nil, 0, fmt.Errorf("r.getTotal: %w", err)
 	}
@@ -100,8 +101,7 @@ func (r *Repo) GetPaymentHistoryByAccountNumber(ctx context.Context, accountNumb
 	return toDomainPayments(payments), total, nil
 }
 
-// CreateOrUpdateAccount create or update account balance in db.
-func (r *Repo) CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error {
+func createOrUpdateAccount(ctx context.Context, sqlx WrapperOnSqlx, userID int, accountNumber string, sum decimal.Decimal) error {
 	const query = `INSERT INTO
 						"payment".accounts
 							( user_id, 
@@ -114,7 +114,7 @@ func (r *Repo) CreateOrUpdateAccount(ctx context.Context, userID int, accountNum
 					SET
 						balance = accounts.balance+$4 `
 
-	_, err := r.DB.ExecContext(ctx, query, userID, accountNumber, sum, sum)
+	_, err := sqlx.ExecContext(ctx, query, userID, accountNumber, sum, sum)
 	if err != nil {
 		return fmt.Errorf("r.DB.ExecContext: %w", convertErr(err))
 	}
@@ -122,8 +122,7 @@ func (r *Repo) CreateOrUpdateAccount(ctx context.Context, userID int, accountNum
 	return nil
 }
 
-// CreatePayment create payment in db.
-func (r *Repo) CreatePayment(ctx context.Context, payment domain.Payment) error {
+func createPayment(ctx context.Context, sqlx WrapperOnSqlx, payment domain.Payment) error {
 	const query = `INSERT INTO
 						"payment".payment_history
 							( amount,
@@ -132,7 +131,7 @@ func (r *Repo) CreatePayment(ctx context.Context, payment domain.Payment) error 
 							account_number )
 					VALUES ($1, $2, $3, $4) `
 
-	_, err := r.DB.ExecContext(ctx, query, payment.Amount, payment.CompanyName, payment.Category,
+	_, err := sqlx.ExecContext(ctx, query, payment.Amount, payment.CompanyName, payment.Category,
 		payment.AccountNumber)
 	if err != nil {
 		return fmt.Errorf("r.DB.ExecContext: %w", convertErr(err))
@@ -141,21 +140,13 @@ func (r *Repo) CreatePayment(ctx context.Context, payment domain.Payment) error 
 	return nil
 }
 
-// getTotal helper method for get total count payment history.
-func (r *Repo) getTotal(ctx context.Context, accountNumber string) (total int, err error) {
+func getTotal(ctx context.Context, sqlx WrapperOnSqlx, accountNumber string) (total int, err error) {
 	const getTotal = `SELECT count(*) OVER() AS total FROM  "payment".payment_history WHERE account_number = $1`
 
-	err = r.DB.GetContext(ctx, &total, getTotal, accountNumber)
+	err = sqlx.GetContext(ctx, &total, getTotal, accountNumber)
 	if err != nil {
 		return 0, fmt.Errorf("db.GetContext: %w", convertErr(err))
 	}
 
 	return total, nil
-}
-
-// DoTx wrapper over a transaction, used to apply the transaction at the business logic level.
-func (r *Repo) DoTx(ctx context.Context, f func(repo app.Repo) error) error {
-	return r.Repo.Tx(ctx, nil, func(tx *sqlx.Tx) error {
-		return f(&WrapperTx{tx: tx})
-	})
 }

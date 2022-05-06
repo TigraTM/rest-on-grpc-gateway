@@ -1,4 +1,3 @@
-// nolint:stylecheck // name is more readable
 package grpc_helper
 
 import (

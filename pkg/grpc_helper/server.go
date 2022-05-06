@@ -1,5 +1,4 @@
 // Package grpc_helper contains auxiliary functions for gRPC.
-// nolint:stylecheck // name is more readable
 package grpc_helper
 
 import (

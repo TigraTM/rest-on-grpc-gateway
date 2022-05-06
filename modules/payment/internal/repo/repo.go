@@ -3,11 +3,10 @@ package repo
 import (
 	"context"
 	"fmt"
-
-	"github.com/jmoiron/sqlx"
-
 	"rest-on-grpc-gateway/modules/payment/internal/config"
 	"rest-on-grpc-gateway/pkg/repo"
+
+	"github.com/jmoiron/sqlx"
 )
 
 const (

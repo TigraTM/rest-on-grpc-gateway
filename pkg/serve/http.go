@@ -28,7 +28,7 @@ func HTTP(log *zap.SugaredLogger, host string, port int, handler http.Handler) f
 		select {
 		case err = <-errc:
 		case <-ctx.Done():
-			// nolint:contextcheck // close right away
+
 			err = srv.Shutdown(context.Background())
 		}
 		if err != nil {

@@ -18,10 +18,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// UserAPIClient is the client API for UserAPI service.
+// UserExternalAPIClient is the client API for UserExternalAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type UserAPIClient interface {
+type UserExternalAPIClient interface {
 	// Create User.
 	//
 	// ```
@@ -116,63 +116,63 @@ type UserAPIClient interface {
 	DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error)
 }
 
-type userAPIClient struct {
+type userExternalAPIClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUserAPIClient(cc grpc.ClientConnInterface) UserAPIClient {
-	return &userAPIClient{cc}
+func NewUserExternalAPIClient(cc grpc.ClientConnInterface) UserExternalAPIClient {
+	return &userExternalAPIClient{cc}
 }
 
-func (c *userAPIClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
+func (c *userExternalAPIClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
 	out := new(CreateUserResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/CreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserExternalAPI/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error) {
+func (c *userExternalAPIClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error) {
 	out := new(GetUserByIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/GetUserByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserExternalAPI/GetUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIClient) UpdateUserByID(ctx context.Context, in *UpdateUserByIDRequest, opts ...grpc.CallOption) (*UpdateUserByIDResponse, error) {
+func (c *userExternalAPIClient) UpdateUserByID(ctx context.Context, in *UpdateUserByIDRequest, opts ...grpc.CallOption) (*UpdateUserByIDResponse, error) {
 	out := new(UpdateUserByIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/UpdateUserByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserExternalAPI/UpdateUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIClient) UpdateUserPasswordByID(ctx context.Context, in *UpdateUserPasswordByIDRequest, opts ...grpc.CallOption) (*UpdateUserPasswordByIDResponse, error) {
+func (c *userExternalAPIClient) UpdateUserPasswordByID(ctx context.Context, in *UpdateUserPasswordByIDRequest, opts ...grpc.CallOption) (*UpdateUserPasswordByIDResponse, error) {
 	out := new(UpdateUserPasswordByIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/UpdateUserPasswordByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserExternalAPI/UpdateUserPasswordByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIClient) DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error) {
+func (c *userExternalAPIClient) DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error) {
 	out := new(DeleteUserByIDResponse)
-	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserAPI/DeleteUserByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserExternalAPI/DeleteUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// UserAPIServer is the server API for UserAPI service.
-// All implementations should embed UnimplementedUserAPIServer
+// UserExternalAPIServer is the server API for UserExternalAPI service.
+// All implementations should embed UnimplementedUserExternalAPIServer
 // for forward compatibility
-type UserAPIServer interface {
+type UserExternalAPIServer interface {
 	// Create User.
 	//
 	// ```
@@ -267,153 +267,271 @@ type UserAPIServer interface {
 	DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error)
 }
 
-// UnimplementedUserAPIServer should be embedded to have forward compatible implementations.
-type UnimplementedUserAPIServer struct {
+// UnimplementedUserExternalAPIServer should be embedded to have forward compatible implementations.
+type UnimplementedUserExternalAPIServer struct {
 }
 
-func (UnimplementedUserAPIServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
+func (UnimplementedUserExternalAPIServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserAPIServer) GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error) {
+func (UnimplementedUserExternalAPIServer) GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
 }
-func (UnimplementedUserAPIServer) UpdateUserByID(context.Context, *UpdateUserByIDRequest) (*UpdateUserByIDResponse, error) {
+func (UnimplementedUserExternalAPIServer) UpdateUserByID(context.Context, *UpdateUserByIDRequest) (*UpdateUserByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserByID not implemented")
 }
-func (UnimplementedUserAPIServer) UpdateUserPasswordByID(context.Context, *UpdateUserPasswordByIDRequest) (*UpdateUserPasswordByIDResponse, error) {
+func (UnimplementedUserExternalAPIServer) UpdateUserPasswordByID(context.Context, *UpdateUserPasswordByIDRequest) (*UpdateUserPasswordByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPasswordByID not implemented")
 }
-func (UnimplementedUserAPIServer) DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error) {
+func (UnimplementedUserExternalAPIServer) DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserByID not implemented")
 }
 
-// UnsafeUserAPIServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UserAPIServer will
+// UnsafeUserExternalAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserExternalAPIServer will
 // result in compilation errors.
-type UnsafeUserAPIServer interface {
-	mustEmbedUnimplementedUserAPIServer()
+type UnsafeUserExternalAPIServer interface {
+	mustEmbedUnimplementedUserExternalAPIServer()
 }
 
-func RegisterUserAPIServer(s grpc.ServiceRegistrar, srv UserAPIServer) {
-	s.RegisterService(&UserAPI_ServiceDesc, srv)
+func RegisterUserExternalAPIServer(s grpc.ServiceRegistrar, srv UserExternalAPIServer) {
+	s.RegisterService(&UserExternalAPI_ServiceDesc, srv)
 }
 
-func _UserAPI_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserExternalAPI_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIServer).CreateUser(ctx, in)
+		return srv.(UserExternalAPIServer).CreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.user.v1.UserAPI/CreateUser",
+		FullMethod: "/api.proto.user.v1.UserExternalAPI/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIServer).CreateUser(ctx, req.(*CreateUserRequest))
+		return srv.(UserExternalAPIServer).CreateUser(ctx, req.(*CreateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPI_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserExternalAPI_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIServer).GetUserByID(ctx, in)
+		return srv.(UserExternalAPIServer).GetUserByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.user.v1.UserAPI/GetUserByID",
+		FullMethod: "/api.proto.user.v1.UserExternalAPI/GetUserByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIServer).GetUserByID(ctx, req.(*GetUserByIDRequest))
+		return srv.(UserExternalAPIServer).GetUserByID(ctx, req.(*GetUserByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPI_UpdateUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserExternalAPI_UpdateUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIServer).UpdateUserByID(ctx, in)
+		return srv.(UserExternalAPIServer).UpdateUserByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.user.v1.UserAPI/UpdateUserByID",
+		FullMethod: "/api.proto.user.v1.UserExternalAPI/UpdateUserByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIServer).UpdateUserByID(ctx, req.(*UpdateUserByIDRequest))
+		return srv.(UserExternalAPIServer).UpdateUserByID(ctx, req.(*UpdateUserByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPI_UpdateUserPasswordByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserExternalAPI_UpdateUserPasswordByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserPasswordByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIServer).UpdateUserPasswordByID(ctx, in)
+		return srv.(UserExternalAPIServer).UpdateUserPasswordByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.user.v1.UserAPI/UpdateUserPasswordByID",
+		FullMethod: "/api.proto.user.v1.UserExternalAPI/UpdateUserPasswordByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIServer).UpdateUserPasswordByID(ctx, req.(*UpdateUserPasswordByIDRequest))
+		return srv.(UserExternalAPIServer).UpdateUserPasswordByID(ctx, req.(*UpdateUserPasswordByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPI_DeleteUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserExternalAPI_DeleteUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteUserByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIServer).DeleteUserByID(ctx, in)
+		return srv.(UserExternalAPIServer).DeleteUserByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.proto.user.v1.UserAPI/DeleteUserByID",
+		FullMethod: "/api.proto.user.v1.UserExternalAPI/DeleteUserByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIServer).DeleteUserByID(ctx, req.(*DeleteUserByIDRequest))
+		return srv.(UserExternalAPIServer).DeleteUserByID(ctx, req.(*DeleteUserByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// UserAPI_ServiceDesc is the grpc.ServiceDesc for UserAPI service.
+// UserExternalAPI_ServiceDesc is the grpc.ServiceDesc for UserExternalAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var UserAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.proto.user.v1.UserAPI",
-	HandlerType: (*UserAPIServer)(nil),
+var UserExternalAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "api.proto.user.v1.UserExternalAPI",
+	HandlerType: (*UserExternalAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateUser",
-			Handler:    _UserAPI_CreateUser_Handler,
+			Handler:    _UserExternalAPI_CreateUser_Handler,
 		},
 		{
 			MethodName: "GetUserByID",
-			Handler:    _UserAPI_GetUserByID_Handler,
+			Handler:    _UserExternalAPI_GetUserByID_Handler,
 		},
 		{
 			MethodName: "UpdateUserByID",
-			Handler:    _UserAPI_UpdateUserByID_Handler,
+			Handler:    _UserExternalAPI_UpdateUserByID_Handler,
 		},
 		{
 			MethodName: "UpdateUserPasswordByID",
-			Handler:    _UserAPI_UpdateUserPasswordByID_Handler,
+			Handler:    _UserExternalAPI_UpdateUserPasswordByID_Handler,
 		},
 		{
 			MethodName: "DeleteUserByID",
-			Handler:    _UserAPI_DeleteUserByID_Handler,
+			Handler:    _UserExternalAPI_DeleteUserByID_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api/proto/user/v1/user.proto",
+}
+
+// UserInternalAPIClient is the client API for UserInternalAPI service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UserInternalAPIClient interface {
+	// Get User by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    username: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	UserByID(ctx context.Context, in *UserByIDRequest, opts ...grpc.CallOption) (*UserByIDResponse, error)
+}
+
+type userInternalAPIClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserInternalAPIClient(cc grpc.ClientConnInterface) UserInternalAPIClient {
+	return &userInternalAPIClient{cc}
+}
+
+func (c *userInternalAPIClient) UserByID(ctx context.Context, in *UserByIDRequest, opts ...grpc.CallOption) (*UserByIDResponse, error) {
+	out := new(UserByIDResponse)
+	err := c.cc.Invoke(ctx, "/api.proto.user.v1.UserInternalAPI/UserByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserInternalAPIServer is the server API for UserInternalAPI service.
+// All implementations should embed UnimplementedUserInternalAPIServer
+// for forward compatibility
+type UserInternalAPIServer interface {
+	// Get User by ID.
+	//
+	// ```
+	// Example request:
+	//    id: 1
+	// ```
+	//
+	// ```
+	// Example response:
+	//    id: 1
+	//    username: 'Artem'
+	//    email: 'email@mail.com'
+	// ```
+	//
+	// Specific codes:
+	//    * codes.InvalidArgument
+	//    * codes.NotFound
+	UserByID(context.Context, *UserByIDRequest) (*UserByIDResponse, error)
+}
+
+// UnimplementedUserInternalAPIServer should be embedded to have forward compatible implementations.
+type UnimplementedUserInternalAPIServer struct {
+}
+
+func (UnimplementedUserInternalAPIServer) UserByID(context.Context, *UserByIDRequest) (*UserByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserByID not implemented")
+}
+
+// UnsafeUserInternalAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserInternalAPIServer will
+// result in compilation errors.
+type UnsafeUserInternalAPIServer interface {
+	mustEmbedUnimplementedUserInternalAPIServer()
+}
+
+func RegisterUserInternalAPIServer(s grpc.ServiceRegistrar, srv UserInternalAPIServer) {
+	s.RegisterService(&UserInternalAPI_ServiceDesc, srv)
+}
+
+func _UserInternalAPI_UserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserInternalAPIServer).UserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.proto.user.v1.UserInternalAPI/UserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserInternalAPIServer).UserByID(ctx, req.(*UserByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UserInternalAPI_ServiceDesc is the grpc.ServiceDesc for UserInternalAPI service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UserInternalAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "api.proto.user.v1.UserInternalAPI",
+	HandlerType: (*UserInternalAPIServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UserByID",
+			Handler:    _UserInternalAPI_UserByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

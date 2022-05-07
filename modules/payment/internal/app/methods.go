@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 

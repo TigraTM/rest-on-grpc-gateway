@@ -44,7 +44,7 @@ type api struct {
 func New(log *zap.SugaredLogger, app application) *grpc.Server {
 	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
 
-	userpb.RegisterUserAPIServer(srv, &api{app: app})
+	userpb.RegisterUserExternalAPIServer(srv, &api{app: app})
 
 	return srv
 }

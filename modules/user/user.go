@@ -63,7 +63,7 @@ func (s *Service) RunServe(ctx context.Context) error {
 		Namespace:      "user",
 		GRPCGWPattern:  "/",
 		OpenAPIPattern: "/openapi/",
-		Register:       userpb.RegisterUserAPIHandler,
+		Register:       userpb.RegisterUserExternalAPIHandler,
 	}
 
 	err := serve.Start(

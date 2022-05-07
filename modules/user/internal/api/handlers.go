@@ -15,9 +15,7 @@ func (a *api) CreateUser(ctx context.Context, in *userpb.CreateUserRequest) (*us
 	switch {
 	case err == nil:
 		return &userpb.CreateUserResponse{
-			Id:    int64(user.ID),
-			Name:  user.Name,
-			Email: user.Email,
+			User: toPBUser(user),
 		}, nil
 	case errors.Is(err, app.ErrEmailExist):
 		return nil, errEmailExist
@@ -32,9 +30,7 @@ func (a *api) GetUserByID(ctx context.Context, in *userpb.GetUserByIDRequest) (*
 	switch {
 	case err == nil:
 		return &userpb.GetUserByIDResponse{
-			Id:    int64(user.ID),
-			Name:  user.Name,
-			Email: user.Email,
+			User: toPBUser(user),
 		}, nil
 	case errors.Is(err, app.ErrNotFound):
 		return nil, errUserNotFound
@@ -49,9 +45,7 @@ func (a *api) UpdateUserByID(ctx context.Context, in *userpb.UpdateUserByIDReque
 	switch {
 	case err == nil:
 		return &userpb.UpdateUserByIDResponse{
-			Id:    int64(user.ID),
-			Name:  user.Name,
-			Email: user.Email,
+			User: toPBUser(user),
 		}, nil
 	case errors.Is(err, app.ErrNotFound):
 		return nil, errUserNotFound

@@ -6,7 +6,10 @@
   },
   "tags": [
     {
-      "name": "UserAPI"
+      "name": "UserExternalAPI"
+    },
+    {
+      "name": "UserInternalAPI"
     }
   ],
   "consumes": [
@@ -20,7 +23,7 @@
       "post": {
         "summary": "Create User.",
         "description": "```\nExample request:\n   name: 'Artem'\n   email: 'email@mail.com'\n   password: 'password'\n```\n\n```\nExample response:\n   id: 1\n   name: 'Artem'\n   email: 'email@mail.com'\n   password: 'password'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.AlreadyExists",
-        "operationId": "UserAPI_CreateUser",
+        "operationId": "UserExternalAPI_CreateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -46,7 +49,7 @@
           }
         ],
         "tags": [
-          "UserAPI"
+          "UserExternalAPI"
         ]
       }
     },
@@ -54,7 +57,7 @@
       "get": {
         "summary": "Get User by ID.",
         "description": "```\nExample request:\n   id: 1\n```\n\n```\nExample response:\n   id: 1\n   username: 'Artem'\n   email: 'email@mail.com'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "UserAPI_GetUserByID",
+        "operationId": "UserExternalAPI_GetUserByID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -79,13 +82,13 @@
           }
         ],
         "tags": [
-          "UserAPI"
+          "UserExternalAPI"
         ]
       },
       "delete": {
         "summary": "Delete User by ID.",
         "description": "```\nExample request:\n   id: 1\n```\n\n```\nExample response:\n   empty\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "UserAPI_DeleteUserByID",
+        "operationId": "UserExternalAPI_DeleteUserByID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -110,13 +113,13 @@
           }
         ],
         "tags": [
-          "UserAPI"
+          "UserExternalAPI"
         ]
       },
       "put": {
         "summary": "Update User by ID.",
         "description": "```\nExample request:\n   name: 'Artem'\n   email: 'email@mail.com'\n```\n\n```\nExample response:\n   id: 1\n   name: 'Artem'\n   email: 'email@mail.com'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "UserAPI_UpdateUserByID",
+        "operationId": "UserExternalAPI_UpdateUserByID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -157,7 +160,7 @@
           }
         ],
         "tags": [
-          "UserAPI"
+          "UserExternalAPI"
         ]
       }
     },
@@ -165,7 +168,7 @@
       "put": {
         "summary": "Update User Password by ID.",
         "description": "```\nExample request:\n   id: 1\n   oldPassword: 'qwert123'\n   newPassword: '321trewq'\n```\n\n```\nExample response:\n   empty\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
-        "operationId": "UserAPI_UpdateUserPasswordByID",
+        "operationId": "UserExternalAPI_UpdateUserPasswordByID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -206,7 +209,7 @@
           }
         ],
         "tags": [
-          "UserAPI"
+          "UserExternalAPI"
         ]
       }
     }
@@ -256,15 +259,8 @@
     "v1CreateUserResponse": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
@@ -274,19 +270,23 @@
     "v1GetUserByIDResponse": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
     "v1UpdateUserByIDResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
+    },
+    "v1UpdateUserPasswordByIDResponse": {
+      "type": "object"
+    },
+    "v1User": {
       "type": "object",
       "properties": {
         "id": {
@@ -301,8 +301,13 @@
         }
       }
     },
-    "v1UpdateUserPasswordByIDResponse": {
-      "type": "object"
+    "v1UserByIDResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
     }
   }
 }

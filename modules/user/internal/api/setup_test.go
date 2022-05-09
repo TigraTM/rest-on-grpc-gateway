@@ -46,7 +46,7 @@ var (
 	}
 )
 
-func setup(t *testing.T) (userpb.UserExternalAPIClient, *Mockapplication, *require.Assertions) {
+func setupExternal(t *testing.T) (userpb.UserExternalAPIClient, *Mockapplication, *require.Assertions) {
 	t.Helper()
 	assert := require.New(t)
 
@@ -88,6 +88,50 @@ func setup(t *testing.T) (userpb.UserExternalAPIClient, *Mockapplication, *requi
 	})
 
 	return userpb.NewUserExternalAPIClient(conn), mockApp, assert
+}
+
+func setupInternal(t *testing.T) (userpb.UserInternalAPIClient, *Mockapplication, *require.Assertions) {
+	t.Helper()
+	assert := require.New(t)
+
+	ctrl := gomock.NewController(t)
+
+	mockApp := NewMockapplication(ctrl)
+
+	logCfg := zap.NewProductionConfig()
+	logCfg.Level = zap.NewAtomicLevelAt(zap.ErrorLevel)
+	log, err := logCfg.Build(
+		zap.WithClock(zapcore.DefaultClock),
+		zap.AddCaller(),
+	)
+
+	// TODO: fix work with ctx in apiExternal tests.
+	ctx, cancelFunc := context.WithTimeout(context.Background(), maxTimeout)
+	t.Cleanup(cancelFunc)
+
+	server := api.NewInternal(log.Sugar(), mockApp)
+
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	assert.NoError(err)
+
+	go func() {
+		err := server.Serve(ln)
+		assert.NoError(err)
+	}()
+
+	conn, err := grpc.DialContext(ctx, ln.Addr().String(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()), // TODO Add TLS and remove this.
+		grpc.WithBlock(),
+	)
+	assert.NoError(err)
+
+	t.Cleanup(func() {
+		err := conn.Close()
+		assert.NoError(err)
+		server.GracefulStop()
+	})
+
+	return userpb.NewUserInternalAPIClient(conn), mockApp, assert
 }
 
 func toPBUser(user *domain.User) *userpb.User {

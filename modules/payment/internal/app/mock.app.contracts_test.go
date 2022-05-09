@@ -5,7 +5,14 @@
 package app_test
 
 import (
+	context "context"
+	reflect "reflect"
+	app "rest-on-grpc-gateway/modules/payment/internal/app"
+	domain "rest-on-grpc-gateway/modules/payment/internal/domain"
+	filters "rest-on-grpc-gateway/modules/payment/internal/filters"
+
 	gomock "github.com/golang/mock/gomock"
+	decimal "github.com/shopspring/decimal"
 )
 
 // MockRepo is a mock of Repo interface.
@@ -31,6 +38,191 @@ func (m *MockRepo) EXPECT() *MockRepoMockRecorder {
 	return m.recorder
 }
 
+// CreateOrUpdateAccount mocks base method.
+func (m *MockRepo) CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOrUpdateAccount", ctx, userID, accountNumber, sum)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOrUpdateAccount indicates an expected call of CreateOrUpdateAccount.
+func (mr *MockRepoMockRecorder) CreateOrUpdateAccount(ctx, userID, accountNumber, sum interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrUpdateAccount", reflect.TypeOf((*MockRepo)(nil).CreateOrUpdateAccount), ctx, userID, accountNumber, sum)
+}
+
+// CreatePayment mocks base method.
+func (m *MockRepo) CreatePayment(ctx context.Context, payment domain.Payment) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePayment", ctx, payment)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreatePayment indicates an expected call of CreatePayment.
+func (mr *MockRepoMockRecorder) CreatePayment(ctx, payment interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePayment", reflect.TypeOf((*MockRepo)(nil).CreatePayment), ctx, payment)
+}
+
+// GetAccountsByUserID mocks base method.
+func (m *MockRepo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccountsByUserID", ctx, userID)
+	ret0, _ := ret[0].([]domain.Account)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAccountsByUserID indicates an expected call of GetAccountsByUserID.
+func (mr *MockRepoMockRecorder) GetAccountsByUserID(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountsByUserID", reflect.TypeOf((*MockRepo)(nil).GetAccountsByUserID), ctx, userID)
+}
+
+// GetPaymentHistoryByAccountNumber mocks base method.
+func (m *MockRepo) GetPaymentHistoryByAccountNumber(ctx context.Context, userID int, accountNumber string, paging, filters filters.FilterContract) ([]domain.Payment, int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPaymentHistoryByAccountNumber", ctx, userID, accountNumber, paging, filters)
+	ret0, _ := ret[0].([]domain.Payment)
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetPaymentHistoryByAccountNumber indicates an expected call of GetPaymentHistoryByAccountNumber.
+func (mr *MockRepoMockRecorder) GetPaymentHistoryByAccountNumber(ctx, userID, accountNumber, paging, filters interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPaymentHistoryByAccountNumber", reflect.TypeOf((*MockRepo)(nil).GetPaymentHistoryByAccountNumber), ctx, userID, accountNumber, paging, filters)
+}
+
+// GetUserAccountByAccountNumber mocks base method.
+func (m *MockRepo) GetUserAccountByAccountNumber(ctx context.Context, userID int, accountNumber string) (*domain.Account, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserAccountByAccountNumber", ctx, userID, accountNumber)
+	ret0, _ := ret[0].(*domain.Account)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserAccountByAccountNumber indicates an expected call of GetUserAccountByAccountNumber.
+func (mr *MockRepoMockRecorder) GetUserAccountByAccountNumber(ctx, userID, accountNumber interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAccountByAccountNumber", reflect.TypeOf((*MockRepo)(nil).GetUserAccountByAccountNumber), ctx, userID, accountNumber)
+}
+
+// MockTxRepo is a mock of TxRepo interface.
+type MockTxRepo struct {
+	ctrl     *gomock.Controller
+	recorder *MockTxRepoMockRecorder
+}
+
+// MockTxRepoMockRecorder is the mock recorder for MockTxRepo.
+type MockTxRepoMockRecorder struct {
+	mock *MockTxRepo
+}
+
+// NewMockTxRepo creates a new mock instance.
+func NewMockTxRepo(ctrl *gomock.Controller) *MockTxRepo {
+	mock := &MockTxRepo{ctrl: ctrl}
+	mock.recorder = &MockTxRepoMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTxRepo) EXPECT() *MockTxRepoMockRecorder {
+	return m.recorder
+}
+
+// CreateOrUpdateAccount mocks base method.
+func (m *MockTxRepo) CreateOrUpdateAccount(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOrUpdateAccount", ctx, userID, accountNumber, sum)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOrUpdateAccount indicates an expected call of CreateOrUpdateAccount.
+func (mr *MockTxRepoMockRecorder) CreateOrUpdateAccount(ctx, userID, accountNumber, sum interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrUpdateAccount", reflect.TypeOf((*MockTxRepo)(nil).CreateOrUpdateAccount), ctx, userID, accountNumber, sum)
+}
+
+// CreatePayment mocks base method.
+func (m *MockTxRepo) CreatePayment(ctx context.Context, payment domain.Payment) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePayment", ctx, payment)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreatePayment indicates an expected call of CreatePayment.
+func (mr *MockTxRepoMockRecorder) CreatePayment(ctx, payment interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePayment", reflect.TypeOf((*MockTxRepo)(nil).CreatePayment), ctx, payment)
+}
+
+// DoTx mocks base method.
+func (m *MockTxRepo) DoTx(ctx context.Context, f func(app.Repo) error) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DoTx", ctx, f)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DoTx indicates an expected call of DoTx.
+func (mr *MockTxRepoMockRecorder) DoTx(ctx, f interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoTx", reflect.TypeOf((*MockTxRepo)(nil).DoTx), ctx, f)
+}
+
+// GetAccountsByUserID mocks base method.
+func (m *MockTxRepo) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Account, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccountsByUserID", ctx, userID)
+	ret0, _ := ret[0].([]domain.Account)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAccountsByUserID indicates an expected call of GetAccountsByUserID.
+func (mr *MockTxRepoMockRecorder) GetAccountsByUserID(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountsByUserID", reflect.TypeOf((*MockTxRepo)(nil).GetAccountsByUserID), ctx, userID)
+}
+
+// GetPaymentHistoryByAccountNumber mocks base method.
+func (m *MockTxRepo) GetPaymentHistoryByAccountNumber(ctx context.Context, userID int, accountNumber string, paging, filters filters.FilterContract) ([]domain.Payment, int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPaymentHistoryByAccountNumber", ctx, userID, accountNumber, paging, filters)
+	ret0, _ := ret[0].([]domain.Payment)
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetPaymentHistoryByAccountNumber indicates an expected call of GetPaymentHistoryByAccountNumber.
+func (mr *MockTxRepoMockRecorder) GetPaymentHistoryByAccountNumber(ctx, userID, accountNumber, paging, filters interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPaymentHistoryByAccountNumber", reflect.TypeOf((*MockTxRepo)(nil).GetPaymentHistoryByAccountNumber), ctx, userID, accountNumber, paging, filters)
+}
+
+// GetUserAccountByAccountNumber mocks base method.
+func (m *MockTxRepo) GetUserAccountByAccountNumber(ctx context.Context, userID int, accountNumber string) (*domain.Account, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserAccountByAccountNumber", ctx, userID, accountNumber)
+	ret0, _ := ret[0].(*domain.Account)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserAccountByAccountNumber indicates an expected call of GetUserAccountByAccountNumber.
+func (mr *MockTxRepoMockRecorder) GetUserAccountByAccountNumber(ctx, userID, accountNumber interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAccountByAccountNumber", reflect.TypeOf((*MockTxRepo)(nil).GetUserAccountByAccountNumber), ctx, userID, accountNumber)
+}
+
 // MockExchangeClient is a mock of ExchangeClient interface.
 type MockExchangeClient struct {
 	ctrl     *gomock.Controller
@@ -52,4 +244,71 @@ func NewMockExchangeClient(ctrl *gomock.Controller) *MockExchangeClient {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockExchangeClient) EXPECT() *MockExchangeClientMockRecorder {
 	return m.recorder
+}
+
+// ConvertAmount mocks base method.
+func (m *MockExchangeClient) ConvertAmount(ctx context.Context, fromCurrency, toCurrency string, amount decimal.Decimal) (decimal.Decimal, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertAmount", ctx, fromCurrency, toCurrency, amount)
+	ret0, _ := ret[0].(decimal.Decimal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertAmount indicates an expected call of ConvertAmount.
+func (mr *MockExchangeClientMockRecorder) ConvertAmount(ctx, fromCurrency, toCurrency, amount interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertAmount", reflect.TypeOf((*MockExchangeClient)(nil).ConvertAmount), ctx, fromCurrency, toCurrency, amount)
+}
+
+// GetSymbols mocks base method.
+func (m *MockExchangeClient) GetSymbols(ctx context.Context) (map[string]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSymbols", ctx)
+	ret0, _ := ret[0].(map[string]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSymbols indicates an expected call of GetSymbols.
+func (mr *MockExchangeClientMockRecorder) GetSymbols(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSymbols", reflect.TypeOf((*MockExchangeClient)(nil).GetSymbols), ctx)
+}
+
+// MockUserClient is a mock of UserClient interface.
+type MockUserClient struct {
+	ctrl     *gomock.Controller
+	recorder *MockUserClientMockRecorder
+}
+
+// MockUserClientMockRecorder is the mock recorder for MockUserClient.
+type MockUserClientMockRecorder struct {
+	mock *MockUserClient
+}
+
+// NewMockUserClient creates a new mock instance.
+func NewMockUserClient(ctrl *gomock.Controller) *MockUserClient {
+	mock := &MockUserClient{ctrl: ctrl}
+	mock.recorder = &MockUserClientMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockUserClient) EXPECT() *MockUserClientMockRecorder {
+	return m.recorder
+}
+
+// ExistUserByID mocks base method.
+func (m *MockUserClient) ExistUserByID(ctx context.Context, userID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExistUserByID", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ExistUserByID indicates an expected call of ExistUserByID.
+func (mr *MockUserClientMockRecorder) ExistUserByID(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistUserByID", reflect.TypeOf((*MockUserClient)(nil).ExistUserByID), ctx, userID)
 }

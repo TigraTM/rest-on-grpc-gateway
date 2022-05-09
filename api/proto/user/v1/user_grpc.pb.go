@@ -53,12 +53,11 @@ type UserExternalAPIClient interface {
 	// ```
 	// Example response:
 	//    id: 1
-	//    username: 'Artem'
+	//    name: 'Artem'
 	//    email: 'email@mail.com'
 	// ```
 	//
 	// Specific codes:
-	//    * codes.InvalidArgument
 	//    * codes.NotFound
 	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error)
 	// Update User by ID.
@@ -204,12 +203,11 @@ type UserExternalAPIServer interface {
 	// ```
 	// Example response:
 	//    id: 1
-	//    username: 'Artem'
+	//    name: 'Artem'
 	//    email: 'email@mail.com'
 	// ```
 	//
 	// Specific codes:
-	//    * codes.InvalidArgument
 	//    * codes.NotFound
 	GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error)
 	// Update User by ID.
@@ -434,12 +432,11 @@ type UserInternalAPIClient interface {
 	// ```
 	// Example response:
 	//    id: 1
-	//    username: 'Artem'
+	//    name: 'Artem'
 	//    email: 'email@mail.com'
 	// ```
 	//
 	// Specific codes:
-	//    * codes.InvalidArgument
 	//    * codes.NotFound
 	UserByID(ctx context.Context, in *UserByIDRequest, opts ...grpc.CallOption) (*UserByIDResponse, error)
 }
@@ -475,12 +472,11 @@ type UserInternalAPIServer interface {
 	// ```
 	// Example response:
 	//    id: 1
-	//    username: 'Artem'
+	//    name: 'Artem'
 	//    email: 'email@mail.com'
 	// ```
 	//
 	// Specific codes:
-	//    * codes.InvalidArgument
 	//    * codes.NotFound
 	UserByID(context.Context, *UserByIDRequest) (*UserByIDResponse, error)
 }

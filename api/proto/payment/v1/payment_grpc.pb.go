@@ -100,7 +100,7 @@ type PaymentExternalAPIClient interface {
 	// ```
 	// Example response:
 	//    account_number: 1 // path param
-	//    create_at: // FIXME: fix example time
+	//    create_at: '2022-05-09T11:12:01.934970Z'
 	//    amount: {
 	// 		  'value': '1000'
 	// 	  }
@@ -299,7 +299,7 @@ type PaymentExternalAPIServer interface {
 	// ```
 	// Example response:
 	//    account_number: 1 // path param
-	//    create_at: // FIXME: fix example time
+	//    create_at: '2022-05-09T11:12:01.934970Z'
 	//    amount: {
 	// 		  'value': '1000'
 	// 	  }

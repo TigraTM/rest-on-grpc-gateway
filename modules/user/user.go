@@ -44,7 +44,7 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 
 	s.db, err = repo.New(ctx, &s.cfg.Database, appName)
 	if err != nil {
-		s.log.Fatalf("failed repo.New: %+v \n", err)
+		s.log.Fatalf("failed repo.NewExternal: %+v \n", err)
 	}
 
 	return nil
@@ -55,11 +55,12 @@ func (s *Service) RunServe(ctx context.Context) error {
 	hashSvc := password.New()
 
 	appl := app.New(s.db, hashSvc)
-	grpcAPI := api.New(s.log, appl)
+	grpcExternalAPI := api.NewExternal(s.log, appl)
+	grpcInternalAPI := api.NewInternal(s.log, appl)
 
 	gwCfg := serve.GateWayConfig{
 		FS:             userpb.OpenAPI,
-		GRPCServerPort: s.cfg.Transport.GRPCPort,
+		GRPCServerPort: s.cfg.Transport.GRPCExternalPort,
 		Namespace:      "user",
 		GRPCGWPattern:  "/",
 		OpenAPIPattern: "/openapi/",
@@ -68,7 +69,8 @@ func (s *Service) RunServe(ctx context.Context) error {
 
 	err := serve.Start(
 		ctx,
-		serve.GRPC(s.log.With("serve", "gRPC"), s.cfg.Transport.Host, s.cfg.Transport.GRPCPort, grpcAPI),
+		serve.GRPC(s.log.With("serve", "gRPC-external"), s.cfg.Transport.Host, s.cfg.Transport.GRPCExternalPort, grpcExternalAPI),
+		serve.GRPC(s.log.With("serve", "gRPC-internal"), s.cfg.Transport.Host, s.cfg.Transport.GRPCInternalPort, grpcInternalAPI),
 		serve.GRPCGateWay(s.log.With("serve", "gRPC-Gateway"), s.cfg.Transport.Host, s.cfg.Transport.GRPCGWPort, gwCfg),
 	)
 	if err != nil {

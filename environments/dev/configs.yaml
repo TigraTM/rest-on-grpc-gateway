@@ -1,13 +1,17 @@
+# User service
 USER_HOST: "0.0.0.0"
-USER_GRPC_PORT: "8080"
-USER_GRPC_GW_PORT: "8081"
+USER_GRPC_EXTERNAL_PORT: "8080"
+USER_GRPC_INTERNAL_PORT: "8081"
+USER_GRPC_GW_PORT: "8082"
 USER_MIGRATIONS_DIR: "./modules/user/migrations"
 
+# Payment service
 PAYMENT_HOST: "0.0.0.0"
 PAYMENT_GRPC_PORT: "8090"
-PAYMENT_GRPC_GW_PORT: "8091"
+PAYMENT_GRPC_GW_PORT: "8092"
 PAYMENT_MIGRATIONS_DIR: "./modules/payment/migrations"
 
+# Database
 DB_HOST: "localhost"
 DB_PORT: "5432"
 DB_NAME: "postgres"
@@ -15,4 +19,9 @@ DB_USER: "postgres"
 DB_PASSWORD: "postgres"
 DB_SSL_MODE: "disable"
 
-API_LAYER_KEY: "jnsJ6CWrRm1hTdbYTwcTejR3gy9zLcal"
+# Clients
+API_LAYER_API_KEY: "jnsJ6CWrRm1hTdbYTwcTejR3gy9zLcal"
+API_LAYER_BASE_PATH: "https://api.apilayer.com/exchangerates_data"
+
+USER_CLIENT_HOST: "0.0.0.0"
+USER_CLIENT_PORT: "8081"

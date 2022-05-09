@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -14,7 +15,9 @@ import (
 // - recipient exist
 // - balance value will not become negative after the payment.
 func (a *App) CreatePayment(ctx context.Context, userID int, payment domain.Payment) (err error) {
-	// TODO: add check exist user, maybe helped session
+	if err = a.user.ExistUserByID(ctx, userID); err != nil {
+		return fmt.Errorf("a.user.ExistUserByID: %w", err)
+	}
 
 	// if sum is negative, need to check value account balance after the payment has been charged
 	if payment.Amount.IsNegative() {
@@ -53,17 +56,8 @@ func (a *App) GetAccountByAccountNumber(ctx context.Context, userID int, account
 
 // TransferBetweenUsers transferring money between users.
 func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer) (_ *domain.Transfer, err error) {
-	if transfer.SenderAccountNumber == transfer.RecipientAccountNumber {
-		return nil, ErrSameAccountNumber
-	}
-
-	if transfer.Amount.IsNegative() {
-		return nil, ErrTransferAmountNotCorrect
-	}
-	// TODO: add check exist recipient
-
-	if err = a.checkAccountBalanceByID(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount); err != nil {
-		return nil, fmt.Errorf("a.checkingBalanceByUserID: %w", err)
+	if err = a.checkBeforeTransfer(ctx, transfer); err != nil {
+		return nil, fmt.Errorf("a.checkBeforeTransfer: %w", err)
 	}
 
 	err = a.txRepo.DoTx(ctx, func(repo Repo) error {
@@ -117,6 +111,11 @@ func (a *App) GetAccountsByUserID(ctx context.Context, userID int) ([]domain.Acc
 	return a.repo.GetAccountsByUserID(ctx, userID)
 }
 
+// GetAllCurrencies return all currencies with platform APILayer.
+func (a *App) GetAllCurrencies(ctx context.Context) (map[string]string, error) {
+	return a.exchange.GetSymbols(ctx)
+}
+
 // checkAccountBalanceByID checks the balance in the client's account when deducting money.
 func (a *App) checkAccountBalanceByID(ctx context.Context, userID int, accountNumber string, sum decimal.Decimal) error {
 	senderBalance, err := a.repo.GetUserAccountByAccountNumber(ctx, userID, accountNumber)
@@ -131,7 +130,27 @@ func (a *App) checkAccountBalanceByID(ctx context.Context, userID int, accountNu
 	return nil
 }
 
-// GetAllCurrencies return all currencies with platform APILayer.
-func (a *App) GetAllCurrencies(ctx context.Context) (map[string]string, error) {
-	return a.exchange.GetSymbols(ctx)
+// checkBeforeTransfer check's before transfer, checks:
+// - equal sender account and recipient account
+// - negative amount
+// - exist user
+// - balance in the client's account when deducting money
+func (a *App) checkBeforeTransfer(ctx context.Context, transfer domain.Transfer) (err error) {
+	if transfer.SenderAccountNumber == transfer.RecipientAccountNumber {
+		return ErrSameAccountNumber
+	}
+
+	if transfer.Amount.IsNegative() {
+		return ErrTransferAmountNotCorrect
+	}
+
+	if err = a.user.ExistUserByID(ctx, transfer.RecipientID); err != nil {
+		return fmt.Errorf("a.user.ExistUserByID: %w", err)
+	}
+
+	if err = a.checkAccountBalanceByID(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount); err != nil {
+		return fmt.Errorf("a.checkingBalanceByUserID: %w", err)
+	}
+
+	return nil
 }

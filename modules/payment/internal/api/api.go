@@ -4,6 +4,7 @@ package api
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
@@ -24,6 +25,8 @@ var (
 	errSameAccountNumber        = errors.New("sender's and receiver's accounts are the same")
 	errTransferAmountNotCorrect = errors.New("amount of the transfer must not be negative")
 )
+
+//go:generate mockgen -source=api.go -destination mock.application.contracts_test.go -package api_test
 
 // application for easy test.
 type application interface {

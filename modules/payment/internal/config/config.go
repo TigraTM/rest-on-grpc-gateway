@@ -19,6 +19,7 @@ type Config struct {
 	Env
 	Transport
 	Database
+	Clients
 }
 
 // IsDev check dev mode.

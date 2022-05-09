@@ -36,6 +36,8 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 		return &paymentpb.CreatePaymentResponse{}, nil
 	case errors.Is(err, app.ErrNotEnoughMoney):
 		return nil, errNotEnoughMoney
+	case errors.Is(err, app.ErrNotFound):
+		return nil, errNotFound
 	default:
 		return nil, fmt.Errorf("a.app.CreateUser: %w", err)
 	}

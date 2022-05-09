@@ -188,7 +188,7 @@
     "/payment/api/v1/payment/{accountNumber}/history": {
       "get": {
         "summary": "Get payments history by account id.\nQuery params:\n- limit (default = 100)\n- offset (default = 0)\n- sort (only 'sum' and 'create_at', default = 'creat_at')\n- order_by (only 'asc' or 'desc', default = 'desc')",
-        "description": "```\nExample request:\n   account_id: 1      // path params\n   limit: 5        // query params\n   offset: 0       // query params\n   sort: create_at // query params\n   order_by: desc  // query params\n```\n\n```\nExample response:\n   account_number: 1 // path param\n   create_at: // FIXME: fix example time\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   account_id: 1      // path params\n   limit: 5        // query params\n   offset: 0       // query params\n   sort: create_at // query params\n   order_by: desc  // query params\n```\n\n```\nExample response:\n   account_number: 1 // path param\n   create_at: '2022-05-09T11:12:01.934970Z'\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
         "operationId": "PaymentExternalAPI_GetPaymentsHistoryByAccountNumber",
         "responses": {
           "200": {

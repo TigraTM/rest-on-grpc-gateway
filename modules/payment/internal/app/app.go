@@ -4,6 +4,7 @@ package app
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -40,19 +41,26 @@ type (
 		ConvertAmount(ctx context.Context, fromCurrency, toCurrency string, amount decimal.Decimal) (decimal.Decimal, error)
 		GetSymbols(ctx context.Context) (map[string]string, error)
 	}
+	// UserClient interface for work with user service.
+	UserClient interface {
+		ExistUserByID(ctx context.Context, userID int) error
+	}
 )
 
+// App domain structure business logic.
 type App struct {
 	repo     Repo
 	txRepo   TxRepo
 	exchange ExchangeClient
+	user     UserClient
 }
 
 // New build and return new App.
-func New(repo Repo, txRepo TxRepo, exchange ExchangeClient) *App {
+func New(repo Repo, txRepo TxRepo, exchange ExchangeClient, user UserClient) *App {
 	return &App{
 		repo:     repo,
 		txRepo:   txRepo,
 		exchange: exchange,
+		user:     user,
 	}
 }

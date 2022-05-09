@@ -56,7 +56,7 @@
     "/user/api/v1/user/{id}": {
       "get": {
         "summary": "Get User by ID.",
-        "description": "```\nExample request:\n   id: 1\n```\n\n```\nExample response:\n   id: 1\n   username: 'Artem'\n   email: 'email@mail.com'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "description": "```\nExample request:\n   id: 1\n```\n\n```\nExample response:\n   id: 1\n   name: 'Artem'\n   email: 'email@mail.com'\n```\n\nSpecific codes:\n   * codes.NotFound",
         "operationId": "UserExternalAPI_GetUserByID",
         "responses": {
           "200": {

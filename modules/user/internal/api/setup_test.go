@@ -24,7 +24,7 @@ import (
 // maxTimeout for tests.
 const maxTimeout = time.Second * 60
 
-// api errors.
+// apiExternal errors.
 var (
 	errUserNotFound    = status.Error(codes.NotFound, "user not found")
 	errInvalidPassword = status.Error(codes.InvalidArgument, "invalid password")
@@ -46,7 +46,7 @@ var (
 	}
 )
 
-func setup(t *testing.T) (userpb.UserAPIClient, *Mockapplication, *require.Assertions) {
+func setup(t *testing.T) (userpb.UserExternalAPIClient, *Mockapplication, *require.Assertions) {
 	t.Helper()
 	assert := require.New(t)
 
@@ -61,11 +61,11 @@ func setup(t *testing.T) (userpb.UserAPIClient, *Mockapplication, *require.Asser
 		zap.AddCaller(),
 	)
 
-	// TODO: fix work with ctx in api tests.
+	// TODO: fix work with ctx in apiExternal tests.
 	ctx, cancelFunc := context.WithTimeout(context.Background(), maxTimeout)
 	t.Cleanup(cancelFunc)
 
-	server := api.New(log.Sugar(), mockApp)
+	server := api.NewExternal(log.Sugar(), mockApp)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	assert.NoError(err)
@@ -87,5 +87,13 @@ func setup(t *testing.T) (userpb.UserAPIClient, *Mockapplication, *require.Asser
 		server.GracefulStop()
 	})
 
-	return userpb.NewUserAPIClient(conn), mockApp, assert
+	return userpb.NewUserExternalAPIClient(conn), mockApp, assert
+}
+
+func toPBUser(user *domain.User) *userpb.User {
+	return &userpb.User{
+		Id:    int64(user.ID),
+		Name:  user.Name,
+		Email: user.Email,
+	}
 }

@@ -9,6 +9,11 @@ import "google/api/field_behavior.proto";
 import "validate/validate.proto";
 
 // UserExternalAPI external service to work with user.
+// Standard service codes:
+//    codes.OK
+//    codes.Canceled
+//    codes.DeadlineExceeded
+//    codes.Internal
 service UserExternalAPI {
   // Create User.
   //
@@ -43,12 +48,11 @@ service UserExternalAPI {
   // ```
   // Example response:
   //    id: 1
-  //    username: 'Artem'
+  //    name: 'Artem'
   //    email: 'email@mail.com'
   // ```
   //
   // Specific codes:
-  //    * codes.InvalidArgument
   //    * codes.NotFound
   rpc GetUserByID (GetUserByIDRequest) returns (GetUserByIDResponse) {
     option (google.api.http) = {get: "/user/api/v1/user/{id}"};
@@ -179,12 +183,11 @@ service UserInternalAPI {
   // ```
   // Example response:
   //    id: 1
-  //    username: 'Artem'
+  //    name: 'Artem'
   //    email: 'email@mail.com'
   // ```
   //
   // Specific codes:
-  //    * codes.InvalidArgument
   //    * codes.NotFound
   rpc UserByID (UserByIDRequest) returns (UserByIDResponse) {};
 }

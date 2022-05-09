@@ -30,9 +30,7 @@ func TestAPI_CreateUser(t *testing.T) {
 		Password: password,
 	}
 	resp := &userpb.CreateUserResponse{
-		Id:    int64(userID),
-		Name:  userName,
-		Email: email,
+		User: toPBUser(user),
 	}
 
 	tests := []struct {
@@ -172,9 +170,7 @@ func TestApi_GetUserByID(t *testing.T) {
 		Id: int64(userID),
 	}
 	resp := &userpb.GetUserByIDResponse{
-		Id:    int64(userID),
-		Name:  "user",
-		Email: "user@mail.com",
+		User: toPBUser(user),
 	}
 
 	tests := []struct {
@@ -238,9 +234,7 @@ func TestApi_UpdateUserByID(t *testing.T) {
 		Email: "user@mail.com",
 	}
 	resp := &userpb.UpdateUserByIDResponse{
-		Id:    int64(userID),
-		Name:  "user",
-		Email: "user@mail.com",
+		User: toPBUser(user),
 	}
 	updateUser := &domain.User{
 		ID:    userID,

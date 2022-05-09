@@ -10,7 +10,7 @@ import (
 )
 
 // CreateUser implements userpb.UserAPIServer.
-func (a *api) CreateUser(ctx context.Context, in *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
+func (a *apiExternal) CreateUser(ctx context.Context, in *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
 	user, err := a.app.CreateUser(ctx, in.Name, in.Email, in.Password)
 	switch {
 	case err == nil:
@@ -25,7 +25,7 @@ func (a *api) CreateUser(ctx context.Context, in *userpb.CreateUserRequest) (*us
 }
 
 // GetUserByID implements userpb.UserAPIServer.
-func (a *api) GetUserByID(ctx context.Context, in *userpb.GetUserByIDRequest) (*userpb.GetUserByIDResponse, error) {
+func (a *apiExternal) GetUserByID(ctx context.Context, in *userpb.GetUserByIDRequest) (*userpb.GetUserByIDResponse, error) {
 	user, err := a.app.GetUserByID(ctx, int(in.Id))
 	switch {
 	case err == nil:
@@ -40,7 +40,7 @@ func (a *api) GetUserByID(ctx context.Context, in *userpb.GetUserByIDRequest) (*
 }
 
 // UpdateUserByID implements userpb.UserAPIServer.
-func (a *api) UpdateUserByID(ctx context.Context, in *userpb.UpdateUserByIDRequest) (*userpb.UpdateUserByIDResponse, error) {
+func (a *apiExternal) UpdateUserByID(ctx context.Context, in *userpb.UpdateUserByIDRequest) (*userpb.UpdateUserByIDResponse, error) {
 	user, err := a.app.UpdateUserByID(ctx, int(in.Id), in.Name, in.Email)
 	switch {
 	case err == nil:
@@ -55,7 +55,7 @@ func (a *api) UpdateUserByID(ctx context.Context, in *userpb.UpdateUserByIDReque
 }
 
 // UpdateUserPasswordByID implements userpb.UserAPIServer.
-func (a *api) UpdateUserPasswordByID(ctx context.Context, in *userpb.UpdateUserPasswordByIDRequest) (*userpb.UpdateUserPasswordByIDResponse, error) {
+func (a *apiExternal) UpdateUserPasswordByID(ctx context.Context, in *userpb.UpdateUserPasswordByIDRequest) (*userpb.UpdateUserPasswordByIDResponse, error) {
 	err := a.app.UpdateUserPasswordByID(ctx, int(in.Id), in.OldPassword, in.NewPassword)
 	switch {
 	case err == nil:
@@ -72,7 +72,7 @@ func (a *api) UpdateUserPasswordByID(ctx context.Context, in *userpb.UpdateUserP
 }
 
 // DeleteUserByID implements userpb.UserAPIServer.
-func (a *api) DeleteUserByID(ctx context.Context, in *userpb.DeleteUserByIDRequest) (*userpb.DeleteUserByIDResponse, error) {
+func (a *apiExternal) DeleteUserByID(ctx context.Context, in *userpb.DeleteUserByIDRequest) (*userpb.DeleteUserByIDResponse, error) {
 	err := a.app.DeleteUserByID(ctx, int(in.Id))
 	switch {
 	case err == nil:
@@ -81,5 +81,19 @@ func (a *api) DeleteUserByID(ctx context.Context, in *userpb.DeleteUserByIDReque
 		return nil, errUserNotFound
 	default:
 		return nil, fmt.Errorf("a.app.DeleteUserByID: %w", err)
+	}
+}
+
+func (a *apiInternal) UserByID(ctx context.Context, in *userpb.UserByIDRequest) (*userpb.UserByIDResponse, error) {
+	user, err := a.app.GetUserByID(ctx, int(in.Id))
+	switch {
+	case err == nil:
+		return &userpb.UserByIDResponse{
+			User: toPBUser(user),
+		}, nil
+	case errors.Is(err, app.ErrNotFound):
+		return nil, errUserNotFound
+	default:
+		return nil, fmt.Errorf("a.app.GetUserByID: %w", err)
 	}
 }

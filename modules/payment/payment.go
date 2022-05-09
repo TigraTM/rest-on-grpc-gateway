@@ -4,12 +4,17 @@ package payment
 import (
 	"context"
 	"fmt"
+	"net"
 	"rest-on-grpc-gateway/modules/payment/adapters/apilayer"
+	"rest-on-grpc-gateway/modules/payment/adapters/user"
 	"rest-on-grpc-gateway/modules/payment/internal/api"
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/config"
 	"rest-on-grpc-gateway/modules/payment/internal/repo"
 	"rest-on-grpc-gateway/pkg/serve"
+	"strconv"
+
+	user_client "rest-on-grpc-gateway/modules/user/client"
 
 	"go.uber.org/zap"
 
@@ -49,9 +54,16 @@ func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) 
 
 // RunServe start service.
 func (s *Service) RunServe(ctx context.Context) error {
-	apiLayerClient := apilayer.New("jnsJ6CWrRm1hTdbYTwcTejR3gy9zLcal", "https://api.apilayer.com/exchangerates_data")
+	apiLayerClient := apilayer.New(s.cfg.Clients.APILayerAPIKey, s.cfg.Clients.APILayerBasePath)
 
-	appl := app.New(s.db, s.db, apiLayerClient)
+	userClient, err := user_client.New(ctx, net.JoinHostPort(s.cfg.Clients.UserClientHost, strconv.Itoa(s.cfg.Clients.UserClientPort)))
+	if err != nil {
+		return fmt.Errorf("user_client.New: %w", err)
+	}
+
+	userSvc := user.New(userClient)
+
+	appl := app.New(s.db, s.db, apiLayerClient, userSvc)
 	grpcAPI := api.New(s.log, appl)
 
 	gwCfg := serve.GateWayConfig{
@@ -63,7 +75,7 @@ func (s *Service) RunServe(ctx context.Context) error {
 		Register:       paymentpb.RegisterPaymentExternalAPIHandler,
 	}
 
-	err := serve.Start(
+	err = serve.Start(
 		ctx,
 		serve.GRPC(s.log.With("serve", "gRPC"), s.cfg.Transport.Host, s.cfg.Transport.GRPCPort, grpcAPI),
 		serve.GRPCGateWay(s.log.With("serve", "gRPC-Gateway"), s.cfg.Transport.Host, s.cfg.Transport.GRPCGWPort, gwCfg),

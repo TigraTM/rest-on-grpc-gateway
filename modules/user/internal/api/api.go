@@ -1,9 +1,10 @@
-// Package api contains user handlers for work gRPC-gateway.
+// Package apiExternal contains user handlers for work gRPC-gateway.
 package api
 
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 
@@ -24,7 +25,7 @@ var (
 	errEmailExist      = errors.New("user with this email already exists")
 )
 
-//go:generate mockgen -source=api.go -destination mock.api.contracts_test.go -package api_test
+//go:generate mockgen -source=api.go -destination mock.application.contracts_test.go -package api_test
 
 // application interface business logic.
 type application interface {
@@ -35,16 +36,30 @@ type application interface {
 	DeleteUserByID(ctx context.Context, userID int) error
 }
 
-// api structure api.
-type api struct {
+// apiExternal structure apiExternal.
+type apiExternal struct {
 	app application
 }
 
-// New build and return new grpc.Server.
-func New(log *zap.SugaredLogger, app application) *grpc.Server {
+// apiInternal structure internal.
+type apiInternal struct {
+	app application
+}
+
+// NewExternal build and return new grpc.Server.
+func NewExternal(log *zap.SugaredLogger, app application) *grpc.Server {
 	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
 
-	userpb.RegisterUserExternalAPIServer(srv, &api{app: app})
+	userpb.RegisterUserExternalAPIServer(srv, &apiExternal{app: app})
+
+	return srv
+}
+
+// NewInternal build and return new grpc.Server.
+func NewInternal(log *zap.SugaredLogger, app application) *grpc.Server {
+	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
+
+	userpb.RegisterUserInternalAPIServer(srv, &apiInternal{app: app})
 
 	return srv
 }

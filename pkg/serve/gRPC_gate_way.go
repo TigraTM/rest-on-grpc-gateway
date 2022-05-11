@@ -26,7 +26,7 @@ type GateWayConfig struct {
 }
 
 // GRPCGateWay starts HTTP-proxy server for gRPC serer, for using gRPC endpoints from WEB.
-func GRPCGateWay(log *zap.SugaredLogger, host string, port int, cfg GateWayConfig) func(context.Context) error {
+func GRPCGateWay(log *zap.Logger, host string, port int, cfg GateWayConfig) func(context.Context) error {
 	return func(ctx context.Context) error {
 		conn, err := grpc.DialContext(ctx, net.JoinHostPort(host, strconv.Itoa(cfg.GRPCServerPort)), grpc.WithBlock(),
 			grpc.WithTransportCredentials(insecure.NewCredentials()))

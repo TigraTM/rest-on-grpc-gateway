@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -134,7 +133,7 @@ func (a *App) checkAccountBalanceByID(ctx context.Context, userID int, accountNu
 // - equal sender account and recipient account
 // - negative amount
 // - exist user
-// - balance in the client's account when deducting money
+// - balance in the client's account when deducting money.
 func (a *App) checkBeforeTransfer(ctx context.Context, transfer domain.Transfer) (err error) {
 	if transfer.SenderAccountNumber == transfer.RecipientAccountNumber {
 		return ErrSameAccountNumber

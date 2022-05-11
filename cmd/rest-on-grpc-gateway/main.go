@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	logStd "log"
 	"os/signal"
 	"rest-on-grpc-gateway/modules/payment"
 	"rest-on-grpc-gateway/modules/user"
@@ -11,14 +10,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
+	"go.uber.org/zap/zapcore"
 
 	"go.uber.org/zap"
 )
 
 type embeddedService interface {
 	Name() string
-	Init(ctx context.Context, log *zap.SugaredLogger) (err error)
+	Init(ctx context.Context, log *zap.Logger) (err error)
 	RunServe(ctx context.Context) error
 }
 
@@ -28,31 +27,36 @@ var embeddedServices = []embeddedService{
 }
 
 func main() {
-	zap, err := zap.NewDevelopment()
+	logCfg := zap.NewProductionConfig()
+	logCfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	logCfg.EncoderConfig.TimeKey = "timestamp"
+	logCfg.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
+	log, err := logCfg.Build(
+		zap.WithClock(zapcore.DefaultClock),
+		zap.AddCaller(),
+	)
 	if err != nil {
-		logStd.Fatalf("couldn't init logger: %+v \n", err)
+		panic(err)
 	}
 	defer func() {
-		err := zap.Sync()
+		err := log.Sync()
 		if err != nil {
-			logStd.Fatalf("err: %v", err)
+			panic(err)
 		}
 	}()
-	log := zap.Sugar()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	ctxWithLog := ctxzap.ToContext(ctx, log.Desugar())
-	go forceShutdown(ctxWithLog)
+	go forceShutdown(ctx, log)
 
-	if err = runServices(ctxWithLog, log); err != nil {
+	if err = runServices(ctx, log); err != nil {
 		// nolint:gocritic // ...
-		log.Fatalf("failed run service: %s", err)
+		log.Fatal("failed run service: %s", zap.Error(err))
 	}
 }
 
-func runServices(ctx context.Context, log *zap.SugaredLogger) (err error) {
+func runServices(ctx context.Context, log *zap.Logger) (err error) {
 	services := make([]func(context.Context) error, len(embeddedServices))
 	for i := range embeddedServices {
 		log := log.Named(embeddedServices[i].Name())
@@ -71,8 +75,7 @@ func runServices(ctx context.Context, log *zap.SugaredLogger) (err error) {
 	return serve.Start(ctx, services...)
 }
 
-func forceShutdown(ctx context.Context) {
-	log := ctxzap.Extract(ctx)
+func forceShutdown(ctx context.Context, log *zap.Logger) {
 	const shutdownDelay = 15 * time.Second
 
 	<-ctx.Done()

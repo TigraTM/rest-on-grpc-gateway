@@ -3,7 +3,6 @@ package user
 
 import (
 	"context"
-
 	"rest-on-grpc-gateway/modules/user/client"
 )
 

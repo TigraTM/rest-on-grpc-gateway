@@ -4,7 +4,6 @@ package api
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
@@ -44,7 +43,7 @@ type api struct {
 }
 
 // New build and return new grpc.Server.
-func New(log *zap.SugaredLogger, app application) *grpc.Server {
+func New(log *zap.Logger, app application) *grpc.Server {
 	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
 
 	paymentpb.RegisterPaymentExternalAPIServer(srv, &api{app: app})

@@ -65,7 +65,7 @@ func setupExternal(t *testing.T) (userpb.UserExternalAPIClient, *Mockapplication
 	ctx, cancelFunc := context.WithTimeout(context.Background(), maxTimeout)
 	t.Cleanup(cancelFunc)
 
-	server := api.NewExternal(log.Sugar(), mockApp)
+	server := api.NewExternal(log, mockApp)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	assert.NoError(err)
@@ -109,7 +109,7 @@ func setupInternal(t *testing.T) (userpb.UserInternalAPIClient, *Mockapplication
 	ctx, cancelFunc := context.WithTimeout(context.Background(), maxTimeout)
 	t.Cleanup(cancelFunc)
 
-	server := api.NewInternal(log.Sugar(), mockApp)
+	server := api.NewInternal(log, mockApp)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	assert.NoError(err)

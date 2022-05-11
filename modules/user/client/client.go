@@ -5,8 +5,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"rest-on-grpc-gateway/pkg/grpc_helper"
+
+	"go.uber.org/zap"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -28,8 +29,8 @@ type Client struct {
 }
 
 // New build and returns new client to service user.
-func New(ctx context.Context, addr string) (*Client, error) {
-	conn, err := grpc_helper.Dial(ctx, addr, []grpc.UnaryClientInterceptor{}, []grpc.DialOption{})
+func New(ctx context.Context, log *zap.Logger, addr string) (*Client, error) {
+	conn, err := grpc_helper.Dial(ctx, log, addr, []grpc.UnaryClientInterceptor{}, []grpc.DialOption{})
 	if err != nil {
 		return nil, fmt.Errorf("grpc_helper.Dial: %w", err)
 	}

@@ -4,7 +4,6 @@ package api
 import (
 	"context"
 	"errors"
-
 	"rest-on-grpc-gateway/modules/user/internal/domain"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
 
@@ -47,7 +46,7 @@ type apiInternal struct {
 }
 
 // NewExternal build and return new grpc.Server.
-func NewExternal(log *zap.SugaredLogger, app application) *grpc.Server {
+func NewExternal(log *zap.Logger, app application) *grpc.Server {
 	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
 
 	userpb.RegisterUserExternalAPIServer(srv, &apiExternal{app: app})
@@ -56,7 +55,7 @@ func NewExternal(log *zap.SugaredLogger, app application) *grpc.Server {
 }
 
 // NewInternal build and return new grpc.Server.
-func NewInternal(log *zap.SugaredLogger, app application) *grpc.Server {
+func NewInternal(log *zap.Logger, app application) *grpc.Server {
 	srv := grpc_helper.NewServer(log, apiError, []grpc.UnaryServerInterceptor{})
 
 	userpb.RegisterUserInternalAPIServer(srv, &apiInternal{app: app})

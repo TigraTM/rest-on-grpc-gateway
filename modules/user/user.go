@@ -4,6 +4,7 @@ package user
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/user/internal/api"
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/config"
@@ -24,7 +25,7 @@ const appName = "user"
 // Service ...
 type Service struct {
 	cfg *config.Config
-	log *zap.SugaredLogger
+	log *zap.Logger
 	db  *repo.Repo
 }
 
@@ -34,17 +35,17 @@ func (*Service) Name() string {
 }
 
 // Init service initialization.
-func (s *Service) Init(ctx context.Context, log *zap.SugaredLogger) (err error) {
+func (s *Service) Init(ctx context.Context, log *zap.Logger) (err error) {
 	s.log = log
 
 	s.cfg, err = config.LoadDevConfig()
 	if err != nil {
-		s.log.Fatalf("couldn't get envConfig: %+v \n", err)
+		s.log.Fatal("couldn't get envConfig: %+v \n", zap.Error(err))
 	}
 
 	s.db, err = repo.New(ctx, &s.cfg.Database, appName)
 	if err != nil {
-		s.log.Fatalf("failed repo.NewExternal: %+v \n", err)
+		s.log.Fatal("failed repo.NewExternal: %+v \n", zap.Error(err))
 	}
 
 	return nil
@@ -69,9 +70,9 @@ func (s *Service) RunServe(ctx context.Context) error {
 
 	err := serve.Start(
 		ctx,
-		serve.GRPC(s.log.With("serve", "gRPC-external"), s.cfg.Transport.Host, s.cfg.Transport.GRPCExternalPort, grpcExternalAPI),
-		serve.GRPC(s.log.With("serve", "gRPC-internal"), s.cfg.Transport.Host, s.cfg.Transport.GRPCInternalPort, grpcInternalAPI),
-		serve.GRPCGateWay(s.log.With("serve", "gRPC-Gateway"), s.cfg.Transport.Host, s.cfg.Transport.GRPCGWPort, gwCfg),
+		serve.GRPC(s.log.With(zap.String("serve", "gRPC-external")), s.cfg.Transport.Host, s.cfg.Transport.GRPCExternalPort, grpcExternalAPI),
+		serve.GRPC(s.log.With(zap.String("serve", "gRPC-internal")), s.cfg.Transport.Host, s.cfg.Transport.GRPCInternalPort, grpcInternalAPI),
+		serve.GRPCGateWay(s.log.With(zap.String("serve", "gRPC-Gateway")), s.cfg.Transport.Host, s.cfg.Transport.GRPCGWPort, gwCfg),
 	)
 	if err != nil {
 		return fmt.Errorf("serve.Start: %w", err)

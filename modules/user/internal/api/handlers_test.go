@@ -30,9 +30,7 @@ func TestAPI_CreateUser(t *testing.T) {
 		Password: password,
 	}
 	resp := &userpb.CreateUserResponse{
-		Id:    int64(userID),
-		Name:  userName,
-		Email: email,
+		User: toPBUser(user),
 	}
 
 	tests := []struct {
@@ -153,7 +151,7 @@ func TestAPI_CreateUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			client, app, assert := setup(t)
+			client, app, assert := setupExternal(t)
 			if tt.prepare != nil {
 				tt.prepare(app)
 			}
@@ -172,9 +170,7 @@ func TestApi_GetUserByID(t *testing.T) {
 		Id: int64(userID),
 	}
 	resp := &userpb.GetUserByIDResponse{
-		Id:    int64(userID),
-		Name:  "user",
-		Email: "user@mail.com",
+		User: toPBUser(user),
 	}
 
 	tests := []struct {
@@ -218,7 +214,7 @@ func TestApi_GetUserByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			client, app, assert := setup(t)
+			client, app, assert := setupExternal(t)
 			if tt.prepare != nil {
 				tt.prepare(app)
 			}
@@ -238,9 +234,7 @@ func TestApi_UpdateUserByID(t *testing.T) {
 		Email: "user@mail.com",
 	}
 	resp := &userpb.UpdateUserByIDResponse{
-		Id:    int64(userID),
-		Name:  "user",
-		Email: "user@mail.com",
+		User: toPBUser(user),
 	}
 	updateUser := &domain.User{
 		ID:    userID,
@@ -289,7 +283,7 @@ func TestApi_UpdateUserByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			client, app, assert := setup(t)
+			client, app, assert := setupExternal(t)
 			if tt.prepare != nil {
 				tt.prepare(app)
 			}
@@ -369,7 +363,7 @@ func TestApi_UpdateUserPasswordByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			client, app, assert := setup(t)
+			client, app, assert := setupExternal(t)
 			if tt.prepare != nil {
 				tt.prepare(app)
 			}
@@ -429,12 +423,75 @@ func TestApi_DeleteUserByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			client, app, assert := setup(t)
+			client, app, assert := setupExternal(t)
 			if tt.prepare != nil {
 				tt.prepare(app)
 			}
 
 			resp, err := client.DeleteUserByID(ctx, tt.req)
+			assert.ErrorIs(err, tt.wantErr)
+			assert.True(proto.Equal(resp, tt.resp))
+		})
+	}
+}
+
+func TestApi_UserByID(t *testing.T) {
+	var errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.GetUserByID: %s", errAny))
+
+	req := &userpb.UserByIDRequest{
+		Id: int64(userID),
+	}
+	resp := &userpb.UserByIDResponse{
+		User: toPBUser(user),
+	}
+
+	tests := []struct {
+		name    string
+		req     *userpb.UserByIDRequest
+		resp    *userpb.UserByIDResponse
+		wantErr error
+		prepare func(m *Mockapplication)
+	}{
+		{
+			name:    "success",
+			req:     req,
+			resp:    resp,
+			wantErr: nil,
+			prepare: func(m *Mockapplication) {
+				m.EXPECT().GetUserByID(gomock.Any(), int(req.Id)).Return(user, nil).Times(1)
+			},
+		},
+		{
+			name:    "err user not found",
+			req:     req,
+			resp:    nil,
+			wantErr: errUserNotFound,
+			prepare: func(m *Mockapplication) {
+				m.EXPECT().GetUserByID(gomock.Any(), int(req.Id)).Return(nil, app.ErrNotFound).Times(1)
+			},
+		},
+		{
+			name:    "err any",
+			req:     req,
+			resp:    nil,
+			wantErr: errInternal,
+			prepare: func(m *Mockapplication) {
+				m.EXPECT().GetUserByID(gomock.Any(), int(req.Id)).Return(nil, errAny).Times(1)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			client, app, assert := setupInternal(t)
+			if tt.prepare != nil {
+				tt.prepare(app)
+			}
+
+			resp, err := client.UserByID(ctx, tt.req)
 			assert.ErrorIs(err, tt.wantErr)
 			assert.True(proto.Equal(resp, tt.resp))
 		})

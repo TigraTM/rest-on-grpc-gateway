@@ -1,0 +1,450 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/proto/payment/v1/payment.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PaymentExternalAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/payment/api/v1/payment": {
+      "post": {
+        "summary": "Specific codes:\n   * codes.InvalidArgument",
+        "operationId": "PaymentExternalAPI_CreatePayment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreatePaymentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreatePaymentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    },
+    "/payment/api/v1/payment/accounts": {
+      "get": {
+        "summary": "Get accounts by user id. Without paging and filters.",
+        "description": "```\nExample request:\n   user_id: 1 // query params\n```\n\n```\nExample response:\n   balance: {\n\t\t  'value': '1000'\n\t  }\n   currency: 'RUB'\n   account_number: '123'\n```\n\nSpecific codes:\n   * codes.InvalidArgument",
+        "operationId": "PaymentExternalAPI_GetAccountsByUserID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountsByUserIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    },
+    "/payment/api/v1/payment/accounts/type_currency": {
+      "get": {
+        "summary": "Returns all currencies with which you can make a balance conversion.",
+        "description": "```\nExample request:\n   empty\n```\n\n```\nExample response:\n   \"symbols\": {\n   \"AED\": \"United Arab Emirates Dirham\",\n   \"AFN\": \"Afghan Afghani\",\n   \"ALL\": \"Albanian Lek\",\n   \"AMD\": \"Armenian Dram\",\n   [...]\n   }\n```\n\nSpecific codes:\n   * codes.InvalidArgument",
+        "operationId": "PaymentExternalAPI_GetAllCurrencies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllCurrenciesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    },
+    "/payment/api/v1/payment/accounts/{accountNumber}": {
+      "get": {
+        "summary": "Get user account balance by user ID.\nBy default the balance is given in rubles, if you want to convert the amount into another currency,\npass in query parameter ?currency={another_currency} another currency.\nThe name of the other currency should consist of 3 letters",
+        "description": "```\nExample request:\n   account_number: '123' // path param\n   currency: 'USD'       // query param\n   user_id: 1            // query param\n```\n\n```\nExample response:\n   user_id: 1\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   currency: 'USD'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentExternalAPI_GetAccountByAccountNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountByUserIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    },
+    "/payment/api/v1/payment/transfer": {
+      "post": {
+        "summary": "Transferring money between users.\nTransferring money are made only in rubles(RUB).\nIf you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.",
+        "description": "```\nExample request:\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   sender_id: 1\n   sender_account_id: 1\n   sender_account_number: '123'\n   recipient_id: 2\n   recipient_account_id: 1\n   recipient_account_number: '123'\n   recipient_name: 'Artem'\n```\n\n```\nExample response:\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   recipient_id: 2\n   recipient_name: 'Artem'\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentExternalAPI_TransferBetweenUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1TransferBetweenUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1TransferBetweenUsersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    },
+    "/payment/api/v1/payment/{accountNumber}/history": {
+      "get": {
+        "summary": "Get payments history by account id.\nQuery params:\n- limit (default = 100)\n- offset (default = 0)\n- sort (only 'sum' and 'create_at', default = 'creat_at')\n- order_by (only 'asc' or 'desc', default = 'desc')",
+        "description": "```\nExample request:\n   account_id: 1      // path params\n   limit: 5        // query params\n   offset: 0       // query params\n   sort: create_at // query params\n   order_by: desc  // query params\n```\n\n```\nExample response:\n   account_number: 1 // path param\n   create_at: '2022-05-09T11:12:01.934970Z'\n   amount: {\n\t\t  'value': '1000'\n\t  }\n   company_name: 2\n   category: 'Artem'\n   total: 1\n```\n\nSpecific codes:\n   * codes.InvalidArgument\n   * codes.NotFound",
+        "operationId": "PaymentExternalAPI_GetPaymentsHistoryByAccountNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPaymentsHistoryByAccountIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "PaymentExternalAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "typeDecimal": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The decimal value, as a string.\n\nThe string representation consists of an optional sign, `+` (`U+002B`)\nor `-` (`U+002D`), followed by a sequence of zero or more decimal digits\n(\"the integer\"), optionally followed by a fraction, optionally followed\nby an exponent.\n\nThe fraction consists of a decimal point followed by zero or more decimal\ndigits. The string must contain at least one digit in either the integer\nor the fraction. The number formed by the sign, the integer and the\nfraction is referred to as the significand.\n\nThe exponent consists of the character `e` (`U+0065`) or `E` (`U+0045`)\nfollowed by one or more decimal digits.\n\nServices **should** normalize decimal values before storing them by:\n\n  - Removing an explicitly-provided `+` sign (`+2.5` -\u003e `2.5`).\n  - Replacing a zero-length integer value with `0` (`.5` -\u003e `0.5`).\n  - Coercing the exponent character to lower-case (`2.5E8` -\u003e `2.5e8`).\n  - Removing an explicitly-provided zero exponent (`2.5e0` -\u003e `2.5`).\n\nServices **may** perform additional normalization based on its own needs\nand the internal decimal implementation selected, such as shifting the\ndecimal point and exponent value together (example: `2.5e-1` \u003c-\u003e `0.25`).\nAdditionally, services **may** preserve trailing zeroes in the fraction\nto indicate increased precision, but are not required to do so.\n\nNote that only the `.` character is supported to divide the integer\nand the fraction; `,` **should not** be supported regardless of locale.\nAdditionally, thousand separators **should not** be supported. If a\nservice does support them, values **must** be normalized.\n\nThe ENBF grammar is:\n\n    DecimalString =\n      [Sign] Significand [Exponent];\n\n    Sign = '+' | '-';\n\n    Significand =\n      Digits ['.'] [Digits] | [Digits] '.' Digits;\n\n    Exponent = ('e' | 'E') [Sign] Digits;\n\n    Digits = { '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' };\n\nServices **should** clearly document the range of supported values, the\nmaximum supported precision (total number of digits), and, if applicable,\nthe scale (number of digits after the decimal point), as well as how it\nbehaves when receiving out-of-bounds values.\n\nServices **may** choose to accept values passed as input even when the\nvalue has a higher precision or scale than the service supports, and\n**should** round the value to fit the supported scale. Alternatively, the\nservice **may** error with `400 Bad Request` (`INVALID_ARGUMENT` in gRPC)\nif precision would be lost.\n\nServices **should** error with `400 Bad Request` (`INVALID_ARGUMENT` in\ngRPC) if the service receives a value outside of the supported range."
+        }
+      },
+      "description": "A representation of a decimal value, such as 2.5. Clients may convert values\ninto language-native decimal formats, such as Java's [BigDecimal][] or\nPython's [decimal.Decimal][].\n\n[BigDecimal]:\nhttps://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html\n[decimal.Decimal]: https://docs.python.org/3/library/decimal.html"
+    },
+    "v1Account": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreatePaymentRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "companyName": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "accountNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreatePaymentResponse": {
+      "type": "object"
+    },
+    "v1GetAccountByUserIDResponse": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetAccountsByUserIDResponse": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Account"
+          }
+        }
+      }
+    },
+    "v1GetAllCurrenciesResponse": {
+      "type": "object",
+      "properties": {
+        "symbols": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1GetPaymentsHistoryByAccountIDResponse": {
+      "type": "object",
+      "properties": {
+        "payments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Payment"
+          }
+        },
+        "total": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1Payment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "companyName": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TransferBetweenUsersRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "senderAccountNumber": {
+          "type": "string"
+        },
+        "recipientId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "recipientAccountNumber": {
+          "type": "string"
+        },
+        "recipientName": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TransferBetweenUsersResponse": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/typeDecimal"
+        },
+        "recipientId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "recipientName": {
+          "type": "string"
+        },
+        "recipientAccountNumber": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

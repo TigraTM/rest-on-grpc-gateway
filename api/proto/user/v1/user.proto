@@ -8,8 +8,13 @@ import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "validate/validate.proto";
 
-// UserAPI service to work with user.
-service UserAPI {
+// UserExternalAPI external service to work with user.
+// Standard service codes:
+//    codes.OK
+//    codes.Canceled
+//    codes.DeadlineExceeded
+//    codes.Internal
+service UserExternalAPI {
   // Create User.
   //
   // ```
@@ -43,12 +48,11 @@ service UserAPI {
   // ```
   // Example response:
   //    id: 1
-  //    username: 'Artem'
+  //    name: 'Artem'
   //    email: 'email@mail.com'
   // ```
   //
   // Specific codes:
-  //    * codes.InvalidArgument
   //    * codes.NotFound
   rpc GetUserByID (GetUserByIDRequest) returns (GetUserByIDResponse) {
     option (google.api.http) = {get: "/user/api/v1/user/{id}"};
@@ -85,7 +89,7 @@ service UserAPI {
   //
   // ```
   // Example response:
-  //    success: ok
+  //    empty
   // ```
   //
   // Specific codes:
@@ -103,8 +107,7 @@ service UserAPI {
   //
   // ```
   // Example response:
-  //    id: 1
-  //    success: ok
+  //    empty
   // ```
   //
   // Specific codes:
@@ -122,9 +125,7 @@ message CreateUserRequest {
 }
 
 message CreateUserResponse {
-  int64        id = 1;
-  string     name = 2;
-  string    email = 3;
+  User user = 1;
 }
 
 message GetUserByIDRequest {
@@ -132,9 +133,7 @@ message GetUserByIDRequest {
 }
 
 message GetUserByIDResponse {
-  int64        id = 1;
-  string     name = 2;
-  string    email = 3;
+  User user = 1;
 }
 
 message DeleteUserByIDRequest {
@@ -150,14 +149,53 @@ message UpdateUserByIDRequest {
 }
 
 message UpdateUserByIDResponse {
-  int64        id = 1;
-  string     name = 2;
-  string    email = 3;
+  User user = 1;
 }
 
 message UpdateUserPasswordByIDRequest {
-  int64              id = 1;
+  int64               id = 1;
   string    old_password = 2 [(validate.rules).string = {min_len: 8, max_len: 100}];
   string    new_password = 3 [(validate.rules).string = {min_len: 8, max_len: 100}];
 }
 message UpdateUserPasswordByIDResponse {}
+
+message User {
+  int64        id = 1;
+  string     name = 2 [(validate.rules).string = {min_len: 2, max_len: 40}];
+  string    email = 3 [(validate.rules).string = {email: true, max_len: 50}];
+}
+
+// Internal service API for controlling and validation user's information.
+// Requests without session checking
+// Standard service codes:
+//    codes.OK
+//    codes.Canceled
+//    codes.DeadlineExceeded
+//    codes.Internal
+service UserInternalAPI {
+  // Get User by ID.
+  //
+  // ```
+  // Example request:
+  //    id: 1
+  // ```
+  //
+  // ```
+  // Example response:
+  //    id: 1
+  //    name: 'Artem'
+  //    email: 'email@mail.com'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.NotFound
+  rpc UserByID (UserByIDRequest) returns (UserByIDResponse) {};
+}
+
+message UserByIDRequest {
+  int64 id = 1;
+}
+
+message UserByIDResponse {
+  User user = 1;
+}

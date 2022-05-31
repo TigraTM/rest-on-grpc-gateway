@@ -2,61 +2,80 @@ package main
 
 import (
 	"context"
-	logStd "log"
+	"fmt"
 	"os/signal"
+	"rest-on-grpc-gateway/modules/payment"
 	"rest-on-grpc-gateway/modules/user"
+	"rest-on-grpc-gateway/pkg/serve"
 	"syscall"
 	"time"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
+	"go.uber.org/zap/zapcore"
 
 	"go.uber.org/zap"
 )
 
 type embeddedService interface {
-	Init(ctx context.Context, log *zap.SugaredLogger) (err error)
+	Name() string
+	Init(ctx context.Context, log *zap.Logger) (err error)
 	RunServe(ctx context.Context) error
 }
 
 var embeddedServices = []embeddedService{
 	&user.Service{},
+	&payment.Service{},
 }
 
 func main() {
-	zap, err := zap.NewDevelopment()
+	logCfg := zap.NewProductionConfig()
+	logCfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	logCfg.EncoderConfig.TimeKey = "timestamp"
+	logCfg.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
+	log, err := logCfg.Build(
+		zap.WithClock(zapcore.DefaultClock),
+		zap.AddCaller(),
+	)
 	if err != nil {
-		logStd.Fatalf("couldn't init logger: %+v \n", err)
+		panic(err)
 	}
 	defer func() {
-		err := zap.Sync()
+		err := log.Sync()
 		if err != nil {
-			logStd.Fatalf("err: %v", err)
+			panic(err)
 		}
 	}()
-	log := zap.Sugar()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	ctxWithLog := ctxzap.ToContext(ctx, log.Desugar())
-	go forceShutdown(ctxWithLog)
+	go forceShutdown(ctx, log)
 
-	for _, service := range embeddedServices {
-		err = service.Init(ctxWithLog, log)
-		if err != nil {
-			// nolint:gocritic // fatal will exit.
-			log.Fatalf("failed to init service: %s", err)
-		}
-
-		err = service.RunServe(ctxWithLog)
-		if err != nil {
-			log.Fatalf("failed to run service: %s", err)
-		}
+	if err = runServices(ctx, log); err != nil {
+		// nolint:gocritic // ...
+		log.Fatal("failed run service: %s", zap.Error(err))
 	}
 }
 
-func forceShutdown(ctx context.Context) {
-	log := ctxzap.Extract(ctx)
+func runServices(ctx context.Context, log *zap.Logger) (err error) {
+	services := make([]func(context.Context) error, len(embeddedServices))
+	for i := range embeddedServices {
+		log := log.Named(embeddedServices[i].Name())
+
+		err = embeddedServices[i].Init(ctx, log)
+		if err != nil {
+			return fmt.Errorf("failed service - %s init: %w", embeddedServices[i].Name(), err)
+		}
+
+		runServe := embeddedServices[i].RunServe
+		services[i] = func(ctxShutdown context.Context) error {
+			return runServe(ctxShutdown)
+		}
+	}
+
+	return serve.Start(ctx, services...)
+}
+
+func forceShutdown(ctx context.Context, log *zap.Logger) {
 	const shutdownDelay = 15 * time.Second
 
 	<-ctx.Done()

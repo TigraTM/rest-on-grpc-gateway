@@ -1,0 +1,258 @@
+syntax = "proto3";
+
+package api.proto.payment.v1;
+
+option go_package = "rest-on-grpc-gateway/api/proto/payment/v1;pb";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "validate/validate.proto";
+import "google/type/decimal.proto";
+import "google/protobuf/timestamp.proto";
+
+// PaymentExternalAPI external service to work with payment.
+service PaymentExternalAPI {
+  // Create Payments. Payment can be created with positive or negative value.
+  // Payments are made only in rubles(RUB).
+  //
+  // ```
+  // Example request:
+  //    amount: {
+  //		  'value': '1000'
+  //	  }
+  //    company_name: 'AppStore'
+  //    category: 'supermarkets'
+  //    user_id: 1
+  //    account_number: '123456'
+  // ```
+  //
+  // ```
+  // Example response:
+  //    empty
+  // ```
+
+  // Specific codes:
+  //    * codes.InvalidArgument
+  rpc CreatePayment (CreatePaymentRequest) returns (CreatePaymentResponse) {
+    option (google.api.http) = {post: "/payment/api/v1/payment", body: "*"};
+  };
+  // Get user account balance by user ID.
+  // By default the balance is given in rubles, if you want to convert the amount into another currency,
+  // pass in query parameter ?currency={another_currency} another currency.
+  // The name of the other currency should consist of 3 letters
+  //
+  // ```
+  // Example request:
+  //    account_number: '123' // path param
+  //    currency: 'USD'       // query param
+  //    user_id: 1            // query param
+  // ```
+  //
+  // ```
+  // Example response:
+  //    user_id: 1
+  //    amount: {
+  // 		  'value': '1000'
+  // 	  }
+  //    currency: 'USD'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc GetAccountByAccountNumber (GetAccountByUserIDRequest) returns (GetAccountByUserIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/accounts/{account_number}"};
+  };
+  // Transferring money between users.
+  // Transferring money are made only in rubles(RUB).
+  // If you try to transfer money to a user who does not exist or to a non-existent account, an error will be returned.
+  //
+  // ```
+  // Example request:
+  //    amount: {
+  // 		  'value': '1000'
+  // 	  }
+  //    sender_id: 1
+  //    sender_account_id: 1
+  //    sender_account_number: '123'
+  //    recipient_id: 2
+  //    recipient_account_id: 1
+  //    recipient_account_number: '123'
+  //    recipient_name: 'Artem'
+  // ```
+  //
+  // ```
+  // Example response:
+  //    amount: {
+  // 		  'value': '1000'
+  // 	  }
+  //    recipient_id: 2
+  //    recipient_name: 'Artem'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc TransferBetweenUsers (TransferBetweenUsersRequest) returns (TransferBetweenUsersResponse) {
+    option (google.api.http) = {post: "/payment/api/v1/payment/transfer", body: "*"};
+  };
+  // Get payments history by account id.
+  // Query params:
+  // - limit (default = 100)
+  // - offset (default = 0)
+  // - sort (only 'sum' and 'create_at', default = 'creat_at')
+  // - order_by (only 'asc' or 'desc', default = 'desc')
+  //
+  // ```
+  // Example request:
+  //    account_id: 1      // path params
+  //    limit: 5        // query params
+  //    offset: 0       // query params
+  //    sort: create_at // query params
+  //    order_by: desc  // query params
+  // ```
+  //
+  // ```
+  // Example response:
+  //    account_number: 1 // path param
+  //    create_at: '2022-05-09T11:12:01.934970Z'
+  //    amount: {
+  // 		  'value': '1000'
+  // 	  }
+  //    company_name: 2
+  //    category: 'Artem'
+  //    total: 1
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  //    * codes.NotFound
+  rpc GetPaymentsHistoryByAccountNumber (GetPaymentsHistoryByAccountIDRequest) returns (GetPaymentsHistoryByAccountIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/{account_number}/history"};
+  };
+  //  Get accounts by user id. Without paging and filters.
+  //
+  // ```
+  // Example request:
+  //    user_id: 1 // query params
+  // ```
+  //
+  // ```
+  // Example response:
+  //    balance: {
+  // 		  'value': '1000'
+  // 	  }
+  //    currency: 'RUB'
+  //    account_number: '123'
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  rpc GetAccountsByUserID (GetAccountsByUserIDRequest) returns (GetAccountsByUserIDResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/accounts"};
+  }
+  // Returns all currencies with which you can make a balance conversion.
+  //
+  // ```
+  // Example request:
+  //    empty
+  // ```
+  //
+  // ```
+  // Example response:
+  //    "symbols": {
+  //    "AED": "United Arab Emirates Dirham",
+  //    "AFN": "Afghan Afghani",
+  //    "ALL": "Albanian Lek",
+  //    "AMD": "Armenian Dram",
+  //    [...]
+  //    }
+  // ```
+  //
+  // Specific codes:
+  //    * codes.InvalidArgument
+  rpc GetAllCurrencies (GetAllCurrenciesRequest) returns (GetAllCurrenciesResponse) {
+    option (google.api.http) = {get: "/payment/api/v1/payment/accounts/type_currency"};
+  }
+}
+
+message CreatePaymentRequest {
+    google.type.Decimal amount  = 1 ;
+    string        company_name  = 2 [(validate.rules).string = {min_len: 1, max_len: 50}];
+    string            category  = 3 [(validate.rules).string = {min_len: 1, max_len: 50}];
+    int64              user_id  = 4;
+    string      account_number  = 5 [(validate.rules).string = {min_len: 1, max_len: 20}];
+}
+
+message CreatePaymentResponse {}
+
+message GetAccountByUserIDRequest {
+  string  account_number = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string        currency = 2 [(validate.rules).string = {ignore_empty: true, len: 3}];
+  int64          user_id = 3;
+}
+
+message GetAccountByUserIDResponse {
+  google.type.Decimal   balance = 1;
+  string               currency = 2;
+  string         account_number = 3;
+}
+
+message TransferBetweenUsersRequest {
+  google.type.Decimal       amount = 1 [(validate.rules).any.required = true];
+  int64                  sender_id = 2 [(validate.rules).int64.gte = 1];
+  string     sender_account_number = 3 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  int64               recipient_id = 4 [(validate.rules).int64.gte = 1];
+  string  recipient_account_number = 5 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string            recipient_name = 6 [(validate.rules).string = {min_len: 1, max_len: 50}];
+}
+
+message TransferBetweenUsersResponse {
+  google.type.Decimal       amount = 1;
+  int64               recipient_id = 2;
+  string            recipient_name = 3;
+  string  recipient_account_number = 4;
+}
+
+message GetPaymentsHistoryByAccountIDRequest {
+  string account_number = 1;
+  int64           limit = 2 [(validate.rules).int64 = {gte: 0, lte: 500}];
+  int64          offset = 3 [(validate.rules).int64 = {gte: 0}];
+  string        sort_by = 4 [(validate.rules).string = {ignore_empty: true, in: ["create_at", "amount "]}];
+  string           sort = 5 [(validate.rules).string = {ignore_empty: true, in: ["asc", "desc"]}];
+  int64         user_id = 6;
+}
+
+message GetPaymentsHistoryByAccountIDResponse {
+  repeated Payment payments = 1;
+  int64               total = 2;
+}
+
+message Payment {
+  int64                             id = 1;
+  google.protobuf.Timestamp  create_at = 2;
+  string                account_number = 3;
+  google.type.Decimal           amount = 4 [(validate.rules).any.required = true];
+  string                  company_name = 5 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string                      category = 6 [(validate.rules).string = {min_len: 1, max_len: 50}];
+}
+
+message GetAccountsByUserIDRequest {
+  int64 user_id = 1;
+}
+
+message GetAccountsByUserIDResponse {
+  repeated  Account accounts = 1;
+}
+
+message Account {
+  google.type.Decimal   balance = 1;
+  string               currency = 2;
+  string         account_number = 3;
+}
+
+message GetAllCurrenciesRequest {}
+
+message GetAllCurrenciesResponse {
+  map<string, string> symbols = 1;
+}

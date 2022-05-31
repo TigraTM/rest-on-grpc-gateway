@@ -115,7 +115,7 @@ linters-settings:
       #  arguments: [40, 60]
 
   lll:
-    line-length: 150
+    line-length: 200
     tab-width: 1
 
   maligned:

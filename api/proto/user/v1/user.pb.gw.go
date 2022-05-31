@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_UserAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, client UserAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserExternalAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, client UserExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_UserAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_UserAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, server UserAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserExternalAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, server UserExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_UserAPI_CreateUser_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_UserAPI_GetUserByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserExternalAPI_GetUserByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetUserByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -91,7 +91,7 @@ func request_UserAPI_GetUserByID_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func local_request_UserAPI_GetUserByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserExternalAPI_GetUserByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetUserByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -117,7 +117,7 @@ func local_request_UserAPI_GetUserByID_0(ctx context.Context, marshaler runtime.
 
 }
 
-func request_UserAPI_UpdateUserByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserExternalAPI_UpdateUserByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -151,7 +151,7 @@ func request_UserAPI_UpdateUserByID_0(ctx context.Context, marshaler runtime.Mar
 
 }
 
-func local_request_UserAPI_UpdateUserByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserExternalAPI_UpdateUserByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -185,7 +185,7 @@ func local_request_UserAPI_UpdateUserByID_0(ctx context.Context, marshaler runti
 
 }
 
-func request_UserAPI_UpdateUserPasswordByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserExternalAPI_UpdateUserPasswordByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserPasswordByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -219,7 +219,7 @@ func request_UserAPI_UpdateUserPasswordByID_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_UserAPI_UpdateUserPasswordByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserExternalAPI_UpdateUserPasswordByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserPasswordByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -253,7 +253,7 @@ func local_request_UserAPI_UpdateUserPasswordByID_0(ctx context.Context, marshal
 
 }
 
-func request_UserAPI_DeleteUserByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserExternalAPI_DeleteUserByID_0(ctx context.Context, marshaler runtime.Marshaler, client UserExternalAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteUserByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -279,7 +279,7 @@ func request_UserAPI_DeleteUserByID_0(ctx context.Context, marshaler runtime.Mar
 
 }
 
-func local_request_UserAPI_DeleteUserByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserExternalAPI_DeleteUserByID_0(ctx context.Context, marshaler runtime.Marshaler, server UserExternalAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteUserByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -305,25 +305,25 @@ func local_request_UserAPI_DeleteUserByID_0(ctx context.Context, marshaler runti
 
 }
 
-// RegisterUserAPIHandlerServer registers the http handlers for service UserAPI to "mux".
-// UnaryRPC     :call UserAPIServer directly.
+// RegisterUserExternalAPIHandlerServer registers the http handlers for service UserExternalAPI to "mux".
+// UnaryRPC     :call UserExternalAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUserAPIHandlerFromEndpoint instead.
-func RegisterUserAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UserAPIServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUserExternalAPIHandlerFromEndpoint instead.
+func RegisterUserExternalAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UserExternalAPIServer) error {
 
-	mux.Handle("POST", pattern_UserAPI_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserExternalAPI_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/CreateUser", runtime.WithHTTPPathPattern("/user/api/v1/user"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/CreateUser", runtime.WithHTTPPathPattern("/user/api/v1/user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAPI_CreateUser_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserExternalAPI_CreateUser_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -331,23 +331,23 @@ func RegisterUserAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_UserAPI_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_UserAPI_GetUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_UserExternalAPI_GetUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/GetUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/GetUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAPI_GetUserByID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserExternalAPI_GetUserByID_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -355,23 +355,23 @@ func RegisterUserAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_UserAPI_GetUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_GetUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserAPI_UpdateUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserExternalAPI_UpdateUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/UpdateUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/UpdateUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAPI_UpdateUserByID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserExternalAPI_UpdateUserByID_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -379,23 +379,23 @@ func RegisterUserAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_UserAPI_UpdateUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_UpdateUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserAPI_UpdateUserPasswordByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserExternalAPI_UpdateUserPasswordByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/UpdateUserPasswordByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}/password"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/UpdateUserPasswordByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}/password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAPI_UpdateUserPasswordByID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserExternalAPI_UpdateUserPasswordByID_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -403,23 +403,23 @@ func RegisterUserAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_UserAPI_UpdateUserPasswordByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_UpdateUserPasswordByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_UserAPI_DeleteUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_UserExternalAPI_DeleteUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/DeleteUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/DeleteUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAPI_DeleteUserByID_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserExternalAPI_DeleteUserByID_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -427,16 +427,16 @@ func RegisterUserAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_UserAPI_DeleteUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_DeleteUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterUserAPIHandlerFromEndpoint is same as RegisterUserAPIHandler but
+// RegisterUserExternalAPIHandlerFromEndpoint is same as RegisterUserExternalAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterUserAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterUserExternalAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -456,124 +456,124 @@ func RegisterUserAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeM
 		}()
 	}()
 
-	return RegisterUserAPIHandler(ctx, mux, conn)
+	return RegisterUserExternalAPIHandler(ctx, mux, conn)
 }
 
-// RegisterUserAPIHandler registers the http handlers for service UserAPI to "mux".
+// RegisterUserExternalAPIHandler registers the http handlers for service UserExternalAPI to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterUserAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterUserAPIHandlerClient(ctx, mux, NewUserAPIClient(conn))
+func RegisterUserExternalAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterUserExternalAPIHandlerClient(ctx, mux, NewUserExternalAPIClient(conn))
 }
 
-// RegisterUserAPIHandlerClient registers the http handlers for service UserAPI
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "UserAPIClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "UserAPIClient"
+// RegisterUserExternalAPIHandlerClient registers the http handlers for service UserExternalAPI
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "UserExternalAPIClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "UserExternalAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "UserAPIClient" to call the correct interceptors.
-func RegisterUserAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UserAPIClient) error {
+// "UserExternalAPIClient" to call the correct interceptors.
+func RegisterUserExternalAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UserExternalAPIClient) error {
 
-	mux.Handle("POST", pattern_UserAPI_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserExternalAPI_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/CreateUser", runtime.WithHTTPPathPattern("/user/api/v1/user"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/CreateUser", runtime.WithHTTPPathPattern("/user/api/v1/user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAPI_CreateUser_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserExternalAPI_CreateUser_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAPI_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_UserAPI_GetUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_UserExternalAPI_GetUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/GetUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/GetUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAPI_GetUserByID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserExternalAPI_GetUserByID_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAPI_GetUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_GetUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserAPI_UpdateUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserExternalAPI_UpdateUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/UpdateUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/UpdateUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAPI_UpdateUserByID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserExternalAPI_UpdateUserByID_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAPI_UpdateUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_UpdateUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserAPI_UpdateUserPasswordByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserExternalAPI_UpdateUserPasswordByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/UpdateUserPasswordByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}/password"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/UpdateUserPasswordByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}/password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAPI_UpdateUserPasswordByID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserExternalAPI_UpdateUserPasswordByID_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAPI_UpdateUserPasswordByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_UpdateUserPasswordByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_UserAPI_DeleteUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_UserExternalAPI_DeleteUserByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserAPI/DeleteUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.proto.user.v1.UserExternalAPI/DeleteUserByID", runtime.WithHTTPPathPattern("/user/api/v1/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAPI_DeleteUserByID_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserExternalAPI_DeleteUserByID_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAPI_DeleteUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserExternalAPI_DeleteUserByID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -581,25 +581,25 @@ func RegisterUserAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 }
 
 var (
-	pattern_UserAPI_CreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"user", "api", "v1"}, ""))
+	pattern_UserExternalAPI_CreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"user", "api", "v1"}, ""))
 
-	pattern_UserAPI_GetUserByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"user", "api", "v1", "id"}, ""))
+	pattern_UserExternalAPI_GetUserByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"user", "api", "v1", "id"}, ""))
 
-	pattern_UserAPI_UpdateUserByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"user", "api", "v1", "id"}, ""))
+	pattern_UserExternalAPI_UpdateUserByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"user", "api", "v1", "id"}, ""))
 
-	pattern_UserAPI_UpdateUserPasswordByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"user", "api", "v1", "id", "password"}, ""))
+	pattern_UserExternalAPI_UpdateUserPasswordByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"user", "api", "v1", "id", "password"}, ""))
 
-	pattern_UserAPI_DeleteUserByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"user", "api", "v1", "id"}, ""))
+	pattern_UserExternalAPI_DeleteUserByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0, 1, 0, 4, 1, 5, 3}, []string{"user", "api", "v1", "id"}, ""))
 )
 
 var (
-	forward_UserAPI_CreateUser_0 = runtime.ForwardResponseMessage
+	forward_UserExternalAPI_CreateUser_0 = runtime.ForwardResponseMessage
 
-	forward_UserAPI_GetUserByID_0 = runtime.ForwardResponseMessage
+	forward_UserExternalAPI_GetUserByID_0 = runtime.ForwardResponseMessage
 
-	forward_UserAPI_UpdateUserByID_0 = runtime.ForwardResponseMessage
+	forward_UserExternalAPI_UpdateUserByID_0 = runtime.ForwardResponseMessage
 
-	forward_UserAPI_UpdateUserPasswordByID_0 = runtime.ForwardResponseMessage
+	forward_UserExternalAPI_UpdateUserPasswordByID_0 = runtime.ForwardResponseMessage
 
-	forward_UserAPI_DeleteUserByID_0 = runtime.ForwardResponseMessage
+	forward_UserExternalAPI_DeleteUserByID_0 = runtime.ForwardResponseMessage
 )

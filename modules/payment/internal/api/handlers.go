@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/app"
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 
@@ -35,9 +36,9 @@ func (a *api) CreatePayment(ctx context.Context, in *paymentpb.CreatePaymentRequ
 	case err == nil:
 		return &paymentpb.CreatePaymentResponse{}, nil
 	case errors.Is(err, app.ErrNotEnoughMoney):
-		return nil, errNotEnoughMoney
+		return nil, ErrNotEnoughMoney
 	case errors.Is(err, app.ErrNotFound):
-		return nil, errNotFound
+		return nil, ErrNotFound
 	default:
 		return nil, fmt.Errorf("a.app.CreateUser: %w", err)
 	}
@@ -56,7 +57,7 @@ func (a *api) GetAccountByAccountNumber(ctx context.Context, in *paymentpb.GetAc
 			AccountNumber: account.AccountNumber,
 		}, nil
 	case errors.Is(err, app.ErrNotFound):
-		return nil, errNotFound
+		return nil, ErrNotFound
 	default:
 		return nil, fmt.Errorf("a.app.GetAccountByUserID: %w", err)
 	}
@@ -90,13 +91,13 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 			RecipientAccountNumber: transfer.RecipientAccountNumber,
 		}, nil
 	case errors.Is(err, app.ErrNotFound):
-		return nil, errNotFound
+		return nil, ErrNotFound
 	case errors.Is(err, app.ErrNotEnoughMoney):
-		return nil, errNotEnoughMoney
+		return nil, ErrNotEnoughMoney
 	case errors.Is(err, app.ErrSameAccountNumber):
-		return nil, errSameAccountNumber
+		return nil, ErrSameAccountNumber
 	case errors.Is(err, app.ErrTransferAmountNotCorrect):
-		return nil, errTransferAmountNotCorrect
+		return nil, ErrTransferAmountNotCorrect
 	default:
 		return nil, fmt.Errorf("a.app.TransferBetweenUsers: %w", err)
 	}
@@ -106,18 +107,18 @@ func (a *api) TransferBetweenUsers(ctx context.Context, in *paymentpb.TransferBe
 func (a *api) GetPaymentsHistoryByAccountNumber(ctx context.Context, in *paymentpb.GetPaymentsHistoryByAccountIDRequest) (*paymentpb.GetPaymentsHistoryByAccountIDResponse, error) {
 	paging, err := getPaging(in)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", errUncorrectedPaging, err.Error())
+		return nil, fmt.Errorf("%w: %s", ErrUncorrectedPaging, err.Error())
 	}
 
 	sort, err := getSortForPaymentHistory(in)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", errUncorrectedSort, err.Error())
+		return nil, fmt.Errorf("%w: %s", ErrUncorrectedSort, err.Error())
 	}
 
 	payments, total, err := a.app.GetPaymentHistoryByAccountID(ctx, int(in.UserId), in.AccountNumber, &paging, &sort)
 	switch {
 	case errors.Is(err, app.ErrNotFound):
-		return nil, errNotFound
+		return nil, ErrNotFound
 	case err != nil:
 		return nil, fmt.Errorf("a.app.GetPaymentHistoryByAccountID: %w", err)
 	}

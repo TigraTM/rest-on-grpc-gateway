@@ -9,7 +9,7 @@ create table if not exists "payment".accounts
     update_at      timestamp default now(),
     account_number text    not null,
     balance        decimal not null,
-    currency       text      default 'RUB',
+    currency       text      default 'USD',
     user_id        integer not null,
 
     constraint user_id_account_number_constraint unique (user_id, account_number),

@@ -4,6 +4,7 @@ package api
 import (
 	"context"
 	"errors"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 	"rest-on-grpc-gateway/pkg/grpc_helper"
@@ -17,12 +18,12 @@ import (
 )
 
 var (
-	errUncorrectedSort          = errors.New("uncorrected sort")
-	errUncorrectedPaging        = errors.New("uncorrected paging")
-	errNotFound                 = errors.New("not found")
-	errNotEnoughMoney           = errors.New("not enough money")
-	errSameAccountNumber        = errors.New("sender's and receiver's accounts are the same")
-	errTransferAmountNotCorrect = errors.New("amount of the transfer must not be negative")
+	ErrUncorrectedSort          = errors.New("uncorrected sort")
+	ErrUncorrectedPaging        = errors.New("uncorrected paging")
+	ErrNotFound                 = errors.New("not found")
+	ErrNotEnoughMoney           = errors.New("not enough money")
+	ErrSameAccountNumber        = errors.New("sender's and receiver's accounts are the same")
+	ErrTransferAmountNotCorrect = errors.New("amount of the transfer must not be negative")
 )
 
 //go:generate mockgen -source=api.go -destination mock.application.contracts_test.go -package api_test
@@ -59,17 +60,17 @@ func apiError(err error) *status.Status {
 
 	code := codes.Internal
 	switch {
-	case errors.Is(err, errSameAccountNumber):
+	case errors.Is(err, ErrSameAccountNumber):
 		code = codes.InvalidArgument
-	case errors.Is(err, errNotFound):
+	case errors.Is(err, ErrNotFound):
 		code = codes.NotFound
-	case errors.Is(err, errNotEnoughMoney):
+	case errors.Is(err, ErrNotEnoughMoney):
 		code = codes.InvalidArgument
-	case errors.Is(err, errTransferAmountNotCorrect):
+	case errors.Is(err, ErrTransferAmountNotCorrect):
 		code = codes.InvalidArgument
-	case errors.Is(err, errUncorrectedPaging):
+	case errors.Is(err, ErrUncorrectedPaging):
 		code = codes.InvalidArgument
-	case errors.Is(err, errUncorrectedSort):
+	case errors.Is(err, ErrUncorrectedSort):
 		code = codes.InvalidArgument
 	case errors.Is(err, context.DeadlineExceeded):
 		code = codes.DeadlineExceeded

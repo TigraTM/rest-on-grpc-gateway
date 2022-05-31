@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+
 	"rest-on-grpc-gateway/modules/payment/internal/domain"
 	"rest-on-grpc-gateway/modules/payment/internal/filters"
 
@@ -58,7 +59,7 @@ func (a *App) TransferBetweenUsers(ctx context.Context, transfer domain.Transfer
 	if err = a.checkBeforeTransfer(ctx, transfer); err != nil {
 		return nil, fmt.Errorf("a.checkBeforeTransfer: %w", err)
 	}
-
+	transfer.Amount.Round()
 	err = a.txRepo.DoTx(ctx, func(repo Repo) error {
 		if err = repo.CreateOrUpdateAccount(ctx, transfer.SenderID, transfer.SenderAccountNumber, transfer.Amount.Neg()); err != nil {
 			return fmt.Errorf("a.repo.SubBalanceByUserID: %w", err)

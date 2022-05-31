@@ -11,8 +11,6 @@ import (
 )
 
 func NewServer(log *zap.Logger, converter GRPCCodesConverterHandler, addUnary []grpc.UnaryServerInterceptor) *grpc.Server {
-	grpc_zap.ReplaceGrpcLoggerV2(log)
-
 	unaryInterceptor := append([]grpc.UnaryServerInterceptor{
 		grpc_zap.UnaryServerInterceptor(log),
 		grpc_zap.PayloadUnaryServerInterceptor(log, alwaysLoggingDeciderServer),

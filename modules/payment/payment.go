@@ -5,6 +5,10 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"strconv"
+
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+
 	"rest-on-grpc-gateway/modules/payment/adapters/apilayer"
 	"rest-on-grpc-gateway/modules/payment/adapters/user"
 	"rest-on-grpc-gateway/modules/payment/internal/api"
@@ -12,7 +16,6 @@ import (
 	"rest-on-grpc-gateway/modules/payment/internal/config"
 	"rest-on-grpc-gateway/modules/payment/internal/repo"
 	"rest-on-grpc-gateway/pkg/serve"
-	"strconv"
 
 	user_client "rest-on-grpc-gateway/modules/user/client"
 
@@ -48,12 +51,20 @@ func (s *Service) Init(ctx context.Context, log *zap.Logger) (err error) {
 	if err != nil {
 		s.log.Fatal("failed repo.New: %+v \n", zap.Error(err))
 	}
+	//defer func() {  // TODO: Check db close
+	//	err := s.db.DB.Close()
+	//	if err != nil {
+	//		log.Error("close database connection", zap.Error(err))
+	//	}
+	//}()
 
 	return nil
 }
 
 // RunServe start service.
 func (s *Service) RunServe(ctx context.Context) error {
+	grpc_zap.ReplaceGrpcLoggerV2(s.log)
+
 	apiLayerClient := apilayer.New(s.cfg.Clients.APILayerAPIKey, s.cfg.Clients.APILayerBasePath)
 
 	userClient, err := user_client.New(ctx, s.log, net.JoinHostPort(s.cfg.Clients.UserClientHost, strconv.Itoa(s.cfg.Clients.UserClientPort)))

@@ -5,6 +5,8 @@ import (
 	"context"
 	"fmt"
 
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+
 	"rest-on-grpc-gateway/modules/user/internal/api"
 	"rest-on-grpc-gateway/modules/user/internal/app"
 	"rest-on-grpc-gateway/modules/user/internal/config"
@@ -47,12 +49,20 @@ func (s *Service) Init(ctx context.Context, log *zap.Logger) (err error) {
 	if err != nil {
 		s.log.Fatal("failed repo.NewExternal: %+v \n", zap.Error(err))
 	}
+	//defer func() {  // TODO: Check db close
+	//	err := s.db.DB.Close()
+	//	if err != nil {
+	//		log.Error("close database connection", zap.Error(err))
+	//	}
+	//}()
 
 	return nil
 }
 
 // RunServe start service.
 func (s *Service) RunServe(ctx context.Context) error {
+	grpc_zap.ReplaceGrpcLoggerV2(s.log)
+
 	hashSvc := password.New()
 
 	appl := app.New(s.db, hashSvc)
